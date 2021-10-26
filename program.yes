@@ -1,0 +1,4 @@
+OP {OP 1 ADD 2};
+ECHO "sdsd"
+_VAR a 65
+
