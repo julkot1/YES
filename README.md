@@ -57,7 +57,8 @@ To eval expression use statement `OP VALUE OPERATOR VALUE ...`
 
 ### Basic statements
 
-### Displays concatenated values of any type.
+### ECHO
+Displays concatenated values of any type.
 ```
 ECHO VALUE_1 VALUE_2 ...
 ```
@@ -66,7 +67,8 @@ Example:
 ECHO "foo" 2 true
 ```
 Prints `foo2true` and returns `foo2true`.
-### Get input from console and prints like `ECHO` but returns user's input `String`.
+### IN
+Get input from console and prints like `ECHO` but returns user's input `String`.
 ```
 IN VALUE_1 VALUE_2 ...
 ```
@@ -76,7 +78,8 @@ IN "Type name: "
 ```
 Prints `Type name` and returns user's input.
 
-### Eval operation and returns result `Int` or `Float` or `Boolean`
+### OP
+Eval operation and returns result `Int` or `Float` or `Boolean`
 ```
 OP VALUE OPERATOR VALUE ...
 ```
