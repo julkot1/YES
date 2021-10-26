@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/julkot1/YES">
-    <img src="https://github.com/julkot1/YES/blob/main/icon.svg" alt="Logo" width="250" height="187.5">
+    <img src="https://github.com/julkot1/YES/blob/main/logo.svg" alt="Logo" width="250" height="187.5">
   </a>
 </div>
 </br>
