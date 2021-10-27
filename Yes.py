@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import ast
+import re
 from enum import Enum
 from shlex import shlex
 from pyparsing import quotedString, removeQuotes
@@ -193,13 +193,19 @@ def parseRef(out):
     if register.containsName(out):
         return register.getByName(out).address
     return Null(NullishValues.UNDEFINED_VALUE)
-
+def parseNamespace(out: str):
+    if re.match('[a-zA-Z][A-Za-z0-9_-]*$', out):
+        return out
+    return Null(NullishValues.UNDEFINED_VALUE)
 def parseValue(out):
-    if register.containsName(out):
-        return register.getByName(out)
+    VariableTypes.hasType(out)
     if Operation.Operators.getByToken(out):
         return out
-    o = parseString(out)
+    if VariableTypes.hasType(out):
+        return out
+    o = parseNamespace(out)
+    if isinstance(o, Null):
+        o = parseString(out)
     if isinstance(o, Null):
         o = parseInt(out)
     if isinstance(o, Null):
@@ -223,6 +229,12 @@ class VariableTypes(Enum):
     BOOLEAN = VariableType("Bool", parseBoolean)
     ARRAY = VariableType("Arr", parseArray, True)
     REF = VariableType("REF", parseRef)
+    @classmethod
+    def hasType(self, type):
+        for t in self._value2member_map_.values():
+            if t.value.token == type:
+                return True
+        return False
 class ValueTypes(Enum):
     STRING = VariableType("String", parseString)
     INT = VariableType("Int", parseInt)

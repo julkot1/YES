@@ -1,6 +1,6 @@
 from re import I
 from Yes import Statement, Tokens, splitArray
-from pyparse import nestedExpr
+from pyparsing import nestedExpr
 from version import YESman, YES
 
 
