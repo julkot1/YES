@@ -10,7 +10,7 @@
 YES an esoteric programming language written in [Python](https://www.python.org/).
 YES is a recursive acronym from: YES - Yes Extendable Statements. Yes is a structured, strong and static typed programming language. 
 </br>
-Every statment has n statments or values like `ECHO "SUM 2+2 is " {OP 2 ADD 2}` this statment prints `SUM 2+2 is 4`. Also each statement returns value e.g `ECHO {ECHO "foo"}` - prints `foofoo` because `ECHO "foo"` display data in termial and also returns this data. 
+Every statment has n statments or values like `ECHO "SUM 2+2 is " {ADD 2 2}` this statment prints `SUM 2+2 is 4`.
 </br>
 To interpret your code use [YESman]() interpreter.
 ## Sytax
@@ -78,14 +78,4 @@ IN "Type name: "
 ```
 Prints `Type name` and returns user's input.
 
-### OP
-Eval operation and returns result `Int` or `Float` or `Boolean`
-```
-OP VALUE OPERATOR VALUE ...
-```
-Example:
-```
-OP 2 MUL {OP 1 ADD 3}
-```
-Resolve `2*(1+3)` and retuns result `8`
 
