@@ -23,12 +23,12 @@ short getShort(char *value)
     short i = (*value << 4) + *(value + 1);
     return i;
 }
-
 int main()
 {
 
     int *gr = (int *)malloc(GR_SIZE * sizeof(int));
     int *xr = (int *)malloc(XR_SIZE * sizeof(int));
+    int ptc = 0;
     struct type s;
 
     s.val = (char *)malloc(8 * sizeof(char));
