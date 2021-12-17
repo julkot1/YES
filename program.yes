@@ -1,4 +1,4 @@
 PUSH {ADD {ADD 2 2} cr};
 PUSH 2;
 PUSH 3;
-ECHO gr[1];
+ECHO gr[ptg];
