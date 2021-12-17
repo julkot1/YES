@@ -4,13 +4,7 @@ from os import write
 import subprocess
 import sys
 
-from lexer import lexFile, REGISTERS_TOKENS
-
-
-class StatementTokens(Enum):
-    PUSH = "PUSH"
-    ECHO = "ECHO"
-    ADD = "ADD"
+from lexer import lexFile, REGISTERS_TOKENS, StatementTokens
 
 
 class ArgTokens(Enum):
@@ -22,14 +16,17 @@ class ArgTokens(Enum):
 def getToken(token, out: TextIOWrapper):
     if isinstance(token, str):
         if token in REGISTERS_TOKENS:
-            return '*'+token
+            return '*({r} + pt{pt} - 1)'.format(r=token, pt=token[0])
         else:
             return token
     else:
         if token[0] in REGISTERS_TOKENS:
-            assert False, "not implemented"
-        writeTokens(token, out)
-        return 0
+            if len(token) == 1:
+                return '*({r} + pt{pt} - 1)'.format(r=token[0], pt=token[0][0])
+            return '*({r} + pt{pt} - {a})'.format(r=token[0], pt=token[0][0], a=int(token[1][0])+1)
+        else:
+            writeTokens(token, out)
+            return '*(xr + ptx - 1)'
 
 
 def putToCr(token, out: TextIOWrapper):
@@ -39,8 +36,8 @@ def putToCr(token, out: TextIOWrapper):
 
 
 def writeTokens(tokens: list, out: TextIOWrapper):
+
     for index, token in enumerate(tokens):
-        print(token)
         out.write("{")
         out.write(
             "int * cr = (int * )malloc({size} * sizeof(int));int ptc=0;".format(size=len(token)))
@@ -57,7 +54,7 @@ def writeTokens(tokens: list, out: TextIOWrapper):
             out.write("ptx++;")
         elif token[0] == StatementTokens.ECHO.value:
             # TODO: write instead of printf
-            out.write(f'printf("%d", *cr);')
+            out.write(f'printf("%d\\n", *cr);')
         else:
             assert False, token[0]+" is not existing statement"
         out.write("free(cr);};")
@@ -90,7 +87,6 @@ def help():
 
 def main():
     argv = sys.argv
-    print(lexFile(argv[1])[1])
     if len(argv) >= 2:
         print('[PYTHON] gererating C file')
         compile(lexFile(argv[1]))

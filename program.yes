@@ -1,9 +1,4 @@
-PUSH 5;
-PUSH 10;
-ADD gr 3;
-ECHO xr;
-//gr -> global
-//xr -> statements returns except PUSH, DROP, _STATEMENT
-//cr -> context - in _STATEMENT parameters
-
-
+PUSH {ADD {ADD 2 2} cr};
+PUSH 2;
+PUSH 3;
+ECHO gr[1];
