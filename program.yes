@@ -1,8 +1,5 @@
 PUSH 2;
 PUSH 3;
-ECHO {
-    ADD gr gr[ADD 1 2];
-};
-ECHO gr[ADD {ADD 1 {MUL 1 2}}];
-ECHO {MUL gr gr[1]};
-ECHO {ADD 1 {MUL 2 2}}
+ADD gr cr;
+MUL {ADD 1 cr} cr;
+ECHO xr;

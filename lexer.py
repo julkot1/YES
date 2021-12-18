@@ -158,6 +158,9 @@ def parseRegister(reg):
     if isinstance(reg, str):
         register = Register(reg)
         return register
+    if len(reg) == 1:
+        register = Register(reg[0])
+        return register
     register = Register(reg[0])
     if reg[1][0] in [item.value for item in StatementTokens]:
         register.index = createStatement(reg[1])
