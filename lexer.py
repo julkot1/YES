@@ -13,6 +13,10 @@ class StatementTokens(Enum):
     PUSH = "PUSH"
     ECHO = "ECHO"
     ADD = "ADD"
+    SUB = "SUB"
+    MUL = "MUL"
+    DIV = "DIV"
+    MOD = "MOD"
 
 
 class SyntaxTokens(Enum):
@@ -124,5 +128,88 @@ def lexFile(path):
                                        SyntaxTokens.NESTED_END.value, ignoreExpr=REGISTERS_REGEX).parseString(nest(rows)).asList()[0])
         tokens = getTokens(nested)
         inp.close()
-    print(tokens)
     return (imports, tokens)
+
+
+class Statement:
+    def __init__(self, token):
+        self.token = token
+        self.args = []
+
+    def __str__(self):
+        args = ' '
+        if len(self.args) > 0:
+            args = ' '.join(str(x) for x in self.args)
+        return self.token + ': '+args
+
+
+class Register():
+    def __init__(self, token):
+        self.token = token
+        self.index = None
+
+
+class Value():
+    def __init__(self, token):
+        self.token = token
+
+
+def parseRegister(reg):
+    if isinstance(reg, str):
+        register = Register(reg)
+        return register
+    register = Register(reg[0])
+    if reg[1][0] in [item.value for item in StatementTokens]:
+        register.index = createStatement(reg[1])
+    else:
+        register.index = parseValue(reg[1][0])
+    return register
+
+
+def parseValue(val: str):
+    value = Value(val)
+    return value
+
+
+def createStatement(token: list):
+    statement = Statement(token[0])
+    if len(token) > 1:
+        for arg in token[1::]:
+            if isinstance(arg, list):
+                if arg[0] in REGISTERS_TOKENS:
+                    statement.args.append(parseRegister(arg))
+                else:
+                    statement.args.append(createStatement(arg[0]))
+            else:
+                if arg in REGISTERS_TOKENS:
+                    statement.args.append(parseRegister(arg))
+                else:
+                    statement.args.append(parseValue(arg))
+    return statement
+
+
+def createAST(tokens: list):
+    stack = []
+    for token in tokens:
+        stack.append(createStatement(token))
+    return stack
+
+
+def printStatement(statement: Statement, space: int):
+    print(" "*(space-2), statement.token+": ")
+    for arg in statement.args:
+        if isinstance(arg, Value):
+            print(" "*space, arg.token)
+        elif isinstance(arg, Statement):
+            printStatement(arg, space+2)
+        elif isinstance(arg, Register):
+            print(" "*space, arg.token)
+            if isinstance(arg.index, Value):
+                print(" "*(space-1), arg.index.token)
+            if isinstance(arg.index, Statement):
+                printStatement(arg.index, space+1)
+
+
+def printAST(ast: list):
+    for statement in ast:
+        printStatement(statement, 1)

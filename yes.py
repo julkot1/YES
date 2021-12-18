@@ -1,6 +1,5 @@
 from enum import Enum
 from io import TextIOWrapper
-from os import write
 import subprocess
 import sys
 
@@ -23,7 +22,12 @@ def getToken(token, out: TextIOWrapper):
         if token[0] in REGISTERS_TOKENS:
             if len(token) == 1:
                 return '*({r} + pt{pt} - 1)'.format(r=token[0], pt=token[0][0])
+            print(token[1][0])
+            if token[1][0] in [item.value for item in StatementTokens]:
+                writeTokens([token[1]], out)
+                return '*({r} + pt{pt} - *(xr+ptx-1))'.format(r=token[0], pt=token[0][0])
             return '*({r} + pt{pt} - {a})'.format(r=token[0], pt=token[0][0], a=int(token[1][0])+1)
+
         else:
             writeTokens(token, out)
             return '*(xr + ptx - 1)'
@@ -35,8 +39,39 @@ def putToCr(token, out: TextIOWrapper):
         f"*(cr + ptc) = {value}; ptc++;")
 
 
-def writeTokens(tokens: list, out: TextIOWrapper):
+def writeStatement(token: list, out: TextIOWrapper):
+    if token[0] == StatementTokens.PUSH.value:
+        assert len(token) == 2, "Invalid arguments in PUSH statement"
+        out.write(f"*(gr + ptg) = *cr;")
+        out.write("ptg++;")
+    elif token[0] == StatementTokens.ADD.value:
+        assert len(token) == 3, "Invalid arguments in ADD statement"
+        out.write(f"*(xr + ptx) = *cr + *(cr+1);")
+        out.write("ptx++;")
+    elif token[0] == StatementTokens.SUB.value:
+        assert len(token) == 3, "Invalid arguments in SUB statement"
+        out.write(f"*(xr + ptx) = *cr - *(cr+1);")
+        out.write("ptx++;")
+    elif token[0] == StatementTokens.MUL.value:
+        assert len(token) == 3, "Invalid arguments in MUL statement"
+        out.write(f"*(xr + ptx) = *cr * *(cr+1);")
+        out.write("ptx++;")
+    elif token[0] == StatementTokens.DIV.value:
+        assert len(token) == 3, "Invalid arguments in ADD statement"
+        out.write(f"*(xr + ptx) = *cr / *(cr+1);")
+        out.write("ptx++;")
+    elif token[0] == StatementTokens.MOD.value:
+        assert len(token) == 3, "Invalid arguments in ADD statement"
+        out.write(f"*(xr + ptx) = *cr * *(cr+1);")
+        out.write("ptx++;")
+    elif token[0] == StatementTokens.ECHO.value:
+        # TODO: write instead of printf
+        out.write(f'printf("%d\\n", *cr);')
+    else:
+        assert False, token[0]+" is not existing statement"
 
+
+def writeTokens(tokens: list, out: TextIOWrapper):
     for index, token in enumerate(tokens):
         out.write("{")
         out.write(
@@ -44,19 +79,7 @@ def writeTokens(tokens: list, out: TextIOWrapper):
         if len(token) > 1:
             for t in token[1::]:
                 putToCr(t, out)
-        if token[0] == StatementTokens.PUSH.value:
-            assert len(token) == 2, "Invalid arguments in PUSH statement"
-            out.write(f"*(gr + ptg) = *cr;")
-            out.write("ptg++;")
-        elif token[0] == StatementTokens.ADD.value:
-            assert len(token) == 3, "Invalid arguments in ADD statement"
-            out.write(f"*(xr + ptx) = *cr + *(cr+1);")
-            out.write("ptx++;")
-        elif token[0] == StatementTokens.ECHO.value:
-            # TODO: write instead of printf
-            out.write(f'printf("%d\\n", *cr);')
-        else:
-            assert False, token[0]+" is not existing statement"
+        writeStatement(token, out)
         out.write("free(cr);};")
 
 
@@ -90,7 +113,6 @@ def main():
     if len(argv) >= 2:
         print('[PYTHON] gererating C file')
         compile(lexFile(argv[1]))
-
         if len(argv) == 3:
             if argv[2] == '-r':
                 print('[PYTHON] running CMD')
