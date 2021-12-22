@@ -1,9 +1,8 @@
 from pyparsing import nestedExpr, Combine, Regex
 from enum import Enum
-import re
-
 
 REGISTERS_TOKENS = ['gr', 'xr', 'cr']
+BOOLEAN_TOKENS = ['true', 'false']
 INNER_REGISTER = r'(?<=\[).+?(?=\])'
 REGISTERS_REGEX = Combine(
     Regex(r'[a-z][a-z]')+'['+Regex(INNER_REGISTER)+']')
@@ -23,10 +22,13 @@ class SyntaxTokens(Enum):
     COMMENT = "//"
     IMPORT = "@import"
     ENDLINE = ";"
+    STRING = '"'
     NESTED_OPEN = "{"
     NESTED_END = "}"
     REGISTER_OPEN = "["
     REGISTER_END = "]"
+    CAST_OPEN = "("
+    CAST_END = ")"
 
 
 def stripChar(string: str, char):
@@ -92,7 +94,7 @@ def getTokens(array: list):
                     if e[0] in [item.value for item in StatementTokens] or len(tokens) == 0:
                         tokens.append(e)
                     else:
-                        tokens[len(tokens)-1].append(e)
+                        tokens[len(tokens)-1].append(e[0])
         else:
             token = getTokens(element)
             if token != []:
@@ -135,6 +137,7 @@ class Statement:
     def __init__(self, token):
         self.token = token
         self.args = []
+        self.type = None
 
     def __str__(self):
         args = ' '
@@ -144,75 +147,86 @@ class Statement:
 
 
 class Register():
-    def __init__(self, token):
+    def __init__(self, token, ytype):
         self.token = token
         self.index = None
+        self.type = ytype
 
 
 class Value():
     def __init__(self, token):
         self.token = token
+        self.type = None
 
 
-def parseRegister(reg):
+def parseRegister(reg, ytype):
     if isinstance(reg, str):
-        register = Register(reg)
+        register = Register(reg, ytype)
         return register
     if len(reg) == 1:
-        register = Register(reg[0])
+        register = Register(reg[0], ytype)
         return register
-    register = Register(reg[0])
+    register = Register(reg[0], ytype)
     if reg[1][0] in [item.value for item in StatementTokens]:
-        register.index = createStatement(reg[1])
+        register.index = createStatement(reg[1], None)
     else:
-        register.index = parseValue(reg[1][0])
+        register.index = parseValue(reg[1][0], None)
     return register
 
 
-def parseValue(val: str):
+def parseValue(val: str, ytype):
     value = Value(val)
+    value.type = ytype
     return value
 
 
-def createStatement(token: list):
+def createStatement(token: list, typeCast):
     statement = Statement(token[0])
     if len(token) > 1:
         for arg in token[1::]:
             if isinstance(arg, list):
                 if arg[0] in REGISTERS_TOKENS:
-                    statement.args.append(parseRegister(arg))
+                    statement.args.append(parseRegister(arg, typeCast))
+                    typeCast = None
                 else:
-                    statement.args.append(createStatement(arg[0]))
+                    statement.args.append(createStatement(arg[0], typeCast))
+                    typeCast = None
             else:
-                if arg in REGISTERS_TOKENS:
-                    statement.args.append(parseRegister(arg))
+                if arg.startswith(SyntaxTokens.CAST_OPEN.value) and arg.endswith(SyntaxTokens.CAST_END.value):
+                    typeCast = arg[1:len(arg)-1:]
+                elif arg in REGISTERS_TOKENS:
+                    statement.args.append(parseRegister(arg, typeCast))
+                    typeCast = None
                 else:
-                    statement.args.append(parseValue(arg))
+                    statement.args.append(parseValue(arg, typeCast))
+                    typeCast = None
+        statement.type = typeCast
+        typeCast = None
     return statement
 
 
 def createAST(tokens: list):
     stack = []
     for token in tokens:
-        stack.append(createStatement(token))
+        stack.append(createStatement(token, None))
     return stack
 
 
-def printStatement(statement: Statement, space: int):
-    print(" "*(space-2), statement.token+": ")
+def printStatement(statement: Statement, space: int, types):
+    print(" "*(space-2), statement.token+": ", types)
     for arg in statement.args:
         if isinstance(arg, Value):
-            print(" "*space, arg.token)
+            print(" "*space, arg.token, arg.type)
         elif isinstance(arg, Statement):
-            printStatement(arg, space+2)
+            printStatement(arg, space+2, arg.type)
         elif isinstance(arg, Register):
-            print(" "*space, arg.token)
+            print(" "*space, arg.token, arg.type)
             if isinstance(arg.index, Value):
-                print(" "*(space-1), arg.index.token)
+                print(" "*(space-1), arg.index.token, arg.type)
             if isinstance(arg.index, Statement):
-                printStatement(arg.index, space+1)
+                printStatement(arg.index, space+1, arg.type)
 
 
 def printAST(ast: list):
     for statement in ast:
-        printStatement(statement, 1)
+        printStatement(statement, 1, statement.type)

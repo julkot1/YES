@@ -8,31 +8,42 @@
 
 # YES
 YES an esoteric programming language written in [Python](https://www.python.org/).
-YES is a recursive acronym from: YES - Yes Extendable Statements. Yes is a structured, strong and static typed programming language. 
+Yes is a structured, register-based, strong and static typed programming language. 
 </br>
 Every statment has n statments or values like `ECHO "SUM 2+2 is " {ADD 2 2}` this statment prints `SUM 2+2 is 4`.
-</br>
-To interpret your code use [YESman]() interpreter.
+
+
 ## Sytax
 Basic YES schema:
 ```
 STATEMANT VALUE|{ANOTHER_STATEMENT  VALUE|YET_ANOTHER_STATEMENT ...} VALUE|{ANOTHER_STATEMENT ...} ...
 ```
-### Data types
-| Type | Values | Example|
+
+## Data types
+
+### Integer Types
+| Type | Values | Size|
 | ------------- | ------------- | ------------- |
-| String  | Text  |`"text"` or `'tes"dsd"t'`|
-| Int  | Inteagers  |`5` or `-638`|
-| Float  | Calculable numbers  |`5.25` or `.8`|
-| Boolean  | Logic  |`true` or `false`|
-| Arr  | Array  |`[1,23,4,5]` or `["foo", "bar"]`|
-| REF  | Address of the variable  |`0x123` or `0x5a`|
+| Char  | 0 to 255  |1 byte|
+| Short  | -2<sup>15</sup> to 2<sup>15</sup>-1  | 2 bytes|
+| Int  | -2<sup>31</sup> to 2<sup>31</sup>-1 | 4 bytes|
+| long  | -2<sup>63</sup> to 2<sup>63</sup>-1  | 8 bytes|
 
-### Arithmetic and logic opertors
+### Floating-Point Types
+| Type | Values | Precision | Size|
+| ------------- | ------------- | ------------- |------------- |
+| Float  | 1.2E-38 to 3.4E+38  |6 decimal places |4 byte|
+| Double  | 2.3E-308 to 1.7E+308| 15 decimal places |8 byte|
 
-To eval expression use statement `OP VALUE OPERATOR VALUE ...`
+### Other Types
+| Type | Values | Size|
+| ------------- | ------------- | ------------- |
+| Boolean  | `true` or `false`  | 1 byte|
+| Str  | `"Text"`  | - |
 
-#### Arithmetic operators
+## Arithmetic and logic opertors
+
+### Arithmetic operators
 
 | Operator | Meaning |
 | ------------- | ------------- |
@@ -42,40 +53,6 @@ To eval expression use statement `OP VALUE OPERATOR VALUE ...`
 | DIV  | `/`  |
 | MOD  | `%`  |
 
-#### Logic operators
 
-| Operator | Meaning (c++ like)|
-| ------------- | ------------- |
-| GT  | `>`  |
-| LT  | `<`  |
-| EQ  | `==`  |
-| NOT | `!`  |
-| EQ_GT  | `=>`  |
-| EQ_LT  | `=<`  |
-| AND  | `&&`  |
-| OR  | `or`|
-
-### Basic statements
-
-### ECHO
-Displays concatenated values of any type.
-```
-ECHO VALUE_1 VALUE_2 ...
-```
-Example:
-```
-ECHO "foo" 2 true
-```
-Prints `foo2true` and returns `foo2true`.
-### IN
-Get input from console and prints like `ECHO` but returns user's input `String`.
-```
-IN VALUE_1 VALUE_2 ...
-```
-Example:
-```
-IN "Type name: "
-```
-Prints `Type name` and returns user's input.
 
 

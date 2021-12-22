@@ -1,5 +1,1 @@
-PUSH 2;
-PUSH 3;
-ADD gr cr;
-MUL {ADD 1 cr} cr;
-ECHO xr;
+PUSH (Int) 2;

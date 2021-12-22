@@ -3,13 +3,53 @@ from io import TextIOWrapper
 import subprocess
 import sys
 
-from lexer import Register, Statement, Value, lexFile, REGISTERS_TOKENS, StatementTokens, createAST
+from pyparsing import QuotedString
+
+from lexer import Register, Statement, Value, lexFile, SyntaxTokens, StatementTokens, createAST, BOOLEAN_TOKENS, printAST
 
 
-class ArgTokens(Enum):
-    VALUE = 0
-    STATEMENT = 1
-    REGISTER = 2
+class Types(Enum):
+    #(token, id)
+    CHAR = ('Char', 0)
+    SHORT = ('Short', 1)
+    INT = ('Int', 2)
+    LONG = ('Long', 3)
+    FLOAT = ('Float', 4)
+    DOUBLE = ('Double', 5)
+    BOOLEAN = ('Bool', 6)
+    STR = ('Str', 7)
+
+
+def isYstr(token: str):
+    qs = QuotedString(SyntaxTokens.STRING.value).searchString(token)
+    print(qs, "-")
+    if qs == []:
+        return False
+    assert len(qs) == 1, "Invalid Str quote"
+    assert "{q}{text}{q}".format(
+        q=SyntaxTokens.STRING.value, text=qs[0][0]) == token, "Invalid Str quote"
+    return token
+
+
+def isYbool(token: str):
+    if token in BOOLEAN_TOKENS:
+        return token
+    return False
+
+
+def isYchar(token: str):
+    if token.isdigit():
+        if int(token) in range(0, 255):
+            return int(token)
+    quotedChar = isYstr(token)
+    if quotedChar:
+        if len(quotedChar) == 3:
+            return ord(quotedChar[1])
+    return False
+
+
+def getType(val: Value):
+    pass
 
 
 def getArg(arg, out: TextIOWrapper):
@@ -36,7 +76,9 @@ def putToCr(token, out: TextIOWrapper):
 def writeOperation(statement: Statement, out: TextIOWrapper):
     if statement.token == StatementTokens.PUSH.value:
         assert len(statement.args) == 1, "Invalid arguments in PUSH statement"
-        out.write(f"*(gr + ptg) = *cr;")
+        yType = statement.args[0].type
+        out.write(f"*(gr + ptg) = malloc(sizeof({yType}));")
+        out.write(f"*(({yType}*)gr + ptg) = *(({yType}*)cr);")
         out.write("ptg++;")
     elif statement.token == StatementTokens.ADD.value:
         assert len(statement.args) == 2, "Invalid arguments in ADD statement"
@@ -51,24 +93,26 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write(f"*(xr + ptx) = *cr * *(cr+1);")
         out.write("ptx++;")
     elif statement.token == StatementTokens.DIV.value:
-        assert len(statement.args) == 2, "Invalid arguments in ADD statement"
+        assert len(statement.args) == 2, "Invalid arguments in DIV statement"
         out.write(f"*(xr + ptx) = *cr / *(cr+1);")
         out.write("ptx++;")
     elif statement.token == StatementTokens.MOD.value:
-        assert len(statement.args) == 2, "Invalid arguments in ADD statement"
+        assert len(statement.args) == 2, "Invalid arguments in MOD statement"
         out.write(f"*(xr + ptx) = *cr * *(cr+1);")
         out.write("ptx++;")
     elif statement.token == StatementTokens.ECHO.value:
         # TODO: write instead of printf
         out.write(f'printf("%d\\n", *cr);')
     else:
+        pass
+        print(statement.token)
         assert False, "not existing statement"
 
 
 def writeStatement(statement: Statement, out: TextIOWrapper):
     out.write("{")
     out.write(
-        "int * cr = (int * )malloc({size} * sizeof(int));int ptc=0;".format(size=len(statement.args)))
+        "void **cr = malloc({size} * sizeof(void *));int ptc=0;".format(size=len(statement.args)))
     if len(statement.args) >= 1:
         for t in statement.args:
             putToCr(t, out)
@@ -81,15 +125,17 @@ def compile(stack):
         out.write("#include <stdio.h>\n#include <stdlib.h>\n#include<unistd.h>\n")
         out.write("#define PTG_SIZE 300000\n#define PTX_SIZE 50000\n")
         out.write("int main()\n{")
-        out.write("int *gr = (int *)malloc(PTG_SIZE * sizeof(int));")
-        out.write("int *xr = (int *)malloc(PTX_SIZE * sizeof(int));")
+        out.write("void **gr = malloc(PTG_SIZE * sizeof(void *));")
+        out.write("void **xr = malloc(PTX_SIZE * sizeof(void *));")
         out.write("int ptg = 0, ptx = 0;")
         #
         for statement in stack:
             writeStatement(statement, out)
         #
-        out.write("free(xr);")
-        out.write("free(gr);")
+        out.write(
+            "for (int i = 0; i < PTX_SIZE; i++){free(*(xr+i))}free(xr);")
+        out.write(
+            "for (int i = 0; i < PTG_SIZE; i++){free(*(gr+i))}free(gr);")
         out.write("return 0;}")
         out.close()
 
