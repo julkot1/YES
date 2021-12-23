@@ -1,3 +1,4 @@
 PUSH (Int) 2;
-ADD (Int) 1 (Int) 2;
+PUSH (Int) 1;
+ADD (Int) gr (Int) gr[1];
 ECHO (Int) xr

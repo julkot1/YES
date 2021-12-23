@@ -79,14 +79,14 @@ def getArg(arg, out: TextIOWrapper):
         return (arg.token, getCType(arg.type))
     elif isinstance(arg, Statement):
         writeStatement(arg, out)
-        return '*(xr + ptx - 1)'
+        return '*(xr[ptx - 1])'
     elif isinstance(arg, Register):
         if arg.index == None:
-            return ('*({r} + pt{pt} - 1)'.format(r=arg.token, pt=arg.token[0]), getCType(arg.type))
+            return ('*(({cType}*){r}[pt{pt} - 1])'.format(r=arg.token, pt=arg.token[0], cType=getCType(arg.type)), getCType(arg.type))
         if isinstance(arg.index, Value):
-            return ('*({r} + pt{pt} - {a})'.format(r=arg.token, pt=arg.token[0], a=int(arg.index.token)+1), getCType(arg.type))
+            return ('*(({cType}*){r}[ pt{pt} - {a}])'.format(r=arg.token, pt=arg.token[0], a=int(arg.index.token)+1, cType=getCType(arg.type)), getCType(arg.type))
         writeStatement([arg.index], out)
-        return ('*({r} + pt{pt} - *(xr+ptx-1) -1)'.format(r=arg.token, pt=arg.token[0]), getCType(arg.type))
+        return ('*(({cType}*){r}[pt{pt} - *(xr+ptx-1) -1])'.format(r=arg.token, pt=arg.token[0], cType=getCType(arg.type)), getCType(arg.type))
 
 
 def putToCr(token, out: TextIOWrapper):
@@ -94,7 +94,7 @@ def putToCr(token, out: TextIOWrapper):
     out.write(
         f"*(cr + ptc) = malloc(sizeof({yType}));")
     out.write(
-        f"*(({yType} *)cr + ptc) = {value}; ptc++;")
+        f"*(({yType} *)cr[ptc]) = {value}; ptc++;")
 
 
 def writeOperation(statement: Statement, out: TextIOWrapper):
@@ -102,7 +102,7 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         assert len(statement.args) == 1, "Invalid arguments in PUSH statement"
         yType = getCType(statement.args[0].type)
         out.write(f"gr[ptg] = malloc(sizeof({yType}));")
-        out.write(f"*(({yType}*)gr[ptg]) = *(({yType}*)cr);")
+        out.write(f"*(({yType}*)gr[ptg]) = *(({yType}*)cr[0]);")
         out.write("ptg++;")
     elif statement.token == StatementTokens.ADD.value:
         assert len(statement.args) == 2, "Invalid arguments in ADD statement"
@@ -111,7 +111,7 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         argsType = [getCType(argsRawType[0]), getCType(argsRawType[1])]
         out.write(f"xr[ptx] = malloc(sizeof({yType}));")
         out.write(
-            f"*(({yType} *)xr[ptx]) = *(({argsType[0]}*)cr) + *(({argsType[1]}*)cr + 1);")
+            f"*(({yType} *)xr[ptx]) = *(({argsType[0]}*)cr[0]) + *(({argsType[1]}*)cr[1]);")
         out.write("ptx++;")
     elif statement.token == StatementTokens.SUB.value:
         assert len(statement.args) == 2, "Invalid arguments in SUB statement"
