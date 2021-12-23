@@ -10,14 +10,22 @@ from lexer import Register, Statement, Value, lexFile, SyntaxTokens, StatementTo
 
 class Types(Enum):
     #(token, id)
-    CHAR = ('Char', 0)
-    SHORT = ('Short', 1)
-    INT = ('Int', 2)
-    LONG = ('Long', 3)
-    FLOAT = ('Float', 4)
-    DOUBLE = ('Double', 5)
-    BOOLEAN = ('Bool', 6)
-    STR = ('Str', 7)
+    CHAR = 'Char'
+    SHORT = 'Short'
+    INT = 'Int'
+    LONG = 'Long'
+    FLOAT = 'Float'
+    DOUBLE = 'Double'
+    BOOLEAN = 'Bool'
+    STR = 'Str'
+
+
+def getCType(yType: str):
+    if yType == Types.STR.value:
+        return "char *"
+    if yType == Types.CHAR.value:
+        return "unsigned char"
+    return yType.lower()
 
 
 def isYstr(token: str):
@@ -52,37 +60,58 @@ def getType(val: Value):
     pass
 
 
+def getMathStatementType(argsType: list):
+    if Types.DOUBLE.value in argsType:
+        return Types.DOUBLE.value
+    if Types.FLOAT.value in argsType:
+        return Types.FLOAT.value
+    if Types.LONG.value in argsType:
+        return Types.LONG.value
+    if Types.INT.value in argsType:
+        return Types.INT.value
+    if Types.SHORT.value in argsType:
+        return Types.SHORT.value
+    return Types.CHAR.value
+
+
 def getArg(arg, out: TextIOWrapper):
     if isinstance(arg, Value):
-        return arg.token
+        return (arg.token, getCType(arg.type))
     elif isinstance(arg, Statement):
         writeStatement(arg, out)
         return '*(xr + ptx - 1)'
     elif isinstance(arg, Register):
         if arg.index == None:
-            return '*({r} + pt{pt} - 1)'.format(r=arg.token, pt=arg.token[0])
+            return ('*({r} + pt{pt} - 1)'.format(r=arg.token, pt=arg.token[0]), getCType(arg.type))
         if isinstance(arg.index, Value):
-            return '*({r} + pt{pt} - {a})'.format(r=arg.token, pt=arg.token[0], a=int(arg.index.token)+1)
+            return ('*({r} + pt{pt} - {a})'.format(r=arg.token, pt=arg.token[0], a=int(arg.index.token)+1), getCType(arg.type))
         writeStatement([arg.index], out)
-        return '*({r} + pt{pt} - *(xr+ptx-1) -1)'.format(r=arg.token, pt=arg.token[0])
+        return ('*({r} + pt{pt} - *(xr+ptx-1) -1)'.format(r=arg.token, pt=arg.token[0]), getCType(arg.type))
 
 
 def putToCr(token, out: TextIOWrapper):
-    value = getArg(token, out)
+    value, yType = getArg(token, out)
     out.write(
-        f"*(cr + ptc) = {value}; ptc++;")
+        f"*(cr + ptc) = malloc(sizeof({yType}));")
+    out.write(
+        f"*(({yType} *)cr + ptc) = {value}; ptc++;")
 
 
 def writeOperation(statement: Statement, out: TextIOWrapper):
     if statement.token == StatementTokens.PUSH.value:
         assert len(statement.args) == 1, "Invalid arguments in PUSH statement"
-        yType = statement.args[0].type
-        out.write(f"*(gr + ptg) = malloc(sizeof({yType}));")
-        out.write(f"*(({yType}*)gr + ptg) = *(({yType}*)cr);")
+        yType = getCType(statement.args[0].type)
+        out.write(f"gr[ptg] = malloc(sizeof({yType}));")
+        out.write(f"*(({yType}*)gr[ptg]) = *(({yType}*)cr);")
         out.write("ptg++;")
     elif statement.token == StatementTokens.ADD.value:
         assert len(statement.args) == 2, "Invalid arguments in ADD statement"
-        out.write(f"*(xr + ptx) = *cr + *(cr+1);")
+        argsRawType = [statement.args[0].type, statement.args[1].type]
+        yType = getCType(getMathStatementType(argsRawType))
+        argsType = [getCType(argsRawType[0]), getCType(argsRawType[1])]
+        out.write(f"xr[ptx] = malloc(sizeof({yType}));")
+        out.write(
+            f"*(({yType} *)xr[ptx]) = *(({argsType[0]}*)cr) + *(({argsType[1]}*)cr + 1);")
         out.write("ptx++;")
     elif statement.token == StatementTokens.SUB.value:
         assert len(statement.args) == 2, "Invalid arguments in SUB statement"
@@ -102,7 +131,7 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write("ptx++;")
     elif statement.token == StatementTokens.ECHO.value:
         # TODO: write instead of printf
-        out.write(f'printf("%d\\n", *cr);')
+        out.write(f'printf("%d\\n", *((int *)(*cr)));')
     else:
         pass
         print(statement.token)
@@ -133,9 +162,9 @@ def compile(stack):
             writeStatement(statement, out)
         #
         out.write(
-            "for (int i = 0; i < PTX_SIZE; i++){free(*(xr+i))}free(xr);")
+            "for (int i = 0; i < PTX_SIZE; i++){free(*(xr+i));}free(xr);")
         out.write(
-            "for (int i = 0; i < PTG_SIZE; i++){free(*(gr+i))}free(gr);")
+            "for (int i = 0; i < PTG_SIZE; i++){free(*(gr+i));}free(gr);")
         out.write("return 0;}")
         out.close()
 
