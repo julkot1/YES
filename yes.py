@@ -7,6 +7,9 @@ from pyparsing import QuotedString
 
 from lexer import Register, Statement, Value, lexFile, SyntaxTokens, StatementTokens, createAST, BOOLEAN_TOKENS, printAST
 
+MATH_STATEMENTS = [StatementTokens.ADD.value, StatementTokens.SUB.value,
+                   StatementTokens.DIV.value, StatementTokens.MUL.value, StatementTokens.MOD.value]
+
 
 class Types(Enum):
     #(token, id)
@@ -15,9 +18,13 @@ class Types(Enum):
     INT = 'Int'
     LONG = 'Long'
     FLOAT = 'Float'
-    DOUBLE = 'Double'
     BOOLEAN = 'Bool'
     STR = 'Str'
+    TYPE = 'Type'
+
+    @classmethod
+    def isIn(self, value):
+        return value in [val for val in self._value2member_map_.keys()]
 
 
 def getCType(yType: str):
@@ -28,41 +35,100 @@ def getCType(yType: str):
     return yType.lower()
 
 
-def isYstr(token: str):
+def isYType(token: str):
+    if Types.isIn(token):
+        return token
+    return False
+
+
+def isYStr(token: str):
     qs = QuotedString(SyntaxTokens.STRING.value).searchString(token)
-    print(qs, "-")
-    if qs == []:
+    if len(qs) == 0:
         return False
-    assert len(qs) == 1, "Invalid Str quote"
-    assert "{q}{text}{q}".format(
-        q=SyntaxTokens.STRING.value, text=qs[0][0]) == token, "Invalid Str quote"
-    return token
+    else:
+        assert len(qs) == 1, "Invalid Str quote"
+        assert "{q}{text}{q}".format(
+            q=SyntaxTokens.STRING.value, text=qs[0][0]) == token, "Invalid Str quote"
+        return token
 
 
-def isYbool(token: str):
+def isYBool(token: str):
     if token in BOOLEAN_TOKENS:
         return token
     return False
 
 
-def isYchar(token: str):
-    if token.isdigit():
-        if int(token) in range(0, 255):
-            return int(token)
-    quotedChar = isYstr(token)
-    if quotedChar:
-        if len(quotedChar) == 3:
-            return ord(quotedChar[1])
-    return False
+def isYFloat(token: str):
+    try:
+        float(token)
+        return token
+    except:
+        return False
+
+
+def isYIntegers(token: str, minVal: int, maxVal: int):
+    try:
+        v = 0
+        if len(token) > 2:
+            if token[:2:] == '0b':
+                v = int(token, 2)
+            elif token[:2:] == '0x':
+                v = int(token, 16)
+            elif token[1] == '0':
+                v = int(token, 8)
+            else:
+                v = int(token)
+        else:
+            v = int(token)
+        if v >= minVal and v <= maxVal:
+            return token
+        return False
+    except:
+        return False
+
+
+def isYChar(token: str):
+    return isYIntegers(token, 0, 255)
+
+
+def isYShort(token: str):
+    return isYIntegers(token, -2**15, 2**15-1)
+
+
+def isYInt(token: str):
+    return isYIntegers(token, -2**31, 2**31-1)
+
+
+def isYLong(token: str):
+    return isYIntegers(token, -2**63, 2**63-1)
 
 
 def getType(val: Value):
-    pass
+    if isYStr(val.token):
+        return Types.STR
+    if isYType(val.token):
+        return Types.TYPE
+    if isYBool(val.token):
+        return Types.BOOLEAN
+    if isYChar(val.token):
+        return Types.CHAR
+    if isYShort(val.token):
+        return Types.SHORT
+    if isYInt(val.token):
+        return Types.INT
+    if isYLong(val.token):
+        return Types.LONG
+    if isYFloat(val.token):
+        return Types.FLOAT
+    return None
+
+
+def getStatementType(statement: Statement):
+    if statement.token in MATH_STATEMENTS:
+        return getMathStatementType([arg.type for arg in statement.args])
 
 
 def getMathStatementType(argsType: list):
-    if Types.DOUBLE.value in argsType:
-        return Types.DOUBLE.value
     if Types.FLOAT.value in argsType:
         return Types.FLOAT.value
     if Types.LONG.value in argsType:
@@ -76,10 +142,12 @@ def getMathStatementType(argsType: list):
 
 def getArg(arg, out: TextIOWrapper):
     if isinstance(arg, Value):
+        if arg.type == None:
+            arg.type = getType(arg).value
         return (arg.token, getCType(arg.type))
     elif isinstance(arg, Statement):
-        writeStatement(arg, out)
-        return '*(xr[ptx - 1])'
+        cType = getCType(writeStatement(arg, out))
+        return (f'*(({cType}*)xr[ptx - 1])', cType)
     elif isinstance(arg, Register):
         if arg.index == None:
             return ('*(({cType}*){r}[pt{pt} - 1])'.format(r=arg.token, pt=arg.token[0], cType=getCType(arg.type)), getCType(arg.type))
@@ -147,6 +215,8 @@ def writeStatement(statement: Statement, out: TextIOWrapper):
             putToCr(t, out)
     writeOperation(statement, out)
     out.write("free(cr);};")
+    statement.type = getStatementType(statement)
+    return statement.type
 
 
 def compile(stack):
@@ -177,18 +247,15 @@ def help():
 
 
 def main():
-    file = lexFile("program.yes")
-    ast = createAST(file[1])
-    compile(ast)
     argv = sys.argv
     if len(argv) >= 2:
-        print('[PYTHON] gererating C file')
+        print('[PYTHON] gererate ast')
         file = lexFile(argv[1])
         ast = createAST(file[1])
+        print('[PYTHON] gererate C file')
         compile(ast)
         if len(argv) == 3:
             if argv[2] == '-r':
-                print('[PYTHON] running CMD')
                 subprocess.run(
                     './run.sh ', shell=True)
     else:

@@ -33,13 +33,14 @@ STATEMANT VALUE|{ANOTHER_STATEMENT  VALUE|YET_ANOTHER_STATEMENT ...} VALUE|{ANOT
 | Type | Values | Precision | Size|
 | ------------- | ------------- | ------------- |------------- |
 | Float  | 1.2E-38 to 3.4E+38  |6 decimal places |4 byte|
-| Double  | 2.3E-308 to 1.7E+308| 15 decimal places |8 byte|
 
 ### Other Types
-| Type | Values | Size|
-| ------------- | ------------- | ------------- |
-| Boolean  | `true` or `false`  | 1 byte|
-| Str  | `"Text"`  | - |
+| Type | Values | Size| Description|
+| ------------- | ------------- | ------------- |-------------|
+| Boolean  | `true` or `false`  | 1 byte|logic value|
+| Type  | `Int`, `Str`, `Char` ...  | 1 byte|type of value|
+| Str  | `"Text"`  | - | text|
+
 
 ## Arithmetic and logic opertors
 
