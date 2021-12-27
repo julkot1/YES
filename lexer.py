@@ -16,6 +16,12 @@ class StatementTokens(Enum):
     MUL = "MUL"
     DIV = "DIV"
     MOD = "MOD"
+    BNOT = "bNOT"
+    BOR = "bOR"
+    BAND = "bAND"
+    XOR = "XOR"
+    LSHIFT = "LSHIFT"
+    RSHIFT = "RSHIFT"
 
 
 class SyntaxTokens(Enum):

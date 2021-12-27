@@ -9,6 +9,8 @@ from lexer import Register, Statement, Value, lexFile, SyntaxTokens, StatementTo
 
 MATH_STATEMENTS = [StatementTokens.ADD.value, StatementTokens.SUB.value,
                    StatementTokens.DIV.value, StatementTokens.MUL.value, StatementTokens.MOD.value]
+BIN_STATEMENTS = [StatementTokens.BAND.value, StatementTokens.LSHIFT.value,
+                  StatementTokens.BOR.value, StatementTokens.RSHIFT.value, StatementTokens.BNOT.value, StatementTokens.XOR.value]
 
 
 class Types(Enum):
@@ -30,7 +32,7 @@ class Types(Enum):
 def getCType(yType: str):
     if yType == Types.STR.value:
         return "char *"
-    if yType == Types.CHAR.value:
+    if yType == Types.CHAR.value or yType == Types.TYPE.value:
         return "unsigned char"
     return yType.lower()
 
@@ -47,8 +49,6 @@ def isYStr(token: str):
         return False
     else:
         assert len(qs) == 1, "Invalid Str quote"
-        assert "{q}{text}{q}".format(
-            q=SyntaxTokens.STRING.value, text=qs[0][0]) == token, "Invalid Str quote"
         return token
 
 
@@ -124,8 +124,23 @@ def getType(val: Value):
 
 
 def getStatementType(statement: Statement):
+
+    if statement.type != None:
+        return statement.type
     if statement.token in MATH_STATEMENTS:
         return getMathStatementType([arg.type for arg in statement.args])
+    if statement.token in BIN_STATEMENTS:
+        return getBinStatementType([arg.type for arg in statement.args])
+
+
+def getBinStatementType(argsType: list):
+    if Types.LONG.value in argsType:
+        return Types.LONG.value
+    if Types.INT.value in argsType:
+        return Types.INT.value
+    if Types.SHORT.value in argsType:
+        return Types.SHORT.value
+    return Types.CHAR.value
 
 
 def getMathStatementType(argsType: list):
@@ -142,8 +157,10 @@ def getMathStatementType(argsType: list):
 
 def getArg(arg, out: TextIOWrapper):
     if isinstance(arg, Value):
+        prevType = arg.type
+        arg.type = getType(arg).value
         if arg.type == None:
-            arg.type = getType(arg).value
+            arg.type = prevType
         return (arg.token, getCType(arg.type))
     elif isinstance(arg, Statement):
         cType = getCType(writeStatement(arg, out))
@@ -165,7 +182,18 @@ def putToCr(token, out: TextIOWrapper):
         f"*(({yType} *)cr[ptc]) = {value}; ptc++;")
 
 
+def writeMathOperation(statement: Statement, out: TextIOWrapper, operator: str):
+    argsRawType = [statement.args[0].type, statement.args[1].type]
+    yType = getCType(statement.type)
+    argsType = [getCType(argsRawType[0]), getCType(argsRawType[1])]
+    out.write(f"xr[ptx] = malloc(sizeof({yType}));")
+    out.write(
+        f"*(({yType} *)xr[ptx]) = *(({argsType[0]}*)cr[0]) {operator} *(({argsType[1]}*)cr[1]);")
+    out.write("ptx++;")
+
+
 def writeOperation(statement: Statement, out: TextIOWrapper):
+
     if statement.token == StatementTokens.PUSH.value:
         assert len(statement.args) == 1, "Invalid arguments in PUSH statement"
         yType = getCType(statement.args[0].type)
@@ -174,32 +202,45 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write("ptg++;")
     elif statement.token == StatementTokens.ADD.value:
         assert len(statement.args) == 2, "Invalid arguments in ADD statement"
-        argsRawType = [statement.args[0].type, statement.args[1].type]
-        yType = getCType(getMathStatementType(argsRawType))
-        argsType = [getCType(argsRawType[0]), getCType(argsRawType[1])]
-        out.write(f"xr[ptx] = malloc(sizeof({yType}));")
-        out.write(
-            f"*(({yType} *)xr[ptx]) = *(({argsType[0]}*)cr[0]) + *(({argsType[1]}*)cr[1]);")
-        out.write("ptx++;")
+        writeMathOperation(statement, out, '+')
     elif statement.token == StatementTokens.SUB.value:
         assert len(statement.args) == 2, "Invalid arguments in SUB statement"
-        out.write(f"*(xr + ptx) = *cr - *(cr+1);")
-        out.write("ptx++;")
+        writeMathOperation(statement, out, '-')
     elif statement.token == StatementTokens.MUL.value:
         assert len(statement.args) == 2, "Invalid arguments in MUL statement"
-        out.write(f"*(xr + ptx) = *cr * *(cr+1);")
-        out.write("ptx++;")
+        writeMathOperation(statement, out, '*')
     elif statement.token == StatementTokens.DIV.value:
         assert len(statement.args) == 2, "Invalid arguments in DIV statement"
-        out.write(f"*(xr + ptx) = *cr / *(cr+1);")
-        out.write("ptx++;")
+        writeMathOperation(statement, out, '/')
     elif statement.token == StatementTokens.MOD.value:
         assert len(statement.args) == 2, "Invalid arguments in MOD statement"
-        out.write(f"*(xr + ptx) = *cr * *(cr+1);")
-        out.write("ptx++;")
+        writeMathOperation(statement, out, '%')
+    elif statement.token == StatementTokens.LSHIFT.value:
+        assert len(statement.args) == 2, "Invalid arguments in LSHIFT statement"
+        writeMathOperation(statement, out, '<<')
+    elif statement.token == StatementTokens.RSHIFT.value:
+        assert len(statement.args) == 2, "Invalid arguments in RSHIFT statement"
+        writeMathOperation(statement, out, '>>')
+    elif statement.token == StatementTokens.BOR.value:
+        assert len(statement.args) == 2, "Invalid arguments in bOR statement"
+        writeMathOperation(statement, out, '|')
+    elif statement.token == StatementTokens.BAND.value:
+        assert len(statement.args) == 2, "Invalid arguments in BAND statement"
+        writeMathOperation(statement, out, '&')
+    elif statement.token == StatementTokens.BNOT.value:
+        assert len(statement.args) == 2, "Invalid arguments in BNOT statement"
+        writeMathOperation(statement, out, '~')
+    elif statement.token == StatementTokens.XOR.value:
+        assert len(statement.args) == 2, "Invalid arguments in XOR statement"
+        writeMathOperation(statement, out, '^')
     elif statement.token == StatementTokens.ECHO.value:
-        # TODO: write instead of printf
-        out.write(f'printf("%d\\n", *((int *)(*cr)));')
+        assert len(statement.args) >= 2, "Invalid arguments in ECHO statement"
+        def argType(num): return getCType(statement.args[num].type)
+        args = ', '.join(
+            "*(({t}*)cr[{el}])".format(t=argType(el), el=el)for el in range(len(statement.args)))
+        out.write(f'char buffer[strlen(*((char **)cr[0]))];')
+        out.write(f'sprintf(buffer, {args});')
+        out.write(f'printf("%s", buffer);')
     else:
         pass
         print(statement.token)
@@ -207,6 +248,7 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
 
 
 def writeStatement(statement: Statement, out: TextIOWrapper):
+    statement.type = getStatementType(statement)
     out.write("{")
     out.write(
         "void **cr = malloc({size} * sizeof(void *));int ptc=0;".format(size=len(statement.args)))
@@ -215,13 +257,14 @@ def writeStatement(statement: Statement, out: TextIOWrapper):
             putToCr(t, out)
     writeOperation(statement, out)
     out.write("free(cr);};")
-    statement.type = getStatementType(statement)
+
     return statement.type
 
 
 def compile(stack):
     with open("out.c", "w") as out:
-        out.write("#include <stdio.h>\n#include <stdlib.h>\n#include<unistd.h>\n")
+        out.write(
+            "#include <stdio.h>\n#include <stdlib.h>\n#include<unistd.h>\n#include <string.h>\n")
         out.write("#define PTG_SIZE 300000\n#define PTX_SIZE 50000\n")
         out.write("int main()\n{")
         out.write("void **gr = malloc(PTG_SIZE * sizeof(void *));")

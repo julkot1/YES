@@ -4,10 +4,12 @@
 
 int main()
 {
-
-    void **array = malloc(sizeof(void *) * 5);
-    *(array + 1) = malloc(sizeof(char));
-    *((char *)array + 1) = 's';
-    printf("%d\n", *((char *)array + 1));
+    char *arg1 = "%d %d sd";
+    int arg2 = 200;
+    int arg3 = 200;
+    //
+    char buffer[strlen(arg1)];
+    sprintf(buffer, arg1, arg2, arg3);
+    printf("%s", buffer);
     return 0;
 }

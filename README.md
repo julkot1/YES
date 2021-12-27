@@ -7,8 +7,8 @@
 
 
 # YES
-YES an esoteric programming language written in [Python](https://www.python.org/).
-Yes is a structured, register-based, strong and static typed programming language. 
+YES an esoteric "programming language" written in [Python](https://www.python.org/).
+Yes is a structured, array-based, strong typed "programming language". 
 </br>
 Every statment has n statments or values like `ECHO "SUM 2+2 is " {ADD 2 2}` this statment prints `SUM 2+2 is 4`.
 
