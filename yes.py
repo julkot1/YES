@@ -228,8 +228,13 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         assert len(statement.args) == 2, "Invalid arguments in BAND statement"
         writeMathOperation(statement, out, '&')
     elif statement.token == StatementTokens.BNOT.value:
-        assert len(statement.args) == 2, "Invalid arguments in BNOT statement"
-        writeMathOperation(statement, out, '~')
+        assert len(statement.args) == 1, "Invalid arguments in BNOT statement"
+        yType = getCType(statement.type)
+        argType = getCType(statement.args[0].type)
+        out.write(f"xr[ptx] = malloc(sizeof({yType}));")
+        out.write(
+            f"*(({yType} *)xr[ptx]) = ~*(({argType}*)cr[0]);")
+        out.write("ptx++;")
     elif statement.token == StatementTokens.XOR.value:
         assert len(statement.args) == 2, "Invalid arguments in XOR statement"
         writeMathOperation(statement, out, '^')

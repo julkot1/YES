@@ -1,2 +1,3 @@
 bAND 0b11001000 0b10111000 (Int);
-ECHO "%d\n" (Int) xr;
+bNOT 0b0 (Char);
+ECHO "%d\n" (Char) xr;

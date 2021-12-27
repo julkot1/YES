@@ -46,7 +46,7 @@ STATEMANT VALUE|{ANOTHER_STATEMENT  VALUE|YET_ANOTHER_STATEMENT ...} VALUE|{ANOT
 
 ### Arithmetic operators
 
-| Operator | Meaning |
+| Operator | Operator in C |
 | ------------- | ------------- |
 | ADD  | `+`  |
 | SUB | `-`  |
@@ -55,5 +55,13 @@ STATEMANT VALUE|{ANOTHER_STATEMENT  VALUE|YET_ANOTHER_STATEMENT ...} VALUE|{ANOT
 | MOD  | `%`  |
 
 
+### Bitwise operators
 
-
+| Operator | Operator in C |
+| ------------- | ------------- |
+| bAND  | `&`  |
+| bOR| `\|`  |
+| bNOT  | `~`  |
+| XOR | `^`  |
+| LSHIFT  | `<<`  |
+| RSHIFT  | `>>`  |
