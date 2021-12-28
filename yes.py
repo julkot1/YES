@@ -11,6 +11,7 @@ MATH_STATEMENTS = [StatementTokens.ADD.value, StatementTokens.SUB.value,
                    StatementTokens.DIV.value, StatementTokens.MUL.value, StatementTokens.MOD.value]
 BIN_STATEMENTS = [StatementTokens.BAND.value, StatementTokens.LSHIFT.value,
                   StatementTokens.BOR.value, StatementTokens.RSHIFT.value, StatementTokens.BNOT.value, StatementTokens.XOR.value]
+CONDITION_STATEMENTS = [StatementTokens.IF.value]
 
 
 class FormatSpecifiers(Enum):
@@ -46,6 +47,7 @@ def toCFormatSpecifier(text: str):
     text = text.replace(FormatSpecifiers.STR.value, "%s")
     text = text.replace(FormatSpecifiers.LONG.value, "%ld")
     text = text.replace(FormatSpecifiers.TYPE.value, "%hhu")
+    text = text.replace(FormatSpecifiers.BOOLEAN.value, "%hhu")
     return text
 
 
@@ -54,7 +56,7 @@ def getCType(yType: str):
         return "NULL"
     if yType == Types.STR.value:
         return "char *"
-    if yType == Types.CHAR.value or yType == Types.TYPE.value:
+    if yType == Types.CHAR.value or yType == Types.TYPE.value or Types.BOOLEAN.value:
         return "unsigned char"
     return yType.lower()
 
@@ -76,7 +78,9 @@ def isYStr(token: str):
 
 def isYBool(token: str):
     if token in BOOLEAN_TOKENS:
-        return token
+        if token == BOOLEAN_TOKENS[0]:
+            return 1
+        return 0
     return False
 
 
@@ -132,6 +136,7 @@ def getType(val: Value):
     if isYType(val.token):
         return Types.TYPE
     if isYBool(val.token):
+        val.token = isYBool(val.token)
         return Types.BOOLEAN
     if isYChar(val.token):
         return Types.CHAR
@@ -186,9 +191,9 @@ def getArg(arg, out: TextIOWrapper):
             arg.type = prevType
         return (arg.token, getCType(arg.type))
     elif isinstance(arg, Statement):
-        out.write("do{")
+        out.write("do")
         cType = getCType(writeStatement(arg, out, nested=True))
-        out.write("}while(0);")
+        out.write("while(0);")
         if cType != "NULL":
             return (f'*(({cType}*)xr[ptx - 1])', cType)
         return ("", None)
@@ -216,6 +221,7 @@ def putToCr(token, out: TextIOWrapper):
             f"*(cr + ptc) = malloc(sizeof({yType}));")
         out.write(
             f"*(({yType} *)cr[ptc]) = {value}; ptc++;")
+    return (value, yType)
 
 
 def writeMathOperation(statement: Statement, out: TextIOWrapper, operator: str):
@@ -228,9 +234,18 @@ def writeMathOperation(statement: Statement, out: TextIOWrapper, operator: str):
     out.write("ptx++;")
 
 
+def writeLogicOperation(statement: Statement, out: TextIOWrapper, operator: str):
+    argsRawType = [statement.args[0].type, statement.args[1].type]
+    argsType = [getCType(argsRawType[0]), getCType(argsRawType[1])]
+    out.write(f"xr[ptx] = malloc(sizeof(unsigned char));")
+    out.write(
+        f"*((unsigned char *)xr[ptx]) = *(({argsType[0]}*)cr[0]) {operator} *(({argsType[1]}*)cr[1]);")
+    out.write("ptx++;")
+
+
 def writeOperation(statement: Statement, out: TextIOWrapper):
     for arg in statement.args:
-        if not isinstance(arg, list):
+        if not isinstance(arg, list) and not statement.token in CONDITION_STATEMENTS:
             assert arg.type != None, "Unknown type"
     if statement.token == StatementTokens.PUSH.value:
         assert len(statement.args) == 1, "Invalid arguments in PUSH statement"
@@ -276,6 +291,37 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
     elif statement.token == StatementTokens.XOR.value:
         assert len(statement.args) == 2, "Invalid arguments in XOR statement"
         writeMathOperation(statement, out, '^')
+    elif statement.token == StatementTokens.OR.value:
+        assert len(statement.args) == 2, "Invalid arguments in OR statement"
+        writeLogicOperation(statement, out, '||')
+    elif statement.token == StatementTokens.AND.value:
+        assert len(statement.args) == 2, "Invalid arguments in AND statement"
+        writeLogicOperation(statement, out, '&&')
+    elif statement.token == StatementTokens.EQ.value:
+        assert len(statement.args) == 2, "Invalid arguments in EQ statement"
+        writeLogicOperation(statement, out, '==')
+    elif statement.token == StatementTokens.LT.value:
+        assert len(statement.args) == 2, "Invalid arguments in LT statement"
+        writeLogicOperation(statement, out, '<')
+    elif statement.token == StatementTokens.GT.value:
+        assert len(statement.args) == 2, "Invalid arguments in GT statement"
+        writeLogicOperation(statement, out, '>')
+    elif statement.token == StatementTokens.ELT.value:
+        assert len(statement.args) == 2, "Invalid arguments in eLT statement"
+        writeLogicOperation(statement, out, '<=')
+    elif statement.token == StatementTokens.EGT.value:
+        assert len(statement.args) == 2, "Invalid arguments in eGT statement"
+        writeLogicOperation(statement, out, '>=')
+    elif statement.token == StatementTokens.NEQ.value:
+        assert len(statement.args) == 2, "Invalid arguments in nEQ statement"
+        writeLogicOperation(statement, out, '!=')
+    elif statement.token == StatementTokens.NOT.value:
+        assert len(statement.args) == 1, "Invalid arguments in NOT statement"
+        argType = getCType(statement.args[0].type)
+        out.write(f"xr[ptx] = malloc(sizeof(unsigned char));")
+        out.write(
+            f"*((unsigned char *)xr[ptx]) = !*(({argType}*)cr[0]);")
+        out.write("ptx++;")
     elif statement.token == StatementTokens.ECHO.value:
         assert len(statement.args) >= 2, "Invalid arguments in ECHO statement"
         def argType(num): return getCType(statement.args[num].type)
@@ -294,7 +340,23 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
             out.write(
                 f"*(({yType} *)xr[ptx]) = *(({yType}*)cr[{index}]);ptx++;")
         out.write("break;")
+    elif statement.token == StatementTokens.IF.value:
+        argsLen = len(statement.args)
+        assert argsLen == 2 or argsLen == 3, "Invalid arguments in RT statement"
+        putToCr(statement.args[0], out)
+        out.write('if(*((unsigned char*)cr[0]))')
+        out.write('{')
 
+        _, yType = putToCr(statement.args[1], out)
+        out.write(f"xr[ptx] = malloc(sizeof({yType}));")
+        out.write(f"*(({yType}*)xr[ptx]) = *(({yType}*)cr[1]);ptx++;")
+        out.write('}')
+        if argsLen == 3:
+            out.write('else{')
+            _, yType = putToCr(statement.args[2], out)
+            out.write(f"xr[ptx] = malloc(sizeof({yType}));")
+            out.write(f"*(({yType}*)xr[ptx]) = *(({yType}*)cr[1]);ptx++;")
+            out.write('}')
     else:
         pass
         assert False, "not existing statement"
@@ -307,11 +369,11 @@ def writeStatement(statement: Statement, out: TextIOWrapper, nested):
     out.write("{")
     out.write(
         "void **cr = malloc({size} * sizeof(void *));int ptc=0;".format(size=len(statement.args)))
-    if len(statement.args) >= 1:
+    if len(statement.args) >= 1 and not statement.token in CONDITION_STATEMENTS:
         for t in statement.args:
             putToCr(t, out)
     writeOperation(statement, out)
-    out.write("free(cr);};")
+    out.write("free(cr);}")
 
     return statement.type
 

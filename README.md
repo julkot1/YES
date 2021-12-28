@@ -42,7 +42,7 @@ STATEMANT VALUE|{ANOTHER_STATEMENT  VALUE|YET_ANOTHER_STATEMENT ...} VALUE|{ANOT
 | Str  | `"Text"`  | - | text| `%S`|
 
 
-## Arithmetic and logic opertors
+## Arithmetic and logic operators
 
 ### Arithmetic operators
 
@@ -66,6 +66,22 @@ STATEMANT VALUE|{ANOTHER_STATEMENT  VALUE|YET_ANOTHER_STATEMENT ...} VALUE|{ANOT
 | LSHIFT  | `<<`  |
 | RSHIFT  | `>>`  |
 
+### Logic operators
+
+| Operator | Operator in C |
+| ------------- | ------------- |
+| AND  | `&&`  |
+| OR| `\|\|`  |
+| NOT  | `!`  |
+| EQ| `==`  |
+| nEQ| `!=`  |
+| LT| `<`  |
+| GT| `>`  |
+| eLT| `<=`  |
+| eGT| `>=`  |
+
+
+
 ## Default Statements
 
 ### ECHO
@@ -78,14 +94,25 @@ out:
 6585
 ```
 ### DO
-Pass n arguments of any type
+Passes n arguments of any type
 ```
 DO gr 6 {ADD 1 2}; 
 ```
 ### RT
-Is return statement, pass n arguments and puts them into xr. It could be used only in nested statements.
+Is returns statement, pass n arguments and puts them into xr. It could be used only in nested statements.
 ```
 DO {
   RT 5;
 }; 
+```
+### IF 
+passes 2 or 3 arguments. First one is logic condition. Statement will return and execute second arg if condition is true or third (witch is optional) if it false.
+```
+ECHO "%i" {
+  IF {EQ 2 2 (Bool)} 2 3 (Int)
+};
+```
+out
+```
+2
 ```

@@ -22,8 +22,18 @@ class StatementTokens(Enum):
     XOR = "XOR"
     LSHIFT = "LSHIFT"
     RSHIFT = "RSHIFT"
+    EQ = "EQ"
+    LT = "LT"
+    GT = "GT"
+    ELT = "eLT"
+    EGT = "eGT"
+    NOT = "NOT"
+    NEQ = "nEQ"
+    OR = "OR"
+    AND = "AND"
     DO = "DO"
     RT = "RT"
+    IF = "IF"
 
 
 class SyntaxTokens(Enum):
@@ -103,7 +113,8 @@ def getTokens(array: list):
                     if e[0] in [item.value for item in StatementTokens] or len(tokens) == 0:
                         tokens.append(e)
                     else:
-                        tokens[len(tokens)-1].append(e[0])
+                        for arg in e:
+                            tokens[len(tokens)-1].append(arg)
         else:
             token = getTokens(element)
             if token != []:

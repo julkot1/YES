@@ -1,1 +1,2 @@
-ECHO "%S" "df";
+IF {EQ 1 1 (Bool)} {ADD 1 2 (Int)} 23;
+ECHO "%i\n" (Int) xr;
