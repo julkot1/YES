@@ -22,6 +22,8 @@ class StatementTokens(Enum):
     XOR = "XOR"
     LSHIFT = "LSHIFT"
     RSHIFT = "RSHIFT"
+    DO = "DO"
+    RT = "RT"
 
 
 class SyntaxTokens(Enum):
@@ -35,6 +37,7 @@ class SyntaxTokens(Enum):
     REGISTER_END = "]"
     CAST_OPEN = "("
     CAST_END = ")"
+    NULL = "null"
 
 
 def stripChar(string: str, char):
@@ -195,7 +198,13 @@ def createStatement(token: list, typeCast):
                     statement.args.append(parseRegister(arg, typeCast))
                     typeCast = None
                 else:
-                    statement.args.append(createStatement(arg[0], typeCast))
+                    if len(arg) == 1:
+                        statement.args.append(
+                            createStatement(arg[0], typeCast))
+                    else:
+                        statements = list(createStatement(a, None)
+                                          for a in arg)
+                        statement.args.append(statements)
                     typeCast = None
             else:
                 if arg.startswith(SyntaxTokens.CAST_OPEN.value) and arg.endswith(SyntaxTokens.CAST_END.value):

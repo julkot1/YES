@@ -13,6 +13,17 @@ BIN_STATEMENTS = [StatementTokens.BAND.value, StatementTokens.LSHIFT.value,
                   StatementTokens.BOR.value, StatementTokens.RSHIFT.value, StatementTokens.BNOT.value, StatementTokens.XOR.value]
 
 
+class FormatSpecifiers(Enum):
+    CHAR = '%c'
+    SHORT = '%s'
+    INT = '%i'
+    LONG = '%l'
+    FLOAT = '%f'
+    BOOLEAN = '%b'
+    STR = '%S'
+    TYPE = '%t'
+
+
 class Types(Enum):
     #(token, id)
     CHAR = 'Char'
@@ -29,7 +40,18 @@ class Types(Enum):
         return value in [val for val in self._value2member_map_.keys()]
 
 
+def toCFormatSpecifier(text: str):
+    text = text.replace(FormatSpecifiers.CHAR.value, "%hhu")
+    text = text.replace(FormatSpecifiers.SHORT.value, "%hi")
+    text = text.replace(FormatSpecifiers.STR.value, "%s")
+    text = text.replace(FormatSpecifiers.LONG.value, "%ld")
+    text = text.replace(FormatSpecifiers.TYPE.value, "%hhu")
+    return text
+
+
 def getCType(yType: str):
+    if yType == None:
+        return "NULL"
     if yType == Types.STR.value:
         return "char *"
     if yType == Types.CHAR.value or yType == Types.TYPE.value:
@@ -49,7 +71,7 @@ def isYStr(token: str):
         return False
     else:
         assert len(qs) == 1, "Invalid Str quote"
-        return token
+        return toCFormatSpecifier(token)
 
 
 def isYBool(token: str):
@@ -105,6 +127,7 @@ def isYLong(token: str):
 
 def getType(val: Value):
     if isYStr(val.token):
+        val.token = toCFormatSpecifier(val.token)
         return Types.STR
     if isYType(val.token):
         return Types.TYPE
@@ -163,23 +186,36 @@ def getArg(arg, out: TextIOWrapper):
             arg.type = prevType
         return (arg.token, getCType(arg.type))
     elif isinstance(arg, Statement):
-        cType = getCType(writeStatement(arg, out))
-        return (f'*(({cType}*)xr[ptx - 1])', cType)
+        out.write("do{")
+        cType = getCType(writeStatement(arg, out, nested=True))
+        out.write("}while(0);")
+        if cType != "NULL":
+            return (f'*(({cType}*)xr[ptx - 1])', cType)
+        return ("", None)
     elif isinstance(arg, Register):
         if arg.index == None:
             return ('*(({cType}*){r}[pt{pt} - 1])'.format(r=arg.token, pt=arg.token[0], cType=getCType(arg.type)), getCType(arg.type))
         if isinstance(arg.index, Value):
             return ('*(({cType}*){r}[ pt{pt} - {a}])'.format(r=arg.token, pt=arg.token[0], a=int(arg.index.token)+1, cType=getCType(arg.type)), getCType(arg.type))
-        writeStatement([arg.index], out)
+        writeStatement([arg.index], out, nested=True)
         return ('*(({cType}*){r}[pt{pt} - *(xr+ptx-1) -1])'.format(r=arg.token, pt=arg.token[0], cType=getCType(arg.type)), getCType(arg.type))
+    elif isinstance(arg, list):
+        out.write("do{")
+        for a in arg:
+            writeStatement(a, out, nested=True)
+        out.write("}while(0);")
+        return ("", None)
 
 
 def putToCr(token, out: TextIOWrapper):
     value, yType = getArg(token, out)
-    out.write(
-        f"*(cr + ptc) = malloc(sizeof({yType}));")
-    out.write(
-        f"*(({yType} *)cr[ptc]) = {value}; ptc++;")
+
+    if value != "":
+        assert yType != None, "Unknown type"
+        out.write(
+            f"*(cr + ptc) = malloc(sizeof({yType}));")
+        out.write(
+            f"*(({yType} *)cr[ptc]) = {value}; ptc++;")
 
 
 def writeMathOperation(statement: Statement, out: TextIOWrapper, operator: str):
@@ -193,7 +229,9 @@ def writeMathOperation(statement: Statement, out: TextIOWrapper, operator: str):
 
 
 def writeOperation(statement: Statement, out: TextIOWrapper):
-
+    for arg in statement.args:
+        if not isinstance(arg, list):
+            assert arg.type != None, "Unknown type"
     if statement.token == StatementTokens.PUSH.value:
         assert len(statement.args) == 1, "Invalid arguments in PUSH statement"
         yType = getCType(statement.args[0].type)
@@ -225,10 +263,10 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         assert len(statement.args) == 2, "Invalid arguments in bOR statement"
         writeMathOperation(statement, out, '|')
     elif statement.token == StatementTokens.BAND.value:
-        assert len(statement.args) == 2, "Invalid arguments in BAND statement"
+        assert len(statement.args) == 2, "Invalid arguments in bAND statement"
         writeMathOperation(statement, out, '&')
     elif statement.token == StatementTokens.BNOT.value:
-        assert len(statement.args) == 1, "Invalid arguments in BNOT statement"
+        assert len(statement.args) == 1, "Invalid arguments in bNOT statement"
         yType = getCType(statement.type)
         argType = getCType(statement.args[0].type)
         out.write(f"xr[ptx] = malloc(sizeof({yType}));")
@@ -246,14 +284,26 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write(f'char buffer[strlen(*((char **)cr[0]))];')
         out.write(f'sprintf(buffer, {args});')
         out.write(f'printf("%s", buffer);')
+    elif statement.token == StatementTokens.DO.value:
+        assert len(statement.args) >= 1, "Invalid arguments in DO statement"
+    elif statement.token == StatementTokens.RT.value:
+        assert len(statement.args) >= 1, "Invalid arguments in RT statement"
+        for index, arg in enumerate(statement.args):
+            yType = getCType(arg.type)
+            out.write(f"xr[ptx] = malloc(sizeof({yType}));")
+            out.write(
+                f"*(({yType} *)xr[ptx]) = *(({yType}*)cr[{index}]);ptx++;")
+        out.write("break;")
+
     else:
         pass
-        print(statement.token)
         assert False, "not existing statement"
 
 
-def writeStatement(statement: Statement, out: TextIOWrapper):
+def writeStatement(statement: Statement, out: TextIOWrapper, nested):
     statement.type = getStatementType(statement)
+    if statement.token == StatementTokens.RT.value:
+        assert nested, "RT is only allowed in nested statements"
     out.write("{")
     out.write(
         "void **cr = malloc({size} * sizeof(void *));int ptc=0;".format(size=len(statement.args)))
@@ -277,7 +327,7 @@ def compile(stack):
         out.write("int ptg = 0, ptx = 0;")
         #
         for statement in stack:
-            writeStatement(statement, out)
+            writeStatement(statement, out, False)
         #
         out.write(
             "for (int i = 0; i < PTX_SIZE; i++){free(*(xr+i));}free(xr);")

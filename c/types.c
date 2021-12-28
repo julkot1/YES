@@ -11,5 +11,10 @@ int main()
     char buffer[strlen(arg1)];
     sprintf(buffer, arg1, arg2, arg3);
     printf("%s", buffer);
+    do
+    {
+        printf("sd\n");
+    } while (0);
+    printf("sdq");
     return 0;
 }

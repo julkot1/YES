@@ -1,3 +1,1 @@
-bAND 0b11001000 0b10111000 (Int);
-bNOT 0b0 (Char);
-ECHO "%d\n" (Char) xr;
+ECHO "%S" "df";
