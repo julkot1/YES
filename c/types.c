@@ -16,5 +16,7 @@ int main()
         printf("sd\n");
     } while (0);
     printf("sdq");
+    char *c = "pwd";
+    system("pwd");
     return 0;
 }

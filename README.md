@@ -93,6 +93,20 @@ out:
 ```
 6585
 ```
+### IN
+requires no arguments but type of statement is mandatory. . Takes input from the console and puts it to `xr`.
+```
+IN (Char);
+ECHO "%c" (Char) xr;
+```
+for in:
+```
+2
+```
+out:
+```
+2
+```
 ### DO
 Passes n arguments of any type
 ```
@@ -112,7 +126,18 @@ ECHO "%i" {
   IF {EQ 2 2 (Bool)} 2 3 (Int)
 };
 ```
-out
+out:
 ```
 2
+```
+### CALL
+is like system in c. Takes 1 or many arguments (like ECHO) and execute it as shell command.
+
+```
+CALL "mkdir %S" "dir";
+CALL "ls";
+```
+out:
+```
+dir
 ```

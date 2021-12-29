@@ -41,6 +41,25 @@ class Types(Enum):
         return value in [val for val in self._value2member_map_.keys()]
 
 
+def typeToFormatSpecifier(yType: str):
+    if yType == Types.BOOLEAN.value:
+        return FormatSpecifiers.BOOLEAN.value
+    if yType == Types.TYPE.value:
+        return FormatSpecifiers.TYPE.value
+    if yType == Types.FLOAT.value:
+        return FormatSpecifiers.FLOAT.value
+    if yType == Types.CHAR.value:
+        return FormatSpecifiers.CHAR.value
+    if yType == Types.LONG.value:
+        return FormatSpecifiers.LONG.value
+    if yType == Types.INT.value:
+        return FormatSpecifiers.INT.value
+    if yType == Types.SHORT.value:
+        return FormatSpecifiers.SHORT.value
+    if yType == Types.STR.value:
+        return FormatSpecifiers.STR.value
+
+
 def toCFormatSpecifier(text: str):
     text = text.replace(FormatSpecifiers.CHAR.value, "%hhu")
     text = text.replace(FormatSpecifiers.SHORT.value, "%hi")
@@ -56,7 +75,7 @@ def getCType(yType: str):
         return "NULL"
     if yType == Types.STR.value:
         return "char *"
-    if yType == Types.CHAR.value or yType == Types.TYPE.value or Types.BOOLEAN.value:
+    if yType == Types.CHAR.value or yType == Types.TYPE.value or yType == Types.BOOLEAN.value:
         return "unsigned char"
     return yType.lower()
 
@@ -323,13 +342,41 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
             f"*((unsigned char *)xr[ptx]) = !*(({argType}*)cr[0]);")
         out.write("ptx++;")
     elif statement.token == StatementTokens.ECHO.value:
-        assert len(statement.args) >= 2, "Invalid arguments in ECHO statement"
+        assert len(statement.args) >= 1, "Invalid arguments in ECHO statement"
         def argType(num): return getCType(statement.args[num].type)
-        args = ', '.join(
-            "*(({t}*)cr[{el}])".format(t=argType(el), el=el)for el in range(len(statement.args)))
-        out.write(f'char buffer[strlen(*((char **)cr[0]))];')
-        out.write(f'sprintf(buffer, {args});')
-        out.write(f'printf("%s", buffer);')
+
+        if len(statement.args) > 1:
+            args = ', '.join(
+                "*(({t}*)cr[{el}])".format(t=argType(el), el=el)for el in range(len(statement.args)))
+            out.write(f'char buffer[strlen(*((char **)cr[0]))];')
+            out.write(f'sprintf(buffer, {args});')
+            out.write(f'printf("%s", buffer);')
+        else:
+            out.write(f'printf("%s",*((char **)cr[0]));')
+    elif statement.token == StatementTokens.IN.value:
+        assert len(statement.args) == 0, "Invalid arguments in IN statement"
+        yType = statement.type
+        cType = getCType(yType)
+        specifier = toCFormatSpecifier(typeToFormatSpecifier(yType))
+        out.write(f'{cType} buffer;')
+        if yType == Types.STR.value:
+            out.write(f'scanf("%ms", &buffer);')
+        else:
+            out.write(f'scanf("{specifier}", &buffer);')
+        out.write(f"xr[ptx] = malloc(sizeof({cType}));")
+        out.write(f'*(({cType} *)xr[ptx]) = buffer;ptx++;')
+    elif statement.token == StatementTokens.CALL.value:
+        assert len(statement.args) >= 1, "Invalid arguments in CALL statement"
+        def argType(num): return getCType(statement.args[num].type)
+
+        if len(statement.args) > 1:
+            args = ', '.join(
+                "*(({t}*)cr[{el}])".format(t=argType(el), el=el)for el in range(len(statement.args)))
+            out.write(f'char buffer[strlen(*((char **)cr[0]))];')
+            out.write(f'sprintf(buffer, {args});')
+            out.write(f'system(buffer);')
+        else:
+            out.write(f'system(*((char **)cr[0]));')
     elif statement.token == StatementTokens.DO.value:
         assert len(statement.args) >= 1, "Invalid arguments in DO statement"
     elif statement.token == StatementTokens.RT.value:

@@ -34,6 +34,8 @@ class StatementTokens(Enum):
     DO = "DO"
     RT = "RT"
     IF = "IF"
+    CALL = "CALL"
+    IN = "IN"
 
 
 class SyntaxTokens(Enum):

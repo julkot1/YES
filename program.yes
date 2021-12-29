@@ -1,2 +1,3 @@
-IF {EQ 1 1 (Bool)} {ADD 1 2 (Int)} 23;
-ECHO "%i\n" (Int) xr;
+ECHO "Type dir name:\x1b[31m ";
+CALL "mkdir %S" {IN (Str)};
+ECHO "\x1b[0mDirectory %S has been created!\n" (Str) xr;
