@@ -1,11 +1,15 @@
 from pyparsing import nestedExpr, Combine, Regex
 from enum import Enum
 
-REGISTERS_TOKENS = ['gr', 'xr', 'cr']
+REGISTERS_TOKENS = ['gr', 'xr', 'cr', 'pr']
 BOOLEAN_TOKENS = ['true', 'false']
 INNER_REGISTER = r'(?<=\[).+?(?=\])'
 REGISTERS_REGEX = Combine(
     Regex(r'[a-z][a-z]')+'['+Regex(INNER_REGISTER)+']')
+
+
+class PrefixTokens(Enum):
+    CALL_PR = "$"
 
 
 class StatementTokens(Enum):
@@ -50,6 +54,18 @@ class SyntaxTokens(Enum):
     CAST_OPEN = "("
     CAST_END = ")"
     NULL = "null"
+
+
+def getPrefix(token: str):
+    prefix = []
+    shift = 0
+    for char in token:
+        if char in [item.value for item in PrefixTokens]:
+            prefix.append(char)
+            shift += 1
+        else:
+            break
+    return (prefix, token[shift::])
 
 
 def stripChar(string: str, char):
@@ -155,11 +171,17 @@ def lexFile(path):
     return (imports, tokens)
 
 
-class Statement:
+class Argument:
+    def __init__(self):
+        self.token = ''
+        self.prefix = []
+        self.type = None
+
+
+class Statement(Argument):
     def __init__(self, token):
         self.token = token
         self.args = []
-        self.type = None
 
     def __str__(self):
         args = ' '
@@ -168,27 +190,32 @@ class Statement:
         return self.token + ': '+args
 
 
-class Register():
+class Register(Argument):
     def __init__(self, token, ytype):
         self.token = token
         self.index = None
         self.type = ytype
 
 
-class Value():
+class Value(Argument):
     def __init__(self, token):
         self.token = token
-        self.type = None
 
 
 def parseRegister(reg, ytype):
     if isinstance(reg, str):
-        register = Register(reg, ytype)
+        p, t = getPrefix(reg)
+        register = Register(t, ytype)
+        register.prefix = p
         return register
     if len(reg) == 1:
-        register = Register(reg[0], ytype)
+        p, t = getPrefix(reg[0])
+        register = Register(t, ytype)
+        register.prefix = p
         return register
-    register = Register(reg[0], ytype)
+    p, t = getPrefix(reg[0])
+    register = Register(t, ytype)
+    register.prefix = p
     if reg[1][0] in [item.value for item in StatementTokens]:
         register.index = createStatement(reg[1], None)
     else:
@@ -203,7 +230,9 @@ def parseValue(val: str, ytype):
 
 
 def createStatement(token: list, typeCast):
-    statement = Statement(token[0])
+    p, t = getPrefix(token[0])
+    statement = Statement(t)
+    statement.prefix = p
     if len(token) > 1:
         for arg in token[1::]:
             if isinstance(arg, list):
@@ -220,9 +249,10 @@ def createStatement(token: list, typeCast):
                         statement.args.append(statements)
                     typeCast = None
             else:
+                p, t = getPrefix(arg)
                 if arg.startswith(SyntaxTokens.CAST_OPEN.value) and arg.endswith(SyntaxTokens.CAST_END.value):
                     typeCast = arg[1:len(arg)-1:]
-                elif arg in REGISTERS_TOKENS:
+                elif t in REGISTERS_TOKENS:
                     statement.args.append(parseRegister(arg, typeCast))
                     typeCast = None
                 else:

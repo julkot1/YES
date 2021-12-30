@@ -1,3 +1,4 @@
-ECHO "Type dir name:\x1b[31m ";
-CALL "mkdir %S" {IN (Str)};
-ECHO "\x1b[0mDirectory %S has been created!\n" (Str) xr;
+$DO 695 {
+    ECHO "%i" (Int) pr[MUL 1 0];
+    RT 1 (Int);
+};

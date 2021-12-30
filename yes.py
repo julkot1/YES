@@ -5,7 +5,7 @@ import sys
 
 from pyparsing import QuotedString
 
-from lexer import Register, Statement, Value, lexFile, SyntaxTokens, StatementTokens, createAST, BOOLEAN_TOKENS, printAST
+from lexer import PrefixTokens, Register, Statement, Value, lexFile, SyntaxTokens, StatementTokens, createAST, BOOLEAN_TOKENS, printAST
 
 MATH_STATEMENTS = [StatementTokens.ADD.value, StatementTokens.SUB.value,
                    StatementTokens.DIV.value, StatementTokens.MUL.value, StatementTokens.MOD.value]
@@ -171,7 +171,6 @@ def getType(val: Value):
 
 
 def getStatementType(statement: Statement):
-
     if statement.type != None:
         return statement.type
     if statement.token in MATH_STATEMENTS:
@@ -202,6 +201,12 @@ def getMathStatementType(argsType: list):
     return Types.CHAR.value
 
 
+def parsePointer(yType, token, sub):
+    if token == 'pr':
+        return '*(({cType}*){r}[ *pt{pt} - {a}])'.format(r=token, pt=token[0], cType=getCType(yType), a=sub)
+    return '*(({cType}*){r}[ pt{pt} - {a}])'.format(r=token, pt=token[0], cType=getCType(yType), a=sub)
+
+
 def getArg(arg, out: TextIOWrapper):
     if isinstance(arg, Value):
         prevType = arg.type
@@ -218,11 +223,11 @@ def getArg(arg, out: TextIOWrapper):
         return ("", None)
     elif isinstance(arg, Register):
         if arg.index == None:
-            return ('*(({cType}*){r}[pt{pt} - 1])'.format(r=arg.token, pt=arg.token[0], cType=getCType(arg.type)), getCType(arg.type))
+            return (parsePointer(arg.type, arg.token, 1), getCType(arg.type))
         if isinstance(arg.index, Value):
-            return ('*(({cType}*){r}[ pt{pt} - {a}])'.format(r=arg.token, pt=arg.token[0], a=int(arg.index.token)+1, cType=getCType(arg.type)), getCType(arg.type))
-        writeStatement([arg.index], out, nested=True)
-        return ('*(({cType}*){r}[pt{pt} - *(xr+ptx-1) -1])'.format(r=arg.token, pt=arg.token[0], cType=getCType(arg.type)), getCType(arg.type))
+            return (parsePointer(arg.type, arg.token, int(arg.index.token)+1), getCType(arg.type))
+        writeStatement(arg.index, out, nested=True)
+        return (parsePointer(arg.type, arg.token, "*((int *)xr[ptx-1]) -1"), getCType(arg.type))
     elif isinstance(arg, list):
         out.write("do{")
         for a in arg:
@@ -409,13 +414,23 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         assert False, "not existing statement"
 
 
+def applyPrefix(statement: Statement, out: TextIOWrapper):
+    if PrefixTokens.CALL_PR.value in statement.prefix:
+        assert statement.prefix.count(
+            PrefixTokens.CALL_PR.value) == 1, "Too many prefix token"
+        out.write("void **pr = cr;int *ptp = &ptc;")
+
+
 def writeStatement(statement: Statement, out: TextIOWrapper, nested):
     statement.type = getStatementType(statement)
+
     if statement.token == StatementTokens.RT.value:
         assert nested, "RT is only allowed in nested statements"
+
     out.write("{")
     out.write(
         "void **cr = malloc({size} * sizeof(void *));int ptc=0;".format(size=len(statement.args)))
+    applyPrefix(statement, out)
     if len(statement.args) >= 1 and not statement.token in CONDITION_STATEMENTS:
         for t in statement.args:
             putToCr(t, out)

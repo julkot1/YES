@@ -4,19 +4,14 @@
 
 int main()
 {
-    char *arg1 = "%d %d sd";
-    int arg2 = 200;
-    int arg3 = 200;
-    //
-    char buffer[strlen(arg1)];
-    sprintf(buffer, arg1, arg2, arg3);
-    printf("%s", buffer);
-    do
-    {
-        printf("sd\n");
-    } while (0);
-    printf("sdq");
-    char *c = "pwd";
-    system("pwd");
+    void **cr = malloc(5 * sizeof(void *));
+    int ptc = 0;
+    void **pr = cr;
+    *(cr + ptc) = malloc(sizeof(int));
+    *((int *)cr[ptc]) = 4;
+    ptc++;
+    printf("%i\n", *((int *)pr[ptc - 1]));
+    *((int *)pr[ptc - 1]) = -5;
+    printf("%i\n", *((int *)cr[ptc - 1]));
     return 0;
 }
