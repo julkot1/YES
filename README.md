@@ -10,9 +10,14 @@
 YES an esoteric "programming language" written in [Python](https://www.python.org/).
 Yes is a structured, array-based, strong typed "programming language". 
 </br>
-Every statment has n statments or values like `ECHO "SUM 2+2 is " {ADD 2 2}` this statment prints `SUM 2+2 is 4`.
-
-
+To compile YES program use `yes.py`. This program generates two files - `out.c` with generated C code and runnable `app`
+```
+python3 yes.py [filename] [-r flag to run]
+```
+To test YES programs use `test/test.py`. In `in` directory put your YES files. In `out` add files with exactly the same name as the files in the `in` directory with expected output. 
+```
+python3 tests.py
+```
 ## Sytax
 Basic YES schema:
 ```
