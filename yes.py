@@ -208,6 +208,7 @@ def parsePointer(yType, token, sub):
 
 
 def getArg(arg, out: TextIOWrapper):
+
     if isinstance(arg, Value):
         prevType = arg.type
         arg.type = getType(arg).value

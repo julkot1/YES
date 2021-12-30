@@ -1,4 +1,8 @@
 $DO 695 {
-    ECHO "%i" (Int) pr[MUL 1 0];
+    ECHO "%i\n" (Int) pr[MUL 1 0];
+    $DO 4 {
+        ECHO "%i" (Int) pr;
+        RT 5 (Int);
+    };
     RT 1 (Int);
 };

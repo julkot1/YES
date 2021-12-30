@@ -128,7 +128,8 @@ def getTokens(array: list):
             for e in statements:
                 e = findRegisters(e)
                 if e != []:
-                    if e[0] in [item.value for item in StatementTokens] or len(tokens) == 0:
+                    p, t = getPrefix(e[0])
+                    if t in [item.value for item in StatementTokens] or len(tokens) == 0:
                         tokens.append(e)
                     else:
                         for arg in e:
