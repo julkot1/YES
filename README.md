@@ -18,11 +18,27 @@ To test YES programs use `test/test.py`. In `in` directory put your YES files. I
 ```
 python3 tests.py
 ```
-## Sytax
-Basic YES schema:
-```
-STATEMANT VALUE|{ANOTHER_STATEMENT  VALUE|YET_ANOTHER_STATEMENT ...} VALUE|{ANOTHER_STATEMENT ...} ...
-```
+
+## Table of Contents
+- [YES](#yes)
+  - [Table of Contents](#table-of-contents)
+  - [Data types](#data-types)
+    - [Integer Types](#integer-types)
+    - [Floating-Point Types](#floating-point-types)
+    - [Other Types](#other-types)
+  - [Arithmetic and logic operators](#arithmetic-and-logic-operators)
+    - [Arithmetic operators](#arithmetic-operators)
+    - [Bitwise operators](#bitwise-operators)
+    - [Logic operators](#logic-operators)
+  - [Default Statements](#default-statements)
+    - [ECHO](#echo)
+    - [IN](#in)
+    - [DO](#do)
+    - [RT](#rt)
+    - [IF](#if)
+    - [CALL](#call)
+  - [Prefix](#prefix)
+    - [call parent cr - `$`](#call-parent-cr---)
 
 ## Data types
 
@@ -146,3 +162,19 @@ out:
 ```
 dir
 ```
+
+## Prefix
+
+### call parent cr - `$`
+To get access children statement to the parent `cr` as `pr` put `$` insert the prefix `$` into the parent.
+```
+$DO "foo" {
+  ECHO "%S" (Str) pr;
+}
+```
+out:
+```
+foo
+```
+DO is parent for arguments "foo" and nested statement. So they are its children.
+
