@@ -115,7 +115,7 @@ out:
 6585
 ```
 ### IN
-requires no arguments but type of statement is mandatory. . Takes input from the console and puts it to `xr`.
+requires no arguments but type of statement is mandatory. Takes input from the console and puts it to the `xr`.
 ```
 IN (Char);
 ECHO "%c" (Char) xr;
@@ -152,7 +152,7 @@ out:
 2
 ```
 ### CALL
-is like system in c. Takes 1 or many arguments (like ECHO) and execute it as shell command.
+is like system in C. Takes 1 or many arguments (like ECHO) and execute it as shell command.
 
 ```
 CALL "mkdir %S" "dir";
@@ -166,7 +166,7 @@ dir
 ## Prefix
 
 ### call parent cr - `$`
-To get access children statement to the parent `cr` as `pr` put `$` insert the prefix `$` into the parent.
+To get access children statement to the parent `cr` as `pr` insert the prefix `$` into the parent.
 ```
 $DO "foo" {
   ECHO "%S" (Str) pr;
@@ -177,4 +177,17 @@ out:
 foo
 ```
 DO is parent for arguments "foo" and nested statement. So they are its children.
+but
 
+```
+$DO "foo" {
+  DO 5 {
+    ECHO "%S" (Str) pr;
+  }
+}
+```
+out:
+```
+foo
+```
+It will display "foo" instead of 5 because `$` was called in first `DO` statement.
