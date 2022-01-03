@@ -45,6 +45,7 @@ class StatementTokens(Enum):
     DOWHILE = "doWHILE"
     REPEAT = "REPEAT"
     YELL = "YELL"
+    MV = "MV"
 
 
 class SyntaxTokens(Enum):

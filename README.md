@@ -38,6 +38,7 @@ python3 tests.py
     - [IF](#if)
     - [CALL](#call)
     - [REPEAT](#repeat)
+  - [YELL](#yell)
   - [Prefix](#prefix)
     - [call parent cr - `$`](#call-parent-cr---)
     - [reference to array - `&`](#reference-to-array---)
@@ -181,6 +182,9 @@ giggity
 giggity
 ```
 
+## YELL
+requires 2 (`Bool` and `Str`) arguments. If the first argument is false, the program prints the second argument to the console and exits.
+
 ## Prefix
 
 ### call parent cr - `$`
@@ -209,6 +213,7 @@ out:
 giggity
 ```
 It will display "giggity" instead of 5 because `$` was called in first `DO` statement.
+
 
 ### reference to array - `&`
 To refer an array element to another use this prefix.

@@ -28,7 +28,7 @@ class FormatSpecifiers(Enum):
 
 
 class Types(Enum):
-    #(token, id)
+    # (token, id)
     CHAR = 'Char'
     SHORT = 'Short'
     INT = 'Int'
@@ -477,7 +477,30 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write('{')
         _, yType = putToCr(statement.args[1], out)
         out.write('}')
-
+    elif statement.token == StatementTokens.WHILE.value:
+        argsLen = len(statement.args)
+        assert argsLen == 2, "Invalid arguments in WHILE statement"
+        putToCr(statement.args[0], out)
+        out.write('while(*((int*)cr[0]))')
+        out.write('{')
+        _, yType = putToCr(statement.args[1], out)
+        out.write('}')
+    elif statement.token == StatementTokens.DOWHILE.value:
+        argsLen = len(statement.args)
+        assert argsLen == 2, "Invalid arguments in doWHILE statement"
+        putToCr(statement.args[0], out)
+        out.write('do{')
+        _, yType = putToCr(statement.args[1], out)
+        out.write('}while(*((int*)cr[0]));')
+    elif statement.token == StatementTokens.YELL.value:
+        argsLen = len(statement.args)
+        assert argsLen == 2, "Invalid arguments in YELL statement"
+        putToCr(statement.args[0], out)
+        out.write('if(!*((int*)cr[0])){')
+        _, yType = putToCr(statement.args[1], out)
+        out.write('printf("%s", *((char **) cr[1]));')
+        out.write('exit(EXIT_FAILURE);')
+        out.write('}')
     else:
         pass
         assert False, "not existing statement"
