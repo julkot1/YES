@@ -37,8 +37,10 @@ python3 tests.py
     - [RT](#rt)
     - [IF](#if)
     - [CALL](#call)
+    - [REPEAT](#repeat)
   - [Prefix](#prefix)
     - [call parent cr - `$`](#call-parent-cr---)
+    - [reference to array - `&`](#reference-to-array---)
 
 ## Data types
 
@@ -48,7 +50,8 @@ python3 tests.py
 | Char  | 0 to 255  |1 byte| `%c` |
 | Short  | -2<sup>15</sup> to 2<sup>15</sup>-1  | 2 bytes| `%s`|
 | Int  | -2<sup>31</sup> to 2<sup>31</sup>-1 | 4 bytes|  `%i`|
-| long  | -2<sup>63</sup> to 2<sup>63</sup>-1  | 8 bytes| `%l`|
+| Long  | -2<sup>63</sup> to 2<sup>63</sup>-1  | 8 bytes| `%l`|
+| Size | 0 to 2<sup>32</sup>-1  | 8 bytes| `%p`|
 
 ### Floating-Point Types
 | Type | Values | Precision | Size|Format specifier|
@@ -162,25 +165,40 @@ out:
 ```
 dir
 ```
+### REPEAT
+passes 2 arguments. The first one is a value of integer type. The program will execute the second argument as many times as it was given in the first argument.
+```
+REPEAT 5 {
+  ECHO "giggity\n"
+}
+```
+out:
+```
+giggity
+giggity
+giggity
+giggity
+giggity
+```
 
 ## Prefix
 
 ### call parent cr - `$`
 To get access children statement to the parent `cr` as `pr` insert the prefix `$` into the parent.
 ```
-$DO "foo" {
+$DO "giggity" {
   ECHO "%S" (Str) pr;
 }
 ```
 out:
 ```
-foo
+giggity
 ```
-DO is parent for arguments "foo" and nested statement. So they are its children.
+DO is parent for arguments "giggity" and nested statement. So they are its children.
 but
 
 ```
-$DO "foo" {
+$DO "giggity" {
   DO 5 {
     ECHO "%S" (Str) pr;
   }
@@ -188,6 +206,9 @@ $DO "foo" {
 ```
 out:
 ```
-foo
+giggity
 ```
-It will display "foo" instead of 5 because `$` was called in first `DO` statement.
+It will display "giggity" instead of 5 because `$` was called in first `DO` statement.
+
+### reference to array - `&`
+To refer an array element to another use this prefix.

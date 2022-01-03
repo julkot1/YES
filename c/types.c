@@ -4,14 +4,19 @@
 
 int main()
 {
+    void **gr = malloc(5 * sizeof(void *));
+    int ptg = 0;
+
+    gr[ptg] = malloc(sizeof(int));
+    *((int *)gr[ptg]) = 5;
+
     void **cr = malloc(5 * sizeof(void *));
     int ptc = 0;
-    void **pr = cr;
-    *(cr + ptc) = malloc(sizeof(int));
-    *((int *)cr[ptc]) = 4;
+
+    *(cr + ptc) = gr[ptg];
     ptc++;
-    printf("%i\n", *((int *)pr[ptc - 1]));
-    *((int *)pr[ptc - 1]) = -5;
-    printf("%i\n", *((int *)cr[ptc - 1]));
+    *((int *)gr[ptg]) = 3;
+
+    printf("%d", *((int *)cr[ptc - 1]));
     return 0;
 }

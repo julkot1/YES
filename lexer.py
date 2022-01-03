@@ -5,11 +5,12 @@ REGISTERS_TOKENS = ['gr', 'xr', 'cr', 'pr']
 BOOLEAN_TOKENS = ['true', 'false']
 INNER_REGISTER = r'(?<=\[).+?(?=\])'
 REGISTERS_REGEX = Combine(
-    Regex(r'[a-z][a-z]')+'['+Regex(INNER_REGISTER)+']')
+    Regex(r'[^ ][a-z]r')+'['+Regex(INNER_REGISTER)+']')
 
 
 class PrefixTokens(Enum):
     CALL_PR = "$"
+    REFERENCE = "&"
 
 
 class StatementTokens(Enum):
@@ -40,6 +41,10 @@ class StatementTokens(Enum):
     IF = "IF"
     CALL = "CALL"
     IN = "IN"
+    WHILE = "WHILE"
+    DOWHILE = "doWHILE"
+    REPEAT = "REPEAT"
+    YELL = "YELL"
 
 
 class SyntaxTokens(Enum):
@@ -102,12 +107,14 @@ def joinNested(array):
 
 
 def findRegisters(tokens):
+
     splitted = nestedExpr(SyntaxTokens.REGISTER_OPEN.value,
                           SyntaxTokens.REGISTER_END.value).parseString(SyntaxTokens.REGISTER_OPEN.value+tokens+SyntaxTokens.REGISTER_END.value).asList()[0]
     newTokens = []
+
     for index, token in enumerate(splitted):
         newToken = token
-        if token in REGISTERS_TOKENS:
+        if getPrefix(token)[1] in REGISTERS_TOKENS:
             if len(splitted) > index+1:
                 if isinstance(splitted[index+1], list):
                     nested = joinNested(nestedExpr(SyntaxTokens.NESTED_OPEN.value,
@@ -165,6 +172,7 @@ def lexFile(path):
                 newRow, SyntaxTokens.REGISTER_OPEN.value), SyntaxTokens.REGISTER_END.value)
             if newRow != '':
                 rows += newRow
+
         nested = joinNested(nestedExpr(SyntaxTokens.NESTED_OPEN.value,
                                        SyntaxTokens.NESTED_END.value, ignoreExpr=REGISTERS_REGEX).parseString(nest(rows)).asList()[0])
         tokens = getTokens(nested)
@@ -237,7 +245,8 @@ def createStatement(token: list, typeCast):
     if len(token) > 1:
         for arg in token[1::]:
             if isinstance(arg, list):
-                if arg[0] in REGISTERS_TOKENS:
+                p, t = getPrefix(arg[0])
+                if t in REGISTERS_TOKENS:
                     statement.args.append(parseRegister(arg, typeCast))
                     typeCast = None
                 else:

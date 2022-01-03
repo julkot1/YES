@@ -1,8 +1,6 @@
-$DO 695 {
-    ECHO "%i\n" (Int) pr[MUL 1 0];
-    $DO 4 {
-        ECHO "%i" (Int) pr;
-        RT 5 (Int);
-    };
-    RT 1 (Int);
-};
+PUSH (Int) 6;
+$REPEAT (Int) &gr[ptg] {
+    SUB (Int) gr 1;
+    PUSH (Int) xr;
+    ECHO "%i %i %i\n" (Int) gr[ptg] (Int) xr (Int) pr;
+}

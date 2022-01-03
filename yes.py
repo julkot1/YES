@@ -5,13 +5,14 @@ import sys
 
 from pyparsing import QuotedString
 
-from lexer import PrefixTokens, Register, Statement, Value, lexFile, SyntaxTokens, StatementTokens, createAST, BOOLEAN_TOKENS, printAST
+from lexer import REGISTERS_TOKENS, PrefixTokens, Register, Statement, Value, lexFile, SyntaxTokens, StatementTokens, createAST, BOOLEAN_TOKENS, printAST
 
 MATH_STATEMENTS = [StatementTokens.ADD.value, StatementTokens.SUB.value,
                    StatementTokens.DIV.value, StatementTokens.MUL.value, StatementTokens.MOD.value]
 BIN_STATEMENTS = [StatementTokens.BAND.value, StatementTokens.LSHIFT.value,
                   StatementTokens.BOR.value, StatementTokens.RSHIFT.value, StatementTokens.BNOT.value, StatementTokens.XOR.value]
-CONDITION_STATEMENTS = [StatementTokens.IF.value]
+CONDITION_STATEMENTS = [StatementTokens.IF.value,
+                        StatementTokens.WHILE.value, StatementTokens.DOWHILE.value, StatementTokens.REPEAT.value, StatementTokens.YELL.value]
 
 
 class FormatSpecifiers(Enum):
@@ -23,6 +24,7 @@ class FormatSpecifiers(Enum):
     BOOLEAN = '%b'
     STR = '%S'
     TYPE = '%t'
+    SIZE = '%p'
 
 
 class Types(Enum):
@@ -35,6 +37,7 @@ class Types(Enum):
     BOOLEAN = 'Bool'
     STR = 'Str'
     TYPE = 'Type'
+    SIZE = 'Size'
 
     @classmethod
     def isIn(self, value):
@@ -58,15 +61,18 @@ def typeToFormatSpecifier(yType: str):
         return FormatSpecifiers.SHORT.value
     if yType == Types.STR.value:
         return FormatSpecifiers.STR.value
+    if yType == Types.SIZE.value:
+        return FormatSpecifiers.SIZE.value
 
 
 def toCFormatSpecifier(text: str):
     text = text.replace(FormatSpecifiers.CHAR.value, "%hhu")
     text = text.replace(FormatSpecifiers.SHORT.value, "%hi")
     text = text.replace(FormatSpecifiers.STR.value, "%s")
-    text = text.replace(FormatSpecifiers.LONG.value, "%ld")
+    text = text.replace(FormatSpecifiers.LONG.value, "%lld")
     text = text.replace(FormatSpecifiers.TYPE.value, "%hhu")
     text = text.replace(FormatSpecifiers.BOOLEAN.value, "%hhu")
+    text = text.replace(FormatSpecifiers.SIZE.value, "%lu")
     return text
 
 
@@ -77,11 +83,21 @@ def getCType(yType: str):
         return "char *"
     if yType == Types.CHAR.value or yType == Types.TYPE.value or yType == Types.BOOLEAN.value:
         return "unsigned char"
+    if yType == Types.SIZE.value:
+        return "unsigned long"
+    if yType == Types.LONG.value:
+        return "long long"
     return yType.lower()
 
 
 def isYType(token: str):
     if Types.isIn(token):
+        return token
+    return False
+
+
+def isYSize(token: str):
+    if token in ['pt'+e[0] for e in REGISTERS_TOKENS]:
         return token
     return False
 
@@ -149,6 +165,7 @@ def isYLong(token: str):
 
 
 def getType(val: Value):
+
     if isYStr(val.token):
         val.token = toCFormatSpecifier(val.token)
         return Types.STR
@@ -167,6 +184,8 @@ def getType(val: Value):
         return Types.LONG
     if isYFloat(val.token):
         return Types.FLOAT
+    if isYSize(val.token):
+        return Types.SIZE
     return None
 
 
@@ -192,6 +211,8 @@ def getBinStatementType(argsType: list):
 def getMathStatementType(argsType: list):
     if Types.FLOAT.value in argsType:
         return Types.FLOAT.value
+    if Types.SIZE.value in argsType:
+        return Types.SIZE.value
     if Types.LONG.value in argsType:
         return Types.LONG.value
     if Types.INT.value in argsType:
@@ -201,34 +222,55 @@ def getMathStatementType(argsType: list):
     return Types.CHAR.value
 
 
-def parsePointer(yType, token, sub):
+def parsePointer(yType, token, sub, isReference):
     if token == 'pr':
+        if isReference:
+            return '{r}[*pt{pt} - {a}]'.format(r=token, pt=token[0], a=sub)
         return '*(({cType}*){r}[ *pt{pt} - {a}])'.format(r=token, pt=token[0], cType=getCType(yType), a=sub)
+    if isReference:
+        return '{r}[ pt{pt} - {a}]'.format(r=token, pt=token[0], a=sub)
     return '*(({cType}*){r}[ pt{pt} - {a}])'.format(r=token, pt=token[0], cType=getCType(yType), a=sub)
 
 
-def getArg(arg, out: TextIOWrapper):
+def getStatement(arg, out: TextIOWrapper):
+    out.write("do")
+    cType = getCType(writeStatement(arg, out, nested=True))
+    out.write("while(0);")
+    if cType != "NULL":
+        return (f'*(({cType}*)xr[ptx - 1])', cType)
+    return ("", None)
 
+
+def getValue(arg, out: TextIOWrapper):
+    prevType = arg.type
+    arg.type = getType(arg).value
+    if arg.type == None:
+        arg.type = prevType
+    return (arg.token, getCType(arg.type))
+
+
+def getRegister(arg, out: TextIOWrapper):
+    isReference = PrefixTokens.REFERENCE.value in arg.prefix
+    if isReference:
+        assert arg.prefix.count(
+            PrefixTokens.REFERENCE.value) == 1, "Too many prefix token"
+    if arg.index == None:
+        return (parsePointer(arg.type, arg.token, 1, isReference), getCType(arg.type))
+    if isinstance(arg.index, Value):
+        if arg.index.token in ['pt'+e[0] for e in REGISTERS_TOKENS]:
+            return (parsePointer(arg.type, arg.token, arg.index.token, isReference), getCType(arg.type))
+        return (parsePointer(arg.type, arg.token, int(arg.index.token)+1, isReference), getCType(arg.type))
+    writeStatement(arg.index, out, nested=True)
+    return (parsePointer(arg.type, arg.token, "*((int *)xr[ptx-1]) -1", isReference), getCType(arg.type))
+
+
+def getArg(arg, out: TextIOWrapper):
     if isinstance(arg, Value):
-        prevType = arg.type
-        arg.type = getType(arg).value
-        if arg.type == None:
-            arg.type = prevType
-        return (arg.token, getCType(arg.type))
+        return getValue(arg, out)
     elif isinstance(arg, Statement):
-        out.write("do")
-        cType = getCType(writeStatement(arg, out, nested=True))
-        out.write("while(0);")
-        if cType != "NULL":
-            return (f'*(({cType}*)xr[ptx - 1])', cType)
-        return ("", None)
+        return getStatement(arg, out)
     elif isinstance(arg, Register):
-        if arg.index == None:
-            return (parsePointer(arg.type, arg.token, 1), getCType(arg.type))
-        if isinstance(arg.index, Value):
-            return (parsePointer(arg.type, arg.token, int(arg.index.token)+1), getCType(arg.type))
-        writeStatement(arg.index, out, nested=True)
-        return (parsePointer(arg.type, arg.token, "*((int *)xr[ptx-1]) -1"), getCType(arg.type))
+        return getRegister(arg, out)
     elif isinstance(arg, list):
         out.write("do{")
         for a in arg:
@@ -237,15 +279,32 @@ def getArg(arg, out: TextIOWrapper):
         return ("", None)
 
 
+def defineReference(arg, out, yType):
+    if isinstance(arg, Register):
+        if not PrefixTokens.REFERENCE.value in arg.prefix:
+            out.write(
+                f"*(cr + ptc) = malloc(sizeof({yType}));")
+    else:
+        out.write(
+            f"*(cr + ptc) = malloc(sizeof({yType}));")
+
+
 def putToCr(token, out: TextIOWrapper):
     value, yType = getArg(token, out)
 
     if value != "":
         assert yType != None, "Unknown type"
-        out.write(
-            f"*(cr + ptc) = malloc(sizeof({yType}));")
-        out.write(
-            f"*(({yType} *)cr[ptc]) = {value}; ptc++;")
+        defineReference(token, out, yType)
+        if isinstance(token, Register):
+            if not PrefixTokens.REFERENCE.value in token.prefix:
+                out.write(
+                    f"*(({yType} *)cr[ptc]) = {value}; ptc++;")
+            else:
+                out.write(
+                    f"*(cr + ptc) = {value};ptc++;")
+        else:
+            out.write(
+                f"*(({yType} *)cr[ptc]) = {value}; ptc++;")
     return (value, yType)
 
 
@@ -395,7 +454,7 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write("break;")
     elif statement.token == StatementTokens.IF.value:
         argsLen = len(statement.args)
-        assert argsLen == 2 or argsLen == 3, "Invalid arguments in RT statement"
+        assert argsLen == 2 or argsLen == 3, "Invalid arguments in IF statement"
         putToCr(statement.args[0], out)
         out.write('if(*((unsigned char*)cr[0]))')
         out.write('{')
@@ -410,6 +469,15 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
             out.write(f"xr[ptx] = malloc(sizeof({yType}));")
             out.write(f"*(({yType}*)xr[ptx]) = *(({yType}*)cr[1]);ptx++;")
             out.write('}')
+    elif statement.token == StatementTokens.REPEAT.value:
+        argsLen = len(statement.args)
+        assert argsLen == 2, "Invalid arguments in REPEAT statement"
+        putToCr(statement.args[0], out)
+        out.write('for(size_t i = 0; i < *((int*)cr[0]); ++i)')
+        out.write('{')
+        _, yType = putToCr(statement.args[1], out)
+        out.write('}')
+
     else:
         pass
         assert False, "not existing statement"
