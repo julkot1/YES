@@ -46,6 +46,7 @@ class StatementTokens(Enum):
     REPEAT = "REPEAT"
     YELL = "YELL"
     MV = "MV"
+    REPLACE = "REPLACE"
 
 
 class SyntaxTokens(Enum):

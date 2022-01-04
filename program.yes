@@ -1,2 +1,6 @@
 PUSH (Int) 6;
-YELL {GT 5 6 (Bool)} "not";
+$REPEAT &gr[ptg] {
+    SUB (Int) gr[ptg] 1;
+    REPLACE (Int) xr; 
+    ECHO "%i %i %i\n" (Int) pr (Int) gr[ptg] (Int) xr;
+}

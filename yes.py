@@ -337,6 +337,10 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write(f"gr[ptg] = malloc(sizeof({yType}));")
         out.write(f"*(({yType}*)gr[ptg]) = *(({yType}*)cr[0]);")
         out.write("ptg++;")
+    elif statement.token == StatementTokens.REPLACE.value:
+        assert len(statement.args) == 1, "Invalid arguments in REPLACE statement"
+        yType = getCType(statement.args[0].type)
+        out.write(f"*(({yType}*)gr[ptg-1]) = *(({yType}*)cr[0]);")
     elif statement.token == StatementTokens.ADD.value:
         assert len(statement.args) == 2, "Invalid arguments in ADD statement"
         writeMathOperation(statement, out, '+')
