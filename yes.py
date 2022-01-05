@@ -196,6 +196,7 @@ def getStatementType(statement: Statement):
         return getMathStatementType([arg.type for arg in statement.args])
     if statement.token in BIN_STATEMENTS:
         return getBinStatementType([arg.type for arg in statement.args])
+    return Types.INT.value
 
 
 def getBinStatementType(argsType: list):
@@ -422,6 +423,20 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
             out.write(f'printf("%s", buffer);')
         else:
             out.write(f'printf("%s",*((char **)cr[0]));')
+    elif statement.token == StatementTokens.GDEL.value:
+        assert len(statement.args) <= 1, "Invalid arguments in gDEL statement"
+        if len(statement.args) == 1:
+            out.write(
+                'if(*((unsigned long*)cr[0]) <= ptg)ptg-=*((unsigned long*)cr[0]);')
+        else:
+            out.write('if(ptg>=1ptg--;')
+    elif statement.token == StatementTokens.GDEL.value:
+        assert len(statement.args) <= 1, "Invalid arguments in xDEL statement"
+        if len(statement.args) == 1:
+            out.write(
+                'if(*((unsigned long*)cr[0]) <= ptx)ptx-=*((unsigned long*)cr[0]);')
+        else:
+            out.write('if(ptx>=1)ptx--;')
     elif statement.token == StatementTokens.IN.value:
         assert len(statement.args) == 0, "Invalid arguments in IN statement"
         yType = statement.type
@@ -505,6 +520,11 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write('printf("%s", *((char **) cr[1]));')
         out.write('exit(EXIT_FAILURE);')
         out.write('}')
+    elif statement.token == StatementTokens.SET.value:
+        assert len(statement.args) == 2, "Invalid arguments in SET statement"
+        cType = getCType(statement.args[1].type)
+        out.write(
+            f'*(({cType}*)pr[*((unsigned long*)cr[0])]) = *(({cType}*)cr[1]);')
     else:
         pass
         assert False, "not existing statement"

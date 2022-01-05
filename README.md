@@ -31,6 +31,10 @@ python3 tests.py
     - [Bitwise operators](#bitwise-operators)
     - [Logic operators](#logic-operators)
   - [Default Statements](#default-statements)
+    - [PUSH](#push)
+    - [REPLACE](#replace)
+    - [SET](#set)
+    - [gDEL & xDEL](#gdel--xdel)
     - [ECHO](#echo)
     - [IN](#in)
     - [DO](#do)
@@ -38,7 +42,8 @@ python3 tests.py
     - [IF](#if)
     - [CALL](#call)
     - [REPEAT](#repeat)
-  - [YELL](#yell)
+    - [YELL](#yell)
+    - [WHILE & doWHILE](#while--dowhile)
   - [Prefix](#prefix)
     - [call parent cr - `$`](#call-parent-cr---)
     - [reference to array - `&`](#reference-to-array---)
@@ -52,7 +57,7 @@ python3 tests.py
 | Short  | -2<sup>15</sup> to 2<sup>15</sup>-1  | 2 bytes| `%s`|
 | Int  | -2<sup>31</sup> to 2<sup>31</sup>-1 | 4 bytes|  `%i`|
 | Long  | -2<sup>63</sup> to 2<sup>63</sup>-1  | 8 bytes| `%l`|
-| Size | 0 to 2<sup>32</sup>-1  | 8 bytes| `%p`|
+| Size | 0 to 2<sup>31</sup>-1  | 4 bytes| `%p`|
 
 ### Floating-Point Types
 | Type | Values | Precision | Size|Format specifier|
@@ -65,7 +70,7 @@ python3 tests.py
 | Boolean  | `true` or `false`  | 1 byte|logic value| `%b`|
 | Type  | `Int`, `Str`, `Char` ...  | 1 byte|type of value| `%t`|
 | Str  | `"Text"`  | - | text| `%S`|
-
+| tStr  | `"number is: %i"`  | - | templates to assign values| `%S`|
 
 ## Arithmetic and logic operators
 
@@ -108,9 +113,53 @@ python3 tests.py
 
 
 ## Default Statements
+### PUSH 
+puts value to `gr`
+```
+PUSH 5;
+```
+### REPLACE
+replace `gr[0]` by value (must be the same type)
+```
+PUSH 5;
+REPLACE 14;
+ECHO "%i" gr;
+```
+out:
+```
+14
+```
 
+### SET 
+set `pr` with index to new value 
+```
+$DO 5 {pSET 0 61}
+  {
+    ECHO "i%" pr
+  };
+```
+out:
+```
+61
+```
+
+### gDEL & xDEL
+delate n-elements form `gr` or `xr`.
+```
+PUSH 5;
+PUSH 3;
+PUSH 4;
+ECHO "%i\n" gr;
+gDEL 2;
+ECHO "%i" gr;
+```
+out:
+```
+4
+5
+```
 ### ECHO
-Is like printf in c
+Is like printf in C
 ```
 ECHO "%i\n" 6585; 
 ```
@@ -181,9 +230,42 @@ giggity
 giggity
 giggity
 ```
-
-## YELL
+### YELL
 requires 2 (`Bool` and `Str`) arguments. If the first argument is false, the program prints the second argument to the console and exits.
+
+### WHILE & doWHILE
+The behavior of these statements is the same as in C:
+- WHILE will execute the second argument until the first argument is true.
+```
+PUSH (Int) 5;
+$WHILE {GT (Int) gr 0} {
+    ECHO "%i\n" (Int) gr;
+    REPLACE {SUB (Int) gr 1};
+    SET 0 {GT (Int) gr 0};
+};
+```
+out:
+```
+5
+4
+3
+2
+1
+```
+- doWHILE must do second argument at least one independently of the value of the condition.
+```
+PUSH (Int) 0;
+$doWHILE {GT (Int) gr 0} {
+    ECHO "%i\n" (Int) gr;
+    REPLACE {SUB (Int) gr 1};
+    SET 0 {GT (Int) gr 0};
+};
+```
+out:
+```
+0
+```
+
 
 ## Prefix
 
@@ -217,3 +299,14 @@ It will display "giggity" instead of 5 because `$` was called in first `DO` stat
 
 ### reference to array - `&`
 To refer an array element to another use this prefix.
+```
+PUSH 5;
+$DO (Char) &gr {
+  SET 0 10;
+}
+ECHO "%c" (Char) gr; 
+```
+out:
+```
+10
+```

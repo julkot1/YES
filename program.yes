@@ -1,6 +1,6 @@
-PUSH (Int) 6;
-$REPEAT &gr[ptg] {
-    SUB (Int) gr[ptg] 1;
-    REPLACE (Int) xr; 
-    ECHO "%i %i %i\n" (Int) pr (Int) gr[ptg] (Int) xr;
+PUSH 5;
+$DO (Char) &gr {
+  SET 0 10;
+  RT 0;
 }
+ECHO "%c" (Char) gr; 
