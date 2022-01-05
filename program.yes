@@ -1,6 +1,0 @@
-PUSH 5;
-$DO (Char) &gr {
-  SET 0 10;
-  RT 0;
-}
-ECHO "%c" (Char) gr; 

@@ -49,6 +49,7 @@ class StatementTokens(Enum):
     XDEL = "xDEL"
     REPLACE = "REPLACE"
     SET = "SET"
+    SWAP = "SWAP"
 
 
 class SyntaxTokens(Enum):

@@ -430,7 +430,7 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
                 'if(*((unsigned long*)cr[0]) <= ptg)ptg-=*((unsigned long*)cr[0]);')
         else:
             out.write('if(ptg>=1ptg--;')
-    elif statement.token == StatementTokens.GDEL.value:
+    elif statement.token == StatementTokens.XDEL.value:
         assert len(statement.args) <= 1, "Invalid arguments in xDEL statement"
         if len(statement.args) == 1:
             out.write(
@@ -525,9 +525,18 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         cType = getCType(statement.args[1].type)
         out.write(
             f'*(({cType}*)pr[*((unsigned long*)cr[0])]) = *(({cType}*)cr[1]);')
+
+    elif statement.token == StatementTokens.SWAP.value:
+        assert len(statement.args) == 2, "Invalid arguments in SWAP statement"
+        cType = getCType(statement.args[0].type)
+
+        out.write(f"{cType} tempA = *(({cType}*)cr[0]);")
+        out.write(f"{cType} tempB = *(({cType}*)cr[1]);")
+        out.write(f"*(({cType}*)cr[0]) = tempB;")
+        out.write(f"*(({cType}*)cr[1]) = tempA;")
     else:
         pass
-        assert False, "not existing statement"
+        assert False, "not existing statement " + statement.token
 
 
 def applyPrefix(statement: Statement, out: TextIOWrapper):

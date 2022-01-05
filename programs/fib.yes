@@ -1,0 +1,15 @@
+ECHO "Type a number: ";
+PUSH {SUB {IN (Int)} 1};
+PUSH 1;
+PUSH 1;
+REPEAT (Int) gr[ptg] {
+   ADD (Int) gr (Int) gr[1];
+   SWAP (Int) &gr (Int) &gr[1];
+   gDEL 1;
+   PUSH (Int) gr;
+   PUSH (Int) xr;
+   xDEL 1;
+   SWAP (Int) &gr (Int) &gr[1];
+   gDEL 1;
+};
+ECHO "%i\n" (Int) gr;
