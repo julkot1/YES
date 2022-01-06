@@ -34,6 +34,7 @@ python3 tests.py
     - [PUSH](#push)
     - [REPLACE](#replace)
     - [SET](#set)
+    - [SWAP](#swap)
     - [gDEL & xDEL](#gdel--xdel)
     - [ECHO](#echo)
     - [IN](#in)
@@ -70,7 +71,6 @@ python3 tests.py
 | Boolean  | `true` or `false`  | 1 byte|logic value| `%b`|
 | Type  | `Int`, `Str`, `Char` ...  | 1 byte|type of value| `%t`|
 | Str  | `"Text"`  | - | text| `%S`|
-| tStr  | `"number is: %i"`  | - | templates to assign values| `%S`|
 
 ## Arithmetic and logic operators
 
@@ -142,7 +142,20 @@ out:
 ```
 61
 ```
-
+### SWAP
+pass 2 arguments (must be array with the same type) and swap it.
+```
+PUSH 6;
+PUSH 4;
+ECHO "%c %c\n" (Char) gr (Char) gr[1];
+SWAP (Char) &gr (Char) &gr[1];
+ECHO "%c %c\n" (Char) gr (Char) gr[1];
+```
+out:
+```
+4 6
+6 4
+```
 ### gDEL & xDEL
 delate n-elements form `gr` or `xr`.
 ```

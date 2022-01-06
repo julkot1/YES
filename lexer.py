@@ -50,6 +50,7 @@ class StatementTokens(Enum):
     REPLACE = "REPLACE"
     SET = "SET"
     SWAP = "SWAP"
+    TOSTR = "STR"
 
 
 class SyntaxTokens(Enum):

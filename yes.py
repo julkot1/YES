@@ -36,6 +36,7 @@ class Types(Enum):
     FLOAT = 'Float'
     BOOLEAN = 'Bool'
     STR = 'Str'
+    TSTR = 'TStr'
     TYPE = 'Type'
     SIZE = 'Size'
 
@@ -106,9 +107,10 @@ def isYStr(token: str):
     qs = QuotedString(SyntaxTokens.STRING.value).searchString(token)
     if len(qs) == 0:
         return False
-    else:
+    elif token.startswith(SyntaxTokens.STRING.value) and token.endswith(SyntaxTokens.STRING.value):
         assert len(qs) == 1, "Invalid Str quote"
-        return toCFormatSpecifier(token)
+        return token
+    return False
 
 
 def isYBool(token: str):
@@ -411,6 +413,19 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         out.write(
             f"*((unsigned char *)xr[ptx]) = !*(({argType}*)cr[0]);")
         out.write("ptx++;")
+    elif statement.token == StatementTokens.TOSTR.value:
+        def argType(num): return getCType(statement.args[num].type)
+        assert len(statement.args) >= 1, "Invalid arguments in STR statement"
+        if len(statement.args) > 1:
+            args = ', '.join(
+                "*(({t}*)cr[{el}])".format(t=argType(el), el=el)for el in range(len(statement.args)))
+            out.write(f'char buffer[strlen(*((char **)cr[0]))];')
+            out.write(f'sprintf(buffer, {args});')
+            out.write(f'xr[ptx] = malloc(sizeof(buffer));')
+            out.write('*((char **)xr[ptx])=(char *)buffer; ptx++;')
+        else:
+            out.write(f'xr[ptx] = malloc(strlen(*((char **)cr[0])));')
+            out.write('*((char **)xr[ptx])=*((char **)cr[0]); ptx++;')
     elif statement.token == StatementTokens.ECHO.value:
         assert len(statement.args) >= 1, "Invalid arguments in ECHO statement"
         def argType(num): return getCType(statement.args[num].type)
@@ -427,14 +442,14 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
         assert len(statement.args) <= 1, "Invalid arguments in gDEL statement"
         if len(statement.args) == 1:
             out.write(
-                'if(*((unsigned long*)cr[0]) <= ptg)ptg-=*((unsigned long*)cr[0]);')
+                'if(*((unsigned long*)cr[0]) <= ptg){ptg-=*((unsigned long*)cr[0]);free(gr[*((unsigned long*)cr[0])-1]);}')
         else:
             out.write('if(ptg>=1ptg--;')
     elif statement.token == StatementTokens.XDEL.value:
         assert len(statement.args) <= 1, "Invalid arguments in xDEL statement"
         if len(statement.args) == 1:
             out.write(
-                'if(*((unsigned long*)cr[0]) <= ptx)ptx-=*((unsigned long*)cr[0]);')
+                'if(*((unsigned long*)cr[0]) <= ptx){ptx-=*((unsigned long*)cr[0]);free(xr[*((unsigned long*)cr[0])-1]);}')
         else:
             out.write('if(ptx>=1)ptx--;')
     elif statement.token == StatementTokens.IN.value:
@@ -528,6 +543,8 @@ def writeOperation(statement: Statement, out: TextIOWrapper):
 
     elif statement.token == StatementTokens.SWAP.value:
         assert len(statement.args) == 2, "Invalid arguments in SWAP statement"
+        assert isinstance(statement.args[0], Register) and isinstance(
+            statement.args[1], Register), "SWAP accepts only arrays as arguments"
         cType = getCType(statement.args[0].type)
 
         out.write(f"{cType} tempA = *(({cType}*)cr[0]);")
@@ -579,9 +596,9 @@ def compile(stack):
             writeStatement(statement, out, False)
         #
         out.write(
-            "for (int i = 0; i < PTX_SIZE; i++){free(*(xr+i));}free(xr);")
+            "for (int i = 0; i < PTX_SIZE; i++){xr[i] = malloc(0);free(*(xr+i));}free(xr);")
         out.write(
-            "for (int i = 0; i < PTG_SIZE; i++){free(*(gr+i));}free(gr);")
+            "for (int i = 0; i < PTG_SIZE; i++){gr[i] = malloc(0);free(*(gr+i));}free(gr);")
         out.write("return 0;}")
         out.close()
 

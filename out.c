@@ -1,8 +1,56 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include<unistd.h>
+#include <unistd.h>
 #include <string.h>
 #define PTG_SIZE 300000
 #define PTX_SIZE 50000
 int main()
-{void **gr = malloc(PTG_SIZE * sizeof(void *));void **xr = malloc(PTX_SIZE * sizeof(void *));int ptg = 0, ptx = 0;{void **cr = malloc(1 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(char *));*((char * *)cr[ptc]) = "Type a number: "; ptc++;printf("%s",*((char **)cr[0]));free(cr);}{void **cr = malloc(1 * sizeof(void *));int ptc=0;do{void **cr = malloc(2 * sizeof(void *));int ptc=0;do{void **cr = malloc(0 * sizeof(void *));int ptc=0;int buffer;scanf("%i", &buffer);xr[ptx] = malloc(sizeof(int));*((int *)xr[ptx]) = buffer;ptx++;free(cr);}while(0);*(cr + ptc) = malloc(sizeof(int));*((int *)cr[ptc]) = *((int*)xr[ptx - 1]); ptc++;*(cr + ptc) = malloc(sizeof(unsigned char));*((unsigned char *)cr[ptc]) = 1; ptc++;xr[ptx] = malloc(sizeof(int));*((int *)xr[ptx]) = *((int*)cr[0]) - *((unsigned char*)cr[1]);ptx++;free(cr);}while(0);*(cr + ptc) = malloc(sizeof(int));*((int *)cr[ptc]) = *((int*)xr[ptx - 1]); ptc++;gr[ptg] = malloc(sizeof(int));*((int*)gr[ptg]) = *((int*)cr[0]);ptg++;free(cr);}{void **cr = malloc(1 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(unsigned char));*((unsigned char *)cr[ptc]) = 1; ptc++;gr[ptg] = malloc(sizeof(unsigned char));*((unsigned char*)gr[ptg]) = *((unsigned char*)cr[0]);ptg++;free(cr);}{void **cr = malloc(1 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(unsigned char));*((unsigned char *)cr[ptc]) = 1; ptc++;gr[ptg] = malloc(sizeof(unsigned char));*((unsigned char*)gr[ptg]) = *((unsigned char*)cr[0]);ptg++;free(cr);}{void **cr = malloc(2 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(int));*((int *)cr[ptc]) = *((int*)gr[ ptg - ptg]); ptc++;for(size_t i = 0; i < *((int*)cr[0]); ++i){do{{void **cr = malloc(2 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(int));*((int *)cr[ptc]) = *((int*)gr[ ptg - 1]); ptc++;*(cr + ptc) = malloc(sizeof(int));*((int *)cr[ptc]) = *((int*)gr[ ptg - 2]); ptc++;xr[ptx] = malloc(sizeof(int));*((int *)xr[ptx]) = *((int*)cr[0]) + *((int*)cr[1]);ptx++;free(cr);}{void **cr = malloc(2 * sizeof(void *));int ptc=0;*(cr + ptc) = gr[ ptg - 1];ptc++;*(cr + ptc) = gr[ ptg - 2];ptc++;int tempA = *((int*)cr[0]);int tempB = *((int*)cr[1]);*((int*)cr[0]) = tempB;*((int*)cr[1]) = tempA;free(cr);}{void **cr = malloc(1 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(unsigned char));*((unsigned char *)cr[ptc]) = 1; ptc++;if(*((unsigned long*)cr[0]) <= ptg)ptg-=*((unsigned long*)cr[0]);free(cr);}{void **cr = malloc(1 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(int));*((int *)cr[ptc]) = *((int*)gr[ ptg - 1]); ptc++;gr[ptg] = malloc(sizeof(int));*((int*)gr[ptg]) = *((int*)cr[0]);ptg++;free(cr);}{void **cr = malloc(1 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(int));*((int *)cr[ptc]) = *((int*)xr[ ptx - 1]); ptc++;gr[ptg] = malloc(sizeof(int));*((int*)gr[ptg]) = *((int*)cr[0]);ptg++;free(cr);}{void **cr = malloc(1 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(unsigned char));*((unsigned char *)cr[ptc]) = 1; ptc++;if(*((unsigned long*)cr[0]) <= ptx)ptx-=*((unsigned long*)cr[0]);free(cr);}{void **cr = malloc(2 * sizeof(void *));int ptc=0;*(cr + ptc) = gr[ ptg - 1];ptc++;*(cr + ptc) = gr[ ptg - 2];ptc++;int tempA = *((int*)cr[0]);int tempB = *((int*)cr[1]);*((int*)cr[0]) = tempB;*((int*)cr[1]) = tempA;free(cr);}{void **cr = malloc(1 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(unsigned char));*((unsigned char *)cr[ptc]) = 1; ptc++;if(*((unsigned long*)cr[0]) <= ptg)ptg-=*((unsigned long*)cr[0]);free(cr);}}while(0);}free(cr);}{void **cr = malloc(2 * sizeof(void *));int ptc=0;*(cr + ptc) = malloc(sizeof(char *));*((char * *)cr[ptc]) = "%i\n"; ptc++;*(cr + ptc) = malloc(sizeof(int));*((int *)cr[ptc]) = *((int*)gr[ ptg - 1]); ptc++;char buffer[strlen(*((char **)cr[0]))];sprintf(buffer, *((char **)cr[0]), *((int*)cr[1]));printf("%s", buffer);free(cr);}for (int i = 0; i < PTX_SIZE; i++){free(*(xr+i));}free(xr);for (int i = 0; i < PTG_SIZE; i++){free(*(gr+i));}free(gr);return 0;}
+{
+    void **gr = malloc(PTG_SIZE * sizeof(void *));
+    void **xr = malloc(PTX_SIZE * sizeof(void *));
+    int ptg = 0, ptx = 0;
+    {
+        void **cr = malloc(2 * sizeof(void *));
+        int ptc = 0;
+        *(cr + ptc) = malloc(sizeof(char *));
+        *((char **)cr[ptc]) = "%i";
+        ptc++;
+        *(cr + ptc) = malloc(sizeof(unsigned char));
+        *((unsigned char *)cr[ptc]) = 563000;
+        ptc++;
+        char buffer[strlen(*((char **)cr[0]))];
+        sprintf(buffer, *((char **)cr[0]), *((unsigned char *)cr[1]));
+        printf("%ld %s size\n", sizeof(buffer), buffer);
+        xr[ptx] = malloc(sizeof(buffer));
+        *((char **)xr[ptx]) = (char *)buffer;
+        ptx++;
+        free(cr);
+    }
+    {
+        void **cr = malloc(2 * sizeof(void *));
+        int ptc = 0;
+        *(cr + ptc) = malloc(sizeof(char *));
+        *((char **)cr[ptc]) = "%s";
+        ptc++;
+        *(cr + ptc) = malloc(sizeof(char *));
+        *((char **)cr[ptc]) = *((char **)xr[ptx - 1]);
+        ptc++;
+        char buffer[strlen(*((char **)cr[0]))];
+        sprintf(buffer, *((char **)cr[0]), *((char **)cr[1]));
+        printf("%s", buffer);
+        free(cr);
+    }
+    for (int i = 0; i < PTX_SIZE; i++)
+    {
+        xr[i] = malloc(0);
+        free(*(xr + i));
+    }
+    free(xr);
+    for (int i = 0; i < PTG_SIZE; i++)
+    {
+        gr[i] = malloc(0);
+        free(*(gr + i));
+    }
+    free(gr);
+    return 0;
+}
