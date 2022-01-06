@@ -3,7 +3,7 @@ package pl.julkot1.yes.generator.parser;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.UndefinedStatement;
 import pl.julkot1.yes.statement.Statement;
-import pl.julkot1.yes.syntax.StatementTokens;
+import pl.julkot1.yes.statement.StatementTokens;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
