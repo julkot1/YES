@@ -13,7 +13,7 @@ public abstract class Statement {
     public static final String BEGIN = "{", END="free(cr);}";
     protected abstract void validArguments() throws InvalidYesSyntaxException;
     protected abstract void write(FileOutputStream out) throws IOException ;
-    protected abstract void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException, InvalidYesSyntaxException;
+    protected abstract void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException;
     protected AstStatement astStatement;
     public void generate(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         validArguments();

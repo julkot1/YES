@@ -2,6 +2,7 @@ package pl.julkot1.yes.generator;
 
 import pl.julkot1.yes.ast.models.*;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
+import pl.julkot1.yes.exception.NestedStatementException;
 import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.generator.parser.ArrayParser;
 import pl.julkot1.yes.generator.parser.NestedStatementParser;
@@ -17,9 +18,7 @@ import java.util.List;
 public class DefaultGenerators {
     public static void writeArguments(List<Argument> arguments, FileOutputStream out) throws IOException, InvalidYesSyntaxException{
         for (Argument argument : arguments) {
-            if (argument.getClass().toString().equals(AstStatement.class.toString())) {
-                System.out.println("TODO");
-            } else if (argument.getClass().toString().equals(Value.class.toString()))
+            if (argument.getClass().toString().equals(Value.class.toString()))
                 putValueToCr((Value) argument, out);
             else if (argument.getClass().toString().equals(Array.class.toString()))
                 putArrayToCr((Array) argument, out);
@@ -32,9 +31,19 @@ public class DefaultGenerators {
         if(NestedStatementParser.isSingleStatement(argument)){
             var st = (AstStatement) argument.getStack().get(0);
             StatementParser.writeStatement(st, out);
-            if(st.getType()==Type.NULL) throw new TypeException(st.getLine(), "nested statement {"+st.getToken()+"}", "single nested statement must return value");
+            if(st.getType()==Type.NULL) throw new TypeException(st.getLine(), "nested statement {"+st.getToken()+"}", "nested statement must return value");
             out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", st.getType().getCToken()).getBytes());
             out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", st.getType().getCToken(), st.getType().getCToken()).getBytes());
+        }else {
+            out.write("{do{".getBytes());
+            for (Argument astStatement : argument.getStack()) {
+                if (!(astStatement instanceof AstStatement))
+                    throw new NestedStatementException(astStatement.getLine(), "(incorrect usage of statement)");
+                StatementParser.writeStatement((AstStatement) astStatement, out);
+            }
+            out.write("}while(0);}".getBytes());
+            if(argument.getType() == Type.NULL || argument.getType() == null) throw new TypeException(argument.getLine(), "nested statement {"+argument.getToken()+"}", "nested statement must return value");
+            out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", argument.getType().getCToken(), argument.getType().getCToken()).getBytes());
         }
 
     }
