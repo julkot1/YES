@@ -1,12 +1,10 @@
-package pl.julkot1.yes.lexer;
+package pl.julkot1.yes.lexer.tokens;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import pl.julkot1.yes.types.Type;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -35,5 +33,9 @@ public enum SpecialTypeTokens {
         return list.stream()
                 .filter((r)-> r.forType == null)
                 .collect(Collectors.toList());
+    }
+    public static Optional<SpecialTypeTokens> getToken(String token){
+        var list = new ArrayList<>(EnumSet.allOf(SpecialTypeTokens.class));
+        return list.stream().filter((s)-> Objects.equals(s.token, token)).findAny();
     }
 }

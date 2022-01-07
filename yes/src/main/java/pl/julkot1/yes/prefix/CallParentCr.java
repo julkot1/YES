@@ -1,7 +1,7 @@
 package pl.julkot1.yes.prefix;
 
 import pl.julkot1.yes.ast.models.Argument;
-import pl.julkot1.yes.lexer.PrefixTokens;
+import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 
 public class CallParentCr {
     public static boolean hasCalled(Argument argument){

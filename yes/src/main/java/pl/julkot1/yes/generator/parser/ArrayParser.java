@@ -5,8 +5,8 @@ import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.Value;
 import pl.julkot1.yes.exception.InvalidArrayIndexException;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
-import pl.julkot1.yes.lexer.PrefixTokens;
-import pl.julkot1.yes.lexer.SpecialTypeTokens;
+import pl.julkot1.yes.lexer.tokens.PrefixTokens;
+import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.prefix.CallParentCr;
 
 public class ArrayParser {

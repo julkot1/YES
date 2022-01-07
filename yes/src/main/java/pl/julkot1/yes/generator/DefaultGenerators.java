@@ -7,7 +7,7 @@ import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.generator.parser.ArrayParser;
 import pl.julkot1.yes.generator.parser.NestedStatementParser;
 import pl.julkot1.yes.generator.parser.StatementParser;
-import pl.julkot1.yes.lexer.PrefixTokens;
+import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.types.Type;
 import pl.julkot1.yes.generator.parser.ValueParser;
 
@@ -42,8 +42,12 @@ public class DefaultGenerators {
                 StatementParser.writeStatement((AstStatement) astStatement, out);
             }
             out.write("}while(0);}".getBytes());
-            if(argument.getType() == Type.NULL || argument.getType() == null) throw new TypeException(argument.getLine(), "nested statement {"+argument.getToken()+"}", "nested statement must return value");
-            out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", argument.getType().getCToken(), argument.getType().getCToken()).getBytes());
+            if(argument.getType() == Type.NULL)
+                out.write("*(cr + ptc) = malloc(0);".getBytes());
+            else {
+                out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", argument.getType().getCToken()).getBytes());
+                out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", argument.getType().getCToken(), argument.getType().getCToken()).getBytes());
+            }
         }
 
     }

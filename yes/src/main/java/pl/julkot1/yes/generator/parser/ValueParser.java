@@ -2,7 +2,7 @@ package pl.julkot1.yes.generator.parser;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import pl.julkot1.yes.ast.models.Value;
-import pl.julkot1.yes.lexer.SpecialTypeTokens;
+import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.types.Type;
 
 import static pl.julkot1.yes.types.IntegerRange.*;

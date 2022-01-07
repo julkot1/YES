@@ -5,6 +5,7 @@ import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.ast.models.Value;
 import pl.julkot1.yes.generator.CGenerator;
+import pl.julkot1.yes.lexer.Lexer;
 import pl.julkot1.yes.types.Type;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class Main {
        ast.getStatementList().add(s);
 
         try{
+            Lexer.resolveFile("program.yes");
             CGenerator.generate(ast, "out.c");
         }catch (IOException  err){
             err.printStackTrace();

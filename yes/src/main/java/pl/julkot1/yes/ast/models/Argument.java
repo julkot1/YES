@@ -2,7 +2,7 @@ package pl.julkot1.yes.ast.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.julkot1.yes.lexer.PrefixTokens;
+import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.types.Type;
 
 import java.util.ArrayList;

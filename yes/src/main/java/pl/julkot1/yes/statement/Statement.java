@@ -3,7 +3,7 @@ package pl.julkot1.yes.statement;
 import lombok.AllArgsConstructor;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
-import pl.julkot1.yes.lexer.PrefixTokens;
+import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
