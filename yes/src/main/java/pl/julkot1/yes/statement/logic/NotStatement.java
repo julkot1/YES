@@ -2,6 +2,7 @@ package pl.julkot1.yes.statement.logic;
 
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
+import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.DefaultTypes;
@@ -35,7 +36,7 @@ public class NotStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException {
+    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException, InvalidYesSyntaxException {
         DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }

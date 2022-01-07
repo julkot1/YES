@@ -23,7 +23,7 @@ public class PushStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException {
+    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
 
     }
 }

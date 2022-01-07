@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 public class NestedStatement extends Argument{
     private final List<Argument> stack;
-    public NestedStatement(Type type, String token, long line) {
-        super(token, line);
+    public NestedStatement(Type type, long line, Argument parent) {
+        super(null, line, parent);
         stack = new ArrayList<>();
         this.type = type;
     }

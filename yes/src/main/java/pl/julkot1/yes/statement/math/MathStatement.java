@@ -2,6 +2,7 @@ package pl.julkot1.yes.statement.math;
 
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
+import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.DefaultTypes;
@@ -28,7 +29,8 @@ public class MathStatement extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException {
         var argumentsTypes = DefaultTypes.argumentsToTypesList(this.astStatement.getArguments());
-        var resultType = DefaultTypes.getMathType(argumentsTypes);
+        this.astStatement.setType(DefaultTypes.getMathType(argumentsTypes));
+        var resultType = this.astStatement.getType();
 
         out.write(String.format("xr[ptx] = malloc(sizeof(%s));", resultType.getCToken()).getBytes());
         out.write(String.format("*((%s *)xr[ptx]) = ", resultType.getCToken()).getBytes());
@@ -39,7 +41,7 @@ public class MathStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException {
+    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException, InvalidYesSyntaxException {
         DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }
