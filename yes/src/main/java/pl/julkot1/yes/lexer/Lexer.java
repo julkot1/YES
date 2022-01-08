@@ -17,16 +17,17 @@ public class Lexer {
                 .map(s -> s.strip().replace("\n", "").replace("\r", ""))
                 .collect(Collectors.toList());
     }
-    public static void resolveFile(String fileName) throws IOException{
+    public static List<Token> resolveFile(String fileName) throws IOException{
         BufferedReader in = new BufferedReader(new FileReader(fileName));
         var lines = getLines(in);
+        var tokens = new ArrayList<Token>();
         in.close();
         long index = 0;
         for(String line : lines){
             index++;
-            getTokens(line, index).forEach(System.out::println);
+            tokens.addAll(getTokens(line, index));
         }
-
+        return tokens;
     }
     private static Token getSyntaxToken(char c, long line){
         var t = SyntaxTokens.getToken(c);

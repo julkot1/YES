@@ -8,7 +8,14 @@ import pl.julkot1.yes.types.Type;
 import java.util.ArrayList;
 import java.util.List;
 @Getter
-public class Argument {
+public class Argument implements IParental<Argument>{
+    public Argument(String token,  long line) {
+        this.token = token;
+        this.line = line;
+        type = Type.NULL;
+        prefixes = new ArrayList<>();
+    }
+
     public Argument(String token, long line, Argument parent){
         this.token = token;
         this.parent  = parent;
@@ -24,4 +31,14 @@ public class Argument {
     protected final String token;
     protected final List<PrefixTokens> prefixes;
     private final long line;
+
+    @Override
+    public void addToParent(Argument argument) {
+
+    }
+
+    @Override
+    public Argument get() {
+        return this;
+    }
 }

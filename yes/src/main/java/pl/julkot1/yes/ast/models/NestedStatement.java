@@ -14,7 +14,8 @@ public class NestedStatement extends Argument{
         stack = new ArrayList<>();
         this.type = type;
     }
-    public void addToStack(Argument argument) {
+    @Override
+    public void addToParent(Argument argument) {
         stack.add(argument);
     }
 }
