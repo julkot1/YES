@@ -1,2 +1,2 @@
-ECHO "Type a number: ";
-PUSH {SUB 2 1};
+MUL 5 6;
+ADD 87 3434;

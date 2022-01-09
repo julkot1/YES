@@ -1,8 +1,10 @@
 package pl.julkot1.yes.lexer;
 
 import org.javatuples.Pair;
+import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.*;
 import pl.julkot1.yes.statement.StatementTokens;
+import pl.julkot1.yes.types.Type;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -17,7 +19,7 @@ public class Lexer {
                 .map(s -> s.strip().replace("\n", "").replace("\r", ""))
                 .collect(Collectors.toList());
     }
-    public static List<Token> resolveFile(String fileName) throws IOException{
+    public static List<Token> resolveFile(String fileName) throws IOException, InvalidYesSyntaxException {
         BufferedReader in = new BufferedReader(new FileReader(fileName));
         var lines = getLines(in);
         var tokens = new ArrayList<Token>();
@@ -39,7 +41,7 @@ public class Lexer {
         if(t.isEmpty())return null;
         return new Token(t.get(), line, TokenType.PREFIX);
     }
-    public static List<Token> getTokens(String chars, long line){
+    public static List<Token> getTokens(String chars, long line) throws InvalidYesSyntaxException {
         var tokens = new ArrayList<Token>();
         StringBuilder buffer = new StringBuilder();
         StringBuilder strBuffer = new StringBuilder();
@@ -86,17 +88,71 @@ public class Lexer {
 
 
         }
+        validTokens(tokens);
         return tokens;
 
     }
+    private static void validTokens(List<Token> tokens) throws InvalidYesSyntaxException{
+        for (int i = 0; i < tokens.size(); i++) {
+            var token = tokens.get(i);
+            if(token.type().equals(TokenType.TYPE)){
+                var prev = next(tokens, i-2);
+                var next = next(tokens, i);
+                if(prev == null) throw new InvalidYesSyntaxException(token.line(),  "Invalid type cast declaration (missing open token)");
+                if(next == null) throw new InvalidYesSyntaxException(token.line(),  "Invalid type cast declaration (missing end token)");
+                if(!next.obj().equals(SyntaxTokens.CAST_END)) throw new InvalidYesSyntaxException(token.line(),  "Invalid type cast declaration (missing end token)");
+                if(!prev.obj().equals(SyntaxTokens.CAST_OPEN)) throw new InvalidYesSyntaxException(token.line(),  "Invalid type cast declaration (missing open token)");
+            }
+        }
+    }
+    private static Token next(List<Token> tokens, int i){
+        if(i+1 <= tokens.size())return tokens.get(i+1);
+        return null;
+    }
 
+    private static Token simplifyString(List<Token> tokens, int i, Token token) throws InvalidYesSyntaxException{
+        var val = next(tokens, i);
+        var end = next(tokens, i+1);
+        if (end == null)throw new InvalidYesSyntaxException(token.line(), "Invalid Str value declaration");
+        if(!end.obj().equals(SyntaxTokens.STRING))throw new InvalidYesSyntaxException(token.line(), "Invalid Str value declaration");
+        if(val==null)return new Token("\"\"", token.line(), TokenType.VALUE);
+        else if(val.type().equals(TokenType.VALUE)) return new Token("\""+val.obj()+"\"", val.line(), TokenType.VALUE);
+        else throw new InvalidYesSyntaxException(token.line(), "Invalid Str value declaration");
+    }
+    private static Token simplifyType(List<Token> tokens, int i, Token token) throws InvalidYesSyntaxException{
+        var val = next(tokens, i);
+        var end = next(tokens, i+1);
+        if (end == null)throw new InvalidYesSyntaxException(token.line(), "Invalid type cast declaration (missing end token)");
+        if(!end.obj().equals(SyntaxTokens.CAST_END))throw new InvalidYesSyntaxException(token.line(), "Invalid type cast declaration (missing end token)");
+        if(val==null)throw new InvalidYesSyntaxException(token.line(), "Missing type declaration");
+        if(!val.type().equals(TokenType.TYPE))throw new InvalidYesSyntaxException(token.line(), "Between cast brackets there must be a type's token");
+        return new Token(val.obj(), val.line(), TokenType.TYPE);
+    }
+    public static List<Token> simplify(List<Token> tokens) throws InvalidYesSyntaxException {
+        var newTokens = new ArrayList<Token>();
+        for (int i = 0; i < tokens.size(); i++) {
+            var token = tokens.get(i);
+            if(token.obj().equals(SyntaxTokens.STRING)){
+               newTokens.add(simplifyString(tokens, i, token));
+               i+=2;
+            }else if(token.obj().equals(SyntaxTokens.CAST_OPEN)){
+                newTokens.add(simplifyType(tokens, i, token));
+                i+=2;
+            }else newTokens.add(token);
+        }
+        return newTokens;
+    }
     private static Token getTokensFromBuffer(String buffer, long line, boolean newLine, char next) {
         var s = SpecialTypeTokens.getToken(buffer);
         var nextS = SyntaxTokens.getToken(next);
         if(s.isEmpty() && (buffer.endsWith(" ") || nextS.isPresent()) && !buffer.equals(" ")){
+            var token = buffer.replace(" ", "");
             if(newLine){
-                return new Token(buffer.replace(" ", ""), line,TokenType.STATEMENT);
-            } return new Token(buffer.replace(" ", ""), line,TokenType.VALUE);
+                return new Token(token, line,TokenType.STATEMENT);
+            }
+            if(Type.getTypeByYToken(token).isPresent()){
+                return new Token(token, line,TokenType.TYPE);
+            }return new Token(token, line,TokenType.VALUE);
         }else if(s.isPresent()) return new Token(s.get(), line, TokenType.SPECIAL);
         return null;
     }

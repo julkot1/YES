@@ -1,6 +1,7 @@
 package pl.julkot1;
 
 import pl.julkot1.yes.ast.AST;
+import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.CGenerator;
 import pl.julkot1.yes.lexer.Lexer;
 
@@ -13,10 +14,10 @@ public class Main {
 
         try{
             var t = Lexer.resolveFile("program.yes");
-            var a = AST.build(t);
-            System.out.println(a);
+            var a = AST.build(Lexer.simplify(t));
+
             CGenerator.generate(a, "out.c");
-        }catch (IOException  err){
+        }catch (IOException | InvalidYesSyntaxException err){
             err.printStackTrace();
         }
     }
