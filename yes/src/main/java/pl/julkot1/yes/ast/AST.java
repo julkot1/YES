@@ -5,6 +5,7 @@ import pl.julkot1.yes.ast.builder.AstBuilder;
 import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.IParental;
+import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.Token;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class AST implements IParental {
         statementList = new ArrayList<>();
     }
 
-    public static AST build(List<Token> tokens){
+    public static AST build(List<Token> tokens) throws InvalidYesSyntaxException {
         var builder = new AstBuilder(tokens);
         return builder.getAst();
     }

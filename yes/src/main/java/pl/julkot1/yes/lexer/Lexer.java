@@ -47,6 +47,7 @@ public class Lexer {
         StringBuilder strBuffer = new StringBuilder();
         var isString = false;
         var newLine = true;
+        var type = false;
         var bytes = chars.getBytes();
         for(int i = 0; i < bytes.length; i++ ){
             char c = (char)bytes[i];
@@ -54,15 +55,17 @@ public class Lexer {
             var t = getSyntaxToken( c, line);
             if(!isString){
                 if(t != null){
+                    if(t.obj().equals(SyntaxTokens.CAST_OPEN)) type = true;
+                    if(t.obj().equals(SyntaxTokens.CAST_END)) type = false;
                     if(t.obj().equals(SyntaxTokens.STRING)) isString = true;
                     if(t.obj().equals(SyntaxTokens.END_LINE) || t.obj().equals(SyntaxTokens.NESTED_OPEN)) newLine = true;
-                    if(t.obj().equals(SyntaxTokens.COMMENT))return  tokens ;
+                    if(t.obj().equals(SyntaxTokens.COMMENT))return  tokens;
                     tokens.add(t);
                 }else {
                     var p = getPrefixToken(c, line);
                     if (p == null) {
                         buffer.append(c);
-                        var token = getTokensFromBuffer(buffer.toString(), line, newLine, i+1<bytes.length? (char) bytes[i+1]: 'i');
+                        var token = getTokensFromBuffer(buffer.toString(), line, newLine, i+1<bytes.length? (char) bytes[i+1]: 'i', type);
                         if(token != null) {
                             if (token.type() == TokenType.STATEMENT && newLine) newLine = false;
                             tokens.add(token);
@@ -142,12 +145,12 @@ public class Lexer {
         }
         return newTokens;
     }
-    private static Token getTokensFromBuffer(String buffer, long line, boolean newLine, char next) {
+    private static Token getTokensFromBuffer(String buffer, long line, boolean newLine, char next, boolean type) {
         var s = SpecialTypeTokens.getToken(buffer);
         var nextS = SyntaxTokens.getToken(next);
         if(s.isEmpty() && (buffer.endsWith(" ") || nextS.isPresent()) && !buffer.equals(" ")){
             var token = buffer.replace(" ", "");
-            if(newLine){
+            if(newLine && !type){
                 return new Token(token, line,TokenType.STATEMENT);
             }
             if(Type.getTypeByYToken(token).isPresent()){

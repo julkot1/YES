@@ -1,2 +1,2 @@
-MUL 5 6;
+(Long) $MUL (Int) 5 gr;
 ADD 87 3434;

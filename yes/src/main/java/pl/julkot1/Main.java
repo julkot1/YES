@@ -10,12 +10,9 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-
-
         try{
-            var t = Lexer.resolveFile("program.yes");
-            var a = AST.build(Lexer.simplify(t));
-
+            var t = Lexer.simplify(Lexer.resolveFile("program.yes"));
+            var a = AST.build(t);
             CGenerator.generate(a, "out.c");
         }catch (IOException | InvalidYesSyntaxException err){
             err.printStackTrace();
