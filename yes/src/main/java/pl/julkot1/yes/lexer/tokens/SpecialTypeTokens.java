@@ -28,11 +28,28 @@ public enum SpecialTypeTokens {
                 .filter((r)-> r.forType == Type.SIZE)
                 .collect(Collectors.toList());
     }
+    public boolean isBool(){
+        return this == SpecialTypeTokens.TRUE || this == SpecialTypeTokens.FALSE;
+    }
+    public boolean isPointer(){
+        for (SpecialTypeTokens pointer : SpecialTypeTokens.getPointers()) {
+            if(pointer == this)return true;
+        }
+        return false;
+    }
     public static List<SpecialTypeTokens> getArrays(){
         List<SpecialTypeTokens> list = new ArrayList<>(EnumSet.allOf(SpecialTypeTokens.class));
         return list.stream()
                 .filter((r)-> r.forType == null)
                 .collect(Collectors.toList());
+    }
+    public static boolean isArray(String token){
+        var t = SpecialTypeTokens.getToken(token);
+        if(t.isPresent()){
+            for (SpecialTypeTokens el : getArrays())
+                if(el == t.get())return true;
+        }
+        return false;
     }
     public static Optional<SpecialTypeTokens> getToken(String token){
         var list = new ArrayList<>(EnumSet.allOf(SpecialTypeTokens.class));

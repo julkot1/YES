@@ -1,2 +1,1 @@
-(Long) $MUL (Int) 5 gr;
-ADD 87 3434;
+ECHO "%i" (Int) gr[(Int) 2];

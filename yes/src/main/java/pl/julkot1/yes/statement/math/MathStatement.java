@@ -41,7 +41,7 @@ public class MathStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException, InvalidYesSyntaxException {
+    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }

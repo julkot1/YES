@@ -1,15 +1,9 @@
 package pl.julkot1.yes.ast.builder;
 
 import pl.julkot1.yes.ast.AST;
-import pl.julkot1.yes.ast.models.Argument;
-import pl.julkot1.yes.ast.models.AstStatement;
-import pl.julkot1.yes.ast.models.IParental;
-import pl.julkot1.yes.ast.models.Value;
+import pl.julkot1.yes.ast.models.*;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
-import pl.julkot1.yes.lexer.tokens.PrefixTokens;
-import pl.julkot1.yes.lexer.tokens.SyntaxTokens;
-import pl.julkot1.yes.lexer.tokens.Token;
-import pl.julkot1.yes.lexer.tokens.TokenType;
+import pl.julkot1.yes.lexer.tokens.*;
 import pl.julkot1.yes.types.Type;
 
 import java.util.HashSet;
@@ -73,7 +67,7 @@ public class AstBuilder {
         addPrefixes(value, t, prefixes);
         return  value;
     }
-    private int buildValue( int j, AstStatement currentStatement) throws InvalidYesSyntaxException {
+    private int buildValue(int j, AstStatement currentStatement) throws InvalidYesSyntaxException {
         var prefixes = new HashSet<PrefixTokens>();
         Type type = null;
         for (int i = j+1; i < tokens.size(); i++) {
@@ -84,10 +78,43 @@ public class AstBuilder {
             if(t.type().equals(TokenType.TYPE))type = getType(t,type);
             if(t.obj().equals(SyntaxTokens.END_LINE)){
                 return i-j-1;
-            }else if(t.type().equals(TokenType.VALUE))
-                currentStatement.addArgument(parseValue(t, currentStatement, prefixes, type));
+            }else {
+                if(t.type().equals(TokenType.SPECIAL)) {
+                    var b = (SpecialTypeTokens) t.obj();
+                    if (b.isBool() || b.isPointer()) currentStatement.addArgument(parseValue(t, currentStatement, prefixes, type));
+                }
+                if (t.type().equals(TokenType.VALUE))
+                    currentStatement.addArgument(parseValue(t, currentStatement, prefixes, type));
+                if (t.type().equals(TokenType.ARRAY)) {
+                    i += parseArray(t, currentStatement, prefixes, type, i);
+                }
+            }
 
         }
+        return 0;
+    }
+    private Token next(int i){
+        if(i+1 <= tokens.size())return tokens.get(i+1);
+        return null;
+    }
+    private int parseArray(Token t, AstStatement currentStatement, HashSet<PrefixTokens> prefixes, Type type, int i) throws InvalidYesSyntaxException {
+        if(type==null) throw new InvalidYesSyntaxException(t.line(), "type of array must be specified");
+        var n = next(i);
+        assert n != null;
+        var arr = new Array(type, t.obj().toString(),t.line(), currentStatement);
+        if(!n.obj().equals(SyntaxTokens.REGISTER_OPEN)) {
+            arr.setIndex(new Value(Type.SIZE, "1", t.line(), arr));
+            currentStatement.addArgument(arr);
+        }
+        else {
+           // var shift = parseIndex(arr, i);
+            //currentStatement.addArgument(arr);
+            //return shift - i;
+        }
+        return 0;
+    }
+
+    private int parseIndex( Array arr, int i) throws InvalidYesSyntaxException {
         return 0;
     }
 

@@ -6,6 +6,7 @@ import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.IParental;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
+import pl.julkot1.yes.lexer.tokens.SyntaxTokens;
 import pl.julkot1.yes.lexer.tokens.Token;
 
 import java.util.ArrayList;
@@ -19,8 +20,18 @@ public class AST implements IParental {
     }
 
     public static AST build(List<Token> tokens) throws InvalidYesSyntaxException {
+        validNested(tokens);
         var builder = new AstBuilder(tokens);
         return builder.getAst();
+    }
+
+    private static void validNested(List<Token> tokens) throws InvalidYesSyntaxException {
+        var reg = 0;
+        for (Token token : tokens) {
+            if(token.obj().equals(SyntaxTokens.NESTED_OPEN))reg++;
+            if(token.obj().equals(SyntaxTokens.NESTED_END))reg--;
+        }
+        if(reg != 0)throw new InvalidYesSyntaxException(0, "Invalid nested statement bracket");
     }
 
     @Override

@@ -58,7 +58,8 @@ public class Lexer {
                     if(t.obj().equals(SyntaxTokens.CAST_OPEN)) type = true;
                     if(t.obj().equals(SyntaxTokens.CAST_END)) type = false;
                     if(t.obj().equals(SyntaxTokens.STRING)) isString = true;
-                    if(t.obj().equals(SyntaxTokens.END_LINE) || t.obj().equals(SyntaxTokens.NESTED_OPEN)) newLine = true;
+                    if(t.obj().equals(SyntaxTokens.END_LINE) || t.obj().equals(SyntaxTokens.NESTED_OPEN)|| t.obj().equals(SyntaxTokens.REGISTER_OPEN)) newLine = true;
+                    if(t.obj().equals(SyntaxTokens.REGISTER_END) || t.obj().equals(SyntaxTokens.NESTED_END))newLine=false;
                     if(t.obj().equals(SyntaxTokens.COMMENT))return  tokens;
                     tokens.add(t);
                 }else {
@@ -71,9 +72,7 @@ public class Lexer {
                             tokens.add(token);
                             buffer = new StringBuilder();
                         }
-                    }else{
-                        tokens.add(p);
-                    }
+                    }else tokens.add(p);
                 }
 
             }else {
@@ -88,8 +87,6 @@ public class Lexer {
                     strBuffer.append(c);
                 }
             }
-
-
         }
         validTokens(tokens);
         return tokens;
@@ -142,9 +139,29 @@ public class Lexer {
                 newTokens.add(simplifyType(tokens, i, token));
                 i+=2;
             }else newTokens.add(token);
+            if(token.obj().equals(SyntaxTokens.REGISTER_OPEN)) {
+                checkArray(tokens, i, token);
+                var val = next(tokens, i);
+                var end = next(tokens, i+1);
+                if (end!=null && val != null){
+                    if(end.obj().equals(SyntaxTokens.REGISTER_END)){
+                        newTokens.add(new Token(val.obj(), val.line(), TokenType.VALUE));
+                        i++;
+                    }
+                }
+            }
+
         }
         return newTokens;
     }
+
+    private static void checkArray(List<Token> tokens, int i, Token token) throws InvalidYesSyntaxException {
+        var open = next(tokens, i-2);
+        if(open != null){
+            if(!open.type().equals(TokenType.ARRAY)) throw new InvalidYesSyntaxException(token.line(), "Invalid open array's index token usage");
+        }else throw new InvalidYesSyntaxException(token.line(), "Invalid open array's index token usage");
+    }
+
     private static Token getTokensFromBuffer(String buffer, long line, boolean newLine, char next, boolean type) {
         var s = SpecialTypeTokens.getToken(buffer);
         var nextS = SyntaxTokens.getToken(next);
@@ -155,7 +172,8 @@ public class Lexer {
             }
             if(Type.getTypeByYToken(token).isPresent()){
                 return new Token(token, line,TokenType.TYPE);
-            }return new Token(token, line,TokenType.VALUE);
+            }else if(SpecialTypeTokens.isArray(token))return new Token(token, line,TokenType.ARRAY);
+            else return new Token(token, line,TokenType.VALUE);
         }else if(s.isPresent()) return new Token(s.get(), line, TokenType.SPECIAL);
         return null;
     }
