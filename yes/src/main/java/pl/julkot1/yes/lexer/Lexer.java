@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class Lexer {
@@ -140,12 +141,12 @@ public class Lexer {
                 i+=2;
             }else newTokens.add(token);
             if(token.obj().equals(SyntaxTokens.REGISTER_OPEN)) {
-                checkArray(tokens, i, token);
                 var val = next(tokens, i);
                 var end = next(tokens, i+1);
                 if (end!=null && val != null){
                     if(end.obj().equals(SyntaxTokens.REGISTER_END)){
-                        newTokens.add(new Token(val.obj(), val.line(), TokenType.VALUE));
+                        if(SpecialTypeTokens.isArray(val.obj().toString().toLowerCase(Locale.ROOT))) newTokens.add(new Token((val.obj().toString().toLowerCase(Locale.ROOT)), val.line(), TokenType.SPECIAL));
+                        else newTokens.add(new Token(val.obj(), val.line(), TokenType.VALUE));
                         i++;
                     }
                 }
@@ -155,12 +156,7 @@ public class Lexer {
         return newTokens;
     }
 
-    private static void checkArray(List<Token> tokens, int i, Token token) throws InvalidYesSyntaxException {
-        var open = next(tokens, i-2);
-        if(open != null){
-            if(!open.type().equals(TokenType.ARRAY)) throw new InvalidYesSyntaxException(token.line(), "Invalid open array's index token usage");
-        }else throw new InvalidYesSyntaxException(token.line(), "Invalid open array's index token usage");
-    }
+
 
     private static Token getTokensFromBuffer(String buffer, long line, boolean newLine, char next, boolean type) {
         var s = SpecialTypeTokens.getToken(buffer);

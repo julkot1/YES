@@ -87,6 +87,7 @@ public class AstBuilder {
                     currentStatement.addArgument(parseValue(t, currentStatement, prefixes, type));
                 if (t.type().equals(TokenType.ARRAY)) {
                     i += parseArray(t, currentStatement, prefixes, type, i);
+                    type = null;
                 }
             }
 
@@ -102,21 +103,12 @@ public class AstBuilder {
         var n = next(i);
         assert n != null;
         var arr = new Array(type, t.obj().toString(),t.line(), currentStatement);
-        if(!n.obj().equals(SyntaxTokens.REGISTER_OPEN)) {
-            arr.setIndex(new Value(Type.SIZE, "1", t.line(), arr));
-            currentStatement.addArgument(arr);
-        }
-        else {
-           // var shift = parseIndex(arr, i);
-            //currentStatement.addArgument(arr);
-            //return shift - i;
-        }
-        return 0;
+        var shift = IndexBuilder.parseIndex(arr, i, tokens);
+        currentStatement.addArgument(arr);
+
+        return shift;
     }
 
-    private int parseIndex( Array arr, int i) throws InvalidYesSyntaxException {
-        return 0;
-    }
 
     public static Argument getParent(IParental<?> parent) {
         if(parent.get() instanceof AST)return null;
