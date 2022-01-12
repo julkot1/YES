@@ -20,11 +20,11 @@ public class IndexBuilder {
         var indexTokens = getIndex(list, i);
         if(indexTokens == null ){
             array.setIndex(new Value(Type.SIZE, "1", array.getLine(), array));
-            return 2;
+            return 0;
         }else{
             if(indexTokens.size()==1){
                 array.setIndex(new Value(Type.SIZE, "1", array.getLine(), array));
-                return 2;
+                return 0;
             }
             if(indexTokens.size()==3) {
                 var first = indexTokens.get(1);

@@ -20,6 +20,9 @@ public class Lexer {
                 .map(s -> s.strip().replace("\n", "").replace("\r", ""))
                 .collect(Collectors.toList());
     }
+    public static List<Token> resolve(String code) throws  InvalidYesSyntaxException{
+        return getTokens(code, 1);
+    }
     public static List<Token> resolveFile(String fileName) throws IOException, InvalidYesSyntaxException {
         BufferedReader in = new BufferedReader(new FileReader(fileName));
         var lines = getLines(in);
@@ -151,7 +154,6 @@ public class Lexer {
                     }
                 }
             }
-
         }
         return newTokens;
     }
@@ -163,12 +165,11 @@ public class Lexer {
         var nextS = SyntaxTokens.getToken(next);
         if(s.isEmpty() && (buffer.endsWith(" ") || nextS.isPresent()) && !buffer.equals(" ")){
             var token = buffer.replace(" ", "");
-            if(newLine && !type){
+            if(newLine && !type)
                 return new Token(token, line,TokenType.STATEMENT);
-            }
-            if(Type.getTypeByYToken(token).isPresent()){
+            if(Type.getTypeByYToken(token).isPresent())
                 return new Token(token, line,TokenType.TYPE);
-            }else if(SpecialTypeTokens.isArray(token))return new Token(token, line,TokenType.ARRAY);
+            else if(SpecialTypeTokens.isArray(token))return new Token(token, line,TokenType.ARRAY);
             else return new Token(token, line,TokenType.VALUE);
         }else if(s.isPresent()) return new Token(s.get(), line, TokenType.SPECIAL);
         return null;

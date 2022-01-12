@@ -1,6 +1,7 @@
 package pl.julkot1.yes.lexer.tokens;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.Array;
 import pl.julkot1.yes.ast.models.AstStatement;
@@ -10,6 +11,7 @@ import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 
 import java.util.*;
 
+@Getter
 @AllArgsConstructor
 public enum PrefixTokens {
     CALL_PARENT_CR('$', Arrays.asList(NestedStatement.class, AstStatement.class)),

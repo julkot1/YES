@@ -13,6 +13,7 @@ public class NestedStatement extends Argument{
         super(null, line, parent);
         stack = new ArrayList<>();
         this.type = type;
+
     }
     @Override
     public void addToParent(Argument argument) {
