@@ -4,8 +4,8 @@ import pl.julkot1.yes.ast.AST;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.scope.IterationCondition;
 import pl.julkot1.yes.ast.scope.Scope;
-import pl.julkot1.yes.ast.scope.StatementBuilder;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
+import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.lexer.tokens.Token;
 import pl.julkot1.yes.lexer.tokens.TokenType;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class AstBuilder {
-    private Scope scope;
+    private final Scope scope;
     private List<PrefixTokens> prefixes;
     private Type type;
     public AstBuilder(List<Token> tokens) {
@@ -42,7 +42,11 @@ public class AstBuilder {
         scope.iterateConditional((t, prev, next, index) -> {
             switch (t.type()){
                 case STATEMENT -> statement.set((StatementBuilder) new StatementBuilder().parse(type, prefixes, scope, index));
-                case PREFIX, SPECIAL, VALUE, SYNTAX ->{}
+                case TYPE -> {
+                    if(type!=null)throw new TypeException(t.line(), t.toString(), "unfortunately multi type declaration is not allowed.");
+                    type = Type.getTypeByYToken((String) t.obj()).get();
+                }
+                case PREFIX -> prefixes.add((PrefixTokens) t.obj());
                 default -> throw new InvalidYesSyntaxException(t.line(), "Nobody expects "+t+" token!");
             }
             return true;

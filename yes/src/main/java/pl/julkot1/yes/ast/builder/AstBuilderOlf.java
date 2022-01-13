@@ -61,8 +61,6 @@ public class AstBuilderOlf {
         return 0;
     }
     private void addPrefixes(Argument argument, Token t, Set<PrefixTokens> prefixes) {
-        for (PrefixTokens prefix : prefixes)
-            prefix.valid(argument.getClass(), t);
         argument.getPrefixes().addAll(prefixes);
     }
     private Value parseValue(Token t, AstStatement currentStatement, Set<PrefixTokens> prefixes, Type type){

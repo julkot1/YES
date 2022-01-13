@@ -7,7 +7,6 @@ import pl.julkot1.yes.ast.models.Array;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.exception.InvalidPrefixUsageException;
-import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 
 import java.util.*;
 
@@ -26,8 +25,8 @@ public enum PrefixTokens {
         var list = new ArrayList<>(EnumSet.allOf(PrefixTokens.class));
         return list.stream().filter((s)->s.token==token).findAny();
     }
-    public void valid(Class<? extends Argument> clazz, Token t)  throws InvalidPrefixUsageException {
-        if(!forArgs.contains(clazz))throw  new InvalidPrefixUsageException(t.line(), this.token+"", t.obj().toString());
+    public void valid(Argument arg)  throws InvalidPrefixUsageException {
+        if(!forArgs.contains(arg.getClass()))throw  new InvalidPrefixUsageException(arg.getLine(), this.token+"", arg.getToken());
     }
 
 }

@@ -1,2 +1,1 @@
-$ADD (Int) $5;
-SUB (Int) 5 5 SUB  5 5;
+ADD 21 (Short) 54 "fd";

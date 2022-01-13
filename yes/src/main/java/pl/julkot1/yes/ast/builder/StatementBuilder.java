@@ -1,9 +1,10 @@
-package pl.julkot1.yes.ast.scope;
+package pl.julkot1.yes.ast.builder;
 
 import pl.julkot1.yes.ast.builder.Builder;
 import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.Value;
+import pl.julkot1.yes.ast.scope.Scope;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.SyntaxTokens;
 import pl.julkot1.yes.lexer.tokens.Token;
@@ -16,12 +17,16 @@ import java.util.concurrent.atomic.AtomicReference;
 public class StatementBuilder extends Builder<AstStatement> {
     @Override
     protected void build() throws InvalidYesSyntaxException {
-       Argument argument = null;
-
+        if(type!=null)inst.setType(type);
+        type = null;
+        addPrefixes(inst);
+       Argument argument;
        do{
 
            argument = getStatementArgument();
-           if(argument!=null)inst.addArgument(argument);
+           if(argument!=null) {
+               inst.addArgument(argument);
+           }
        }while (argument!=null);
         scope.shift(1);
         scope.updateTokens();
@@ -33,25 +38,33 @@ public class StatementBuilder extends Builder<AstStatement> {
             switch (t.type()){
                 case PREFIX -> this.getPrefix(t);
                 case TYPE -> this.setType(t);
-                case VALUE -> argument.set(new Value(Type.INT, "4", 47, inst));
+                case VALUE -> {
+                    argument.set(buildValue(t));
+                    isNext = false;
+                }
                 case SYNTAX -> {
                     if(t.obj().equals(SyntaxTokens.END_LINE)) {
                         scope.shift(-1);
                         isNext = false;
-                    };
+                    }
                 }
             }
             scope.shift(1);
             return isNext;
         });
-        type = null;
-        prefixes = new ArrayList<>();
+
         scope.updateTokens();
         return argument.get();
 
     }
-    private Value buildValue(Token t, int index){
-        return null;
+    private Value buildValue(Token t){
+        var typeY = Type.NULL;
+        if(type!=null)typeY = type;
+        var value = new Value(typeY, (String) t.obj(), t.line(), inst);
+        addPrefixes(value);
+        type = null;
+        prefixes = new ArrayList<>();
+        return  value;
     }
     @Override
     protected void createScope(Scope rawScope, int shift) throws InvalidYesSyntaxException {

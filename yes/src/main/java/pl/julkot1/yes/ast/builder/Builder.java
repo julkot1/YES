@@ -7,11 +7,10 @@ import pl.julkot1.yes.ast.scope.Scope;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.lexer.tokens.Token;
-import pl.julkot1.yes.lexer.tokens.TokenType;
 import pl.julkot1.yes.types.Type;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 @RequiredArgsConstructor
@@ -40,5 +39,11 @@ public abstract class Builder <T extends Argument>{
         var p = (PrefixTokens) t.obj();
         if (prefixes.contains(p)) throw new InvalidYesSyntaxException(t.line(), "oh no! prefix " + p.name()+" has been called more than 1 time");
         prefixes.add((PrefixTokens) t.obj());
+    }
+    protected void addPrefixes(Argument argument) {
+        for (PrefixTokens prefix : prefixes)
+            prefix.valid(argument);
+        argument.getPrefixes().addAll(prefixes);
+        prefixes = new ArrayList<>();
     }
 }
