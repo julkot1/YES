@@ -8,8 +8,8 @@ public record Token(Object obj, long line, TokenType type) {
         return switch (type){
             case PREFIX -> ((PrefixTokens) this.obj).getToken()+"";
             case SYNTAX -> ((SyntaxTokens)obj).token+"";
-            case VALUE, STATEMENT, TYPE -> obj.toString();
-            case ARRAY, SPECIAL-> ((SpecialTypeTokens)obj).getToken();
+            case VALUE, STATEMENT, TYPE, SPECIAL -> obj.toString();
+            case ARRAY-> ((SpecialTypeTokens)obj).getToken();
         };
 
     }

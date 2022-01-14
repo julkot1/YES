@@ -51,6 +51,14 @@ public enum SpecialTypeTokens {
         }
         return false;
     }
+    public static boolean isPointer(String token){
+        var t = SpecialTypeTokens.getToken(token);
+        if(t.isPresent()){
+            for (SpecialTypeTokens el : getPointers())
+                if(el == t.get())return true;
+        }
+        return false;
+    }
     public static Optional<SpecialTypeTokens> getToken(String token){
         var list = new ArrayList<>(EnumSet.allOf(SpecialTypeTokens.class));
         return list.stream().filter((s)-> Objects.equals(s.token, token)).findAny();

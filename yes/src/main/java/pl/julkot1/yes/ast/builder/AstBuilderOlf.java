@@ -84,7 +84,7 @@ public class AstBuilderOlf {
             }else {
                 if(t.type().equals(TokenType.SPECIAL)) {
                     var b = (SpecialTypeTokens) t.obj();
-                    if (b.isBool() || b.isPointer()) {
+                    if (b. isBool() || b.isPointer()) {
                         currentStatement.addArgument(parseValue(t, currentStatement, prefixes, type));
                         prefixes = new HashSet<>();
                     }
@@ -101,7 +101,6 @@ public class AstBuilderOlf {
                 }
                 if(t.obj().equals(SyntaxTokens.NESTED_OPEN)) {
                     i+=buildNested(t, currentStatement, prefixes, type, i, tokens);
-                    System.out.println(i);
                     type = null;
                     prefixes = new HashSet<>();
                 }

@@ -38,7 +38,7 @@ public class StatementBuilder extends Builder<AstStatement> {
             switch (t.type()){
                 case PREFIX -> this.getPrefix(t);
                 case TYPE -> this.setType(t);
-                case VALUE -> {
+                case VALUE, SPECIAL-> {
                     argument.set(buildValue(t));
                     isNext = false;
                 }
@@ -60,7 +60,7 @@ public class StatementBuilder extends Builder<AstStatement> {
     private Value buildValue(Token t){
         var typeY = Type.NULL;
         if(type!=null)typeY = type;
-        var value = new Value(typeY, (String) t.obj(), t.line(), inst);
+        var value = new Value(typeY, t.toString(), t.line(), inst);
         addPrefixes(value);
         type = null;
         prefixes = new ArrayList<>();

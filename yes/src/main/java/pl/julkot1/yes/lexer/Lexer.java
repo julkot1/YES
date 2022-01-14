@@ -148,8 +148,8 @@ public class Lexer {
                 var end = next(tokens, i+1);
                 if (end!=null && val != null){
                     if(end.obj().equals(SyntaxTokens.REGISTER_END)){
-                        if(SpecialTypeTokens.isArray(val.obj().toString().toLowerCase(Locale.ROOT))) newTokens.add(new Token((val.obj().toString().toLowerCase(Locale.ROOT)), val.line(), TokenType.SPECIAL));
-                        else newTokens.add(new Token(val.obj(), val.line(), TokenType.VALUE));
+                        if(SpecialTypeTokens.isArray(val.toString())) newTokens.add(new Token((val.toString().toLowerCase(Locale.ROOT)), val.line(), TokenType.SPECIAL));
+                        else newTokens.add(new Token(val.toString(), val.line(), TokenType.VALUE));
                         i++;
                     }
                 }
@@ -171,7 +171,7 @@ public class Lexer {
                 return new Token(token, line,TokenType.TYPE);
             else if(SpecialTypeTokens.isArray(token))return new Token(token, line,TokenType.ARRAY);
             else return new Token(token, line,TokenType.VALUE);
-        }else if(s.isPresent()) return new Token(s.get(), line, TokenType.SPECIAL);
+        }else if(s.isPresent()) return new Token(s.get().getToken(), line, TokenType.VALUE);
         return null;
     }
 }

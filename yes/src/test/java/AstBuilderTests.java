@@ -2,6 +2,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import pl.julkot1.yes.ast.AST;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
+import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.types.Type;
 
 import static pl.julkot1.yes.lexer.Lexer.*;
@@ -53,5 +54,18 @@ public class AstBuilderTests {
         var arg3 = add.getArguments().get(2);
         assertEquals("\"fd\"", arg3.getToken());
 
+    }
+
+    @SneakyThrows
+    @Test
+    void statementBuildWithSpecialTest(){
+        var tokens = simplify(resolve("ADD true ptx;"));
+        var ast = AST.build(tokens);
+        assertEquals(1, ast.getStatementList().size());
+        var add = ast.getStatementList().get(0);
+        assertEquals("ADD", add.getToken());
+        assertEquals(2, add.getArguments().size());
+        assertEquals(SpecialTypeTokens.TRUE.getToken(), add.getArguments().get(0).getToken());
+        assertEquals(SpecialTypeTokens.PTX.getToken(), add.getArguments().get(1).getToken());
     }
 }
