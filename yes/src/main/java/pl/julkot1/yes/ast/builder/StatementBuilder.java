@@ -1,6 +1,5 @@
 package pl.julkot1.yes.ast.builder;
 
-import pl.julkot1.yes.ast.builder.Builder;
 import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.Value;
@@ -48,11 +47,17 @@ public class StatementBuilder extends Builder<AstStatement> {
                         isNext = false;
                     }
                 }
+                case ARRAY -> {
+                    var arrayBuilder = new ArrayBuilder().parse(type, prefixes, scope, index);
+                    argument.set(arrayBuilder.inst);
+                    isNext = false;
+                    type = null;
+                    prefixes = new ArrayList<>();
+                }
             }
             scope.shift(1);
             return isNext;
         });
-
         scope.updateTokens();
         return argument.get();
 

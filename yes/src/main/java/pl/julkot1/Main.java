@@ -11,8 +11,8 @@ public class Main {
     public static void main(String[] args) {
         try{
             var t = Lexer.simplify(Lexer.resolveFile("program.yes"));
-            var q = Lexer.resolveFile("program.yes");
             var a = AST.build(t);
+            var q = Lexer.resolveFile("program.yes");
             //CGenerator.generate(a, "out.c");
         }catch (IOException | InvalidYesSyntaxException err){
             err.printStackTrace();

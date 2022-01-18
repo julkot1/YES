@@ -27,7 +27,7 @@ public class Scope {
      * @param toShift shift value
      */
     public void shift(int toShift){
-        shiftCount+=toShift;
+        if(shiftCount+toShift <= tokens.size()) shiftCount+=toShift;
     }
     public void setTokens(List<Token> tokens, IterationCondition condition) throws InvalidYesSyntaxException {
         this.tokens = new ArrayList<>();
