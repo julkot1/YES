@@ -7,7 +7,7 @@
 
 
 # YES
-YES an esoteric "programming language" written in [Python](https://www.python.org/).
+YES an esoteric "programming language" written in [Java](https://www.java.com/).
 Yes is a structured, array-based, strong typed "programming language". 
 </br>
 To compile YES program use `yes.py`. This program generates two files - `out.c` with generated C code and runnable `app`
