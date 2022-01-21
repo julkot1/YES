@@ -1,36 +1,27 @@
 package pl.julkot1.yes.ast.builder;
 
-import pl.julkot1.yes.ast.AST;
 import pl.julkot1.yes.ast.models.AstStatement;
+import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.ast.scope.IterationCondition;
 import pl.julkot1.yes.ast.scope.Scope;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.lexer.tokens.SyntaxTokens;
-import pl.julkot1.yes.lexer.tokens.Token;
 import pl.julkot1.yes.lexer.tokens.TokenType;
 import pl.julkot1.yes.types.Type;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class AstBuilder {
-    private final Scope scope;
-    private List<PrefixTokens> prefixes;
-    private Type type;
-    public AstBuilder(List<Token> tokens) {
-        this.scope = new Scope(0, null);
-        this.scope.setTokens(tokens);
-        ast = new AST();
-    }
-    private final AST ast;
-    public AST getAst() throws InvalidYesSyntaxException {
+public class NestedBuilder extends Builder<NestedStatement> {
+    @Override
+    protected void build() throws InvalidYesSyntaxException {
+        inst = new NestedStatement(Type.NULL, parent.getLine(), parent);
         while (scope.getTokens().size()!=0){
-            ast.addToParent(getStatement());
+            inst.addToParent(getStatement());
         }
-        return ast;
     }
     private AstStatement getStatement() throws InvalidYesSyntaxException {
         type = null;
@@ -53,5 +44,20 @@ public class AstBuilder {
             return true;
         }, condition);
         return statement.get().inst;
+    }
+    @Override
+    protected void createScope(Scope rawScope, int shift) throws InvalidYesSyntaxException {
+        scope = new Scope(0, parent);
+        AtomicInteger count = new AtomicInteger(0);
+        rawScope.iterate((t, prev, next, index) -> {
+            if(t.obj().equals(SyntaxTokens.NESTED_OPEN))count.accumulateAndGet(1, Integer::sum);
+            else if(t.obj().equals(SyntaxTokens.NESTED_END))count.accumulateAndGet(1, (left, right) -> left-right);
+            scope.getTokens().add(t);
+            return count.get() != 0;
+        });
+        scope.getTokens().remove(0);
+        scope.getTokens().remove(scope.getTokens().size()-1);
+        rawScope.shift(scope.getTokens().size()+1);
+        rawScope.updateTokens();
     }
 }

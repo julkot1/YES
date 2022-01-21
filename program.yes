@@ -1,1 +1,1 @@
-ADD true (Int) gr[2] 4 (Str) xr 5;
+ADD true (Int) gr[2] 4 (Str) xr {ADD 5 6;};
