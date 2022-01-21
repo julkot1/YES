@@ -46,14 +46,22 @@ public class StatementBuilder extends Builder<AstStatement> {
                         scope.shift(-1);
                         isNext = false;
                     }
+                    else if(t.obj().equals(SyntaxTokens.NESTED_OPEN)){
+                        var nestedBuilder = new NestedBuilder().parse(type, prefixes, scope, index, inst);
+                        argument.set(nestedBuilder.inst);
+                        isNext = false;
+                        type = null;
+                        prefixes = new ArrayList<>();
+                    }
                 }
                 case ARRAY -> {
-                    var arrayBuilder = new ArrayBuilder().parse(type, prefixes, scope, index);
+                    var arrayBuilder = new ArrayBuilder().parse(type, prefixes, scope, index, inst);
                     argument.set(arrayBuilder.inst);
                     isNext = false;
                     type = null;
                     prefixes = new ArrayList<>();
                 }
+
             }
             scope.shift(1);
             return isNext;

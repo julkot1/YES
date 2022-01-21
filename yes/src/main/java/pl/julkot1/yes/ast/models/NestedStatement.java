@@ -15,6 +15,7 @@ public class NestedStatement extends Argument{
         this.type = type;
 
     }
+
     @Override
     public void addToParent(Argument argument) {
         stack.add(argument);

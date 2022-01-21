@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public abstract class Builder <T extends Argument>{
     protected Scope scope;
+    protected Argument parent;
     protected List<PrefixTokens> prefixes;
     protected Type type;
     @Getter
@@ -24,9 +25,10 @@ public abstract class Builder <T extends Argument>{
     protected int shift = 0, absShift = 0;
     protected abstract void build() throws InvalidYesSyntaxException;
     protected abstract void createScope(Scope rawScope, int shift) throws InvalidYesSyntaxException;
-    public Builder<T> parse(Type type, List<PrefixTokens> prefixes, Scope rawScope, int shift) throws InvalidYesSyntaxException {
+    public Builder<T> parse(Type type, List<PrefixTokens> prefixes, Scope rawScope, int shift, Argument parent) throws InvalidYesSyntaxException {
         this.prefixes = prefixes;
         this.type =type;
+        this.parent = parent;
         createScope(rawScope, shift);
         build();
         return this;

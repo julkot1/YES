@@ -2,6 +2,8 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import pl.julkot1.yes.ast.AST;
 import pl.julkot1.yes.ast.models.Array;
+import pl.julkot1.yes.ast.models.AstStatement;
+import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.types.Type;
@@ -104,5 +106,21 @@ public class AstBuilderTests {
         assertEquals("ptg", ((Array)add.getArguments().get(2)).getIndex().getToken());
 
     }
-
+    @SneakyThrows
+    @Test
+    void statementBuildWithNested(){
+        var tokens = simplify(resolve("DO {ADD 3 6; ECHO \"sdd\"} 6;"));
+        var ast = AST.build(tokens);
+        assertEquals(1, ast.getStatementList().size());
+        var DO = ast.getStatementList().get(0);
+        assertEquals("DO", DO.getToken());
+        assertEquals(2, DO.getArguments().size());
+        assertEquals(NestedStatement.class, DO.getArguments().get(0).getClass());
+        assertEquals(2, ((NestedStatement)DO.getArguments().get(0)).getStack().size());
+        assertEquals("ADD", ((NestedStatement)DO.getArguments().get(0)).getStack().get(0).getToken());
+        assertEquals("3", ((AstStatement)((NestedStatement)DO.getArguments().get(0)).getStack().get(0)).getArguments().get(0).getToken());
+        assertEquals("6",  ((AstStatement)((NestedStatement)DO.getArguments().get(0)).getStack().get(0)).getArguments().get(1).getToken());
+        assertEquals("ECHO", ((NestedStatement)DO.getArguments().get(0)).getStack().get(1).getToken());
+        assertEquals("\"sdd\"",  ((AstStatement)((NestedStatement)DO.getArguments().get(0)).getStack().get(1)).getArguments().get(0).getToken());
+    }
 }
