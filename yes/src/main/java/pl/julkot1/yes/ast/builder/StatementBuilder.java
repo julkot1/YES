@@ -5,6 +5,7 @@ import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.Value;
 import pl.julkot1.yes.ast.scope.Scope;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
+import pl.julkot1.yes.generator.parser.ValueParser;
 import pl.julkot1.yes.lexer.tokens.SyntaxTokens;
 import pl.julkot1.yes.lexer.tokens.Token;
 import pl.julkot1.yes.lexer.tokens.TokenType;
@@ -73,6 +74,7 @@ public class StatementBuilder extends Builder<AstStatement> {
     private Value buildValue(Token t){
         var typeY = Type.NULL;
         if(type!=null)typeY = type;
+        else typeY = ValueParser.getValueType(new Value(typeY, t.toString(), t.line(), inst));
         var value = new Value(typeY, t.toString(), t.line(), inst);
         addPrefixes(value);
         type = null;

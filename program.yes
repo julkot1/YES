@@ -1,1 +1,4 @@
-ADD true (Int) gr[2] 4 (Str) xr {ADD 5 6;};
+(Char) IN;
+(Char) IN;
+ADD (Char) xr (Char) xr[1] ;
+ECHO "%i\n" (Char) xr;

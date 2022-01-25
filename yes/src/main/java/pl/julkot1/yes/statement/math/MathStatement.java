@@ -36,7 +36,7 @@ public class MathStatement extends Statement {
         out.write(String.format("*((%s *)xr[ptx]) = ", resultType.getCToken()).getBytes());
         out.write(String.format("*((%s*)cr[0]) ", argumentsTypes.get(0).getCToken()).getBytes());
         out.write(this.operator.getBytes());
-        out.write(String.format("*((%s*)cr[1]);", argumentsTypes.get(0).getCToken()).getBytes());
+        out.write(String.format("*((%s*)cr[1]);", argumentsTypes.get(1).getCToken()).getBytes());
         out.write("ptx++;".getBytes());
     }
 

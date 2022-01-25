@@ -19,8 +19,9 @@ public class ArrayParser {
             pointer = "*ptp";
         }
         String sub = "1";
-        if (array.getIndex() instanceof Value)
+        if (array.getIndex() instanceof Value) {
             sub = "1-" + array.getIndex().getToken();
+        }
         if (array.getIndex() instanceof AstStatement)
             sub = "1-*((unsigned long*) xr[ptx-1])";
         if (array.getIndex() instanceof Array)

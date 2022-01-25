@@ -13,7 +13,6 @@ public class ArrayBuilder extends Builder<Array> {
         var shift = IndexBuilder.parseIndex(inst, beginning,scope.getTokens());
         scope.shift(shift);
         scope.updateTokens();
-        var f = 0;
     }
 
     @Override

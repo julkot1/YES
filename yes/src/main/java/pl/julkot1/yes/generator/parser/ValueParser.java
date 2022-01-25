@@ -47,6 +47,9 @@ public class ValueParser {
         return  SpecialTypeTokens.getPointers().stream()
                 .anyMatch((s)->s.getToken().equals(token));
     }
+    private static boolean isStr(String token){
+        return token.startsWith("\"") && token.endsWith("\"");
+    }
     public static Type getValueType(Value value){
         if (value.getType() != Type.NULL)
             return value.getType();
@@ -56,6 +59,8 @@ public class ValueParser {
             return Type.FLOAT;
         if(isPointer(value.getToken()))
             return Type.SIZE;
+        if(isStr(value.getToken()))
+            return Type.STR;
         return  isInteger(value.getToken());
     }
     public static boolean castToSize(Value value){

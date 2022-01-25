@@ -18,11 +18,11 @@ public class IndexBuilder {
     public static int parseIndex(Array array, int i, List<Token> list) throws InvalidYesSyntaxException {
         var indexTokens = getIndex(list, i);
         if(indexTokens == null ){
-            array.setIndex(new Value(Type.SIZE, "1", array.getLine(), array));
+            array.setIndex(new Value(Type.SIZE, "0", array.getLine(), array));
             return 0;
         }else{
             if(indexTokens.size()==1){
-                array.setIndex(new Value(Type.SIZE, "1", array.getLine(), array));
+                array.setIndex(new Value(Type.SIZE, "0", array.getLine(), array));
                 return 0;
             }
             if(indexTokens.size()==3) {
