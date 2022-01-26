@@ -41,7 +41,6 @@ public enum StatementTokens {
     X_DELL("xDELL", XDelStatement.class),
     G_DELL("gDEL", GDelStatement.class),
     PUSH("PUSH", PushStatement.class),
-    SET("SET", SetStatement.class),
     REPLACE("REPLACE", ReplaceStatement.class),
     SWAP("SWAP", SwapStatement.class),
     ECHO("ECHO", EchoStatement.class),

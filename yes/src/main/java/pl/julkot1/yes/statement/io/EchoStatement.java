@@ -1,6 +1,7 @@
 package pl.julkot1.yes.statement.io;
 
 import pl.julkot1.yes.ast.models.AstStatement;
+import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
@@ -15,7 +16,7 @@ public class EchoStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-
+        if(astStatement.getArguments().size()==0)throw  new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
     }
 
     @Override

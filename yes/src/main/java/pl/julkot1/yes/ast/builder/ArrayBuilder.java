@@ -10,6 +10,7 @@ public class ArrayBuilder extends Builder<Array> {
     protected void build() throws InvalidYesSyntaxException {
         var token = scope.getTokens().get(beginning);
         inst = new Array(type, token.toString(), token.line(), scope.getParent());
+        addPrefixes(inst);
         var shift = IndexBuilder.parseIndex(inst, beginning,scope.getTokens());
         scope.shift(shift);
         scope.updateTokens();
