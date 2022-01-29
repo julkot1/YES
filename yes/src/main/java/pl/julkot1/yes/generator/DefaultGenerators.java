@@ -31,6 +31,7 @@ public class DefaultGenerators {
         if(NestedStatementParser.isSingleStatement(argument)){
             var st = (AstStatement) argument.getStack().get(0);
             StatementParser.writeStatement(st, out);
+            argument.setType(st.getType());
             if(st.getType()==Type.NULL) throw new TypeException(st.getLine(), "nested statement {"+st.getToken()+"}", "nested statement must return value");
             out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", st.getType().getCToken()).getBytes());
             out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", st.getType().getCToken(), st.getType().getCToken()).getBytes());
@@ -71,9 +72,15 @@ public class DefaultGenerators {
         }
 
     }
+    public static String getToken(Value value){
+        if(value.getToken().equals("true"))return "1";
+        if(value.getToken().equals("false"))return "0";
+        if(value.getType()==Type.STR)return Type.StrToCString(value.getToken());
+        return value.getToken();
+    }
     public static void putValueToCr(Value value, FileOutputStream out) throws IOException {
         value.setType(ValueParser.getValueType(value));
         out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", value.getType().getCToken()).getBytes());
-        out.write(String.format("*((%s *)cr[ptc]) = %s; ptc++;", value.getType().getCToken(),  value.getToken()).getBytes());
+        out.write(String.format("*((%s *)cr[ptc]) = %s; ptc++;", value.getType().getCToken(),  getToken(value)).getBytes());
     }
 }

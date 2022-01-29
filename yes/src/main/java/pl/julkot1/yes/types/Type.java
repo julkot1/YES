@@ -15,7 +15,7 @@ public enum Type {
     LONG("Long", "long  long", "%l", "%lld"),
     SHORT("Short", "short", "%s", "%hi"),
     CHAR("Char", "unsigned char", "%c", "%hhu"),
-    BOOL("Bool", "bool", "%b", "%hhu"),
+    BOOL("Bool", "unsigned char", "%b", "%hhu"),
     SIZE("Size", "unsigned long", "%p", "%lu"),
     INT("Int", "int", "%i", "%i"),
     NULL("None", null, null, null);
@@ -25,5 +25,14 @@ public enum Type {
         var list = new ArrayList<>(EnumSet.allOf(Type.class));
         return list.stream().filter((s)->s.yesToken.equals(yesToken)).findAny();
 
+    }
+    public static String StrToCString(String value){
+        return value
+                .replace(SHORT.yesFormatSpecifier, SHORT.cFormatSpecifier)
+                .replace(CHAR.yesFormatSpecifier, CHAR.cFormatSpecifier)
+                .replace(STR.yesFormatSpecifier, STR.cFormatSpecifier)
+                .replace(SIZE.yesFormatSpecifier, SIZE.cFormatSpecifier)
+                .replace(BOOL.yesFormatSpecifier, BOOL.cFormatSpecifier)
+                .replace(LONG.yesFormatSpecifier, LONG.cFormatSpecifier);
     }
 }

@@ -1,10 +1,2 @@
-PUSH 6;
-PUSH 5;
-PUSH 4;
-ECHO "%i\n" (Char) gr;
-ECHO "%i\n" (Char) gr[1];
-ECHO "%i\nafter:\n" (Char) gr[2];
-SWAP (Char) &gr (Char) &gr[1];
-ECHO "%i\n" (Char) gr;
-ECHO "%i\n" (Char) gr[1];
-ECHO "%i\n" (Char) gr[2];
+IF {(Bool) GT 5 3} {(Char) ADD 32 2} 6;
+ECHO "%c" (Char) xr;
