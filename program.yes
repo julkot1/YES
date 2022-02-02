@@ -1,12 +1,2 @@
-ECHO "Type a number: ";
-PUSH (Int) {SUB {(Int) IN} 1};
-PUSH (Int) 1;
-PUSH (Int) 1;
-REPEAT (Int) gr[ptg] {
-   ADD (Int) gr (Int) gr[1];
-   SWAP (Int) &gr (Int) &gr[1];
-   gDEL 1;
-   PUSH (Int) xr;
-   xDEL 1;
-};
-ECHO "%i\n" (Int) gr;
+ECHO "%S-" "sdsd";
+YELL 0 "end";
