@@ -20,7 +20,9 @@ public class ArrayParser {
         }
         String sub = "1";
         if (array.getIndex() instanceof Value) {
-            sub = "1-" + array.getIndex().getToken();
+            if(SpecialTypeTokens.isPointer(array.getIndex().getToken()))sub = array.getIndex().getToken();
+            else sub = "1-" + array.getIndex().getToken();
+
         }
         if (array.getIndex() instanceof AstStatement)
             sub = "1-*((unsigned long*) xr[ptx-1])";

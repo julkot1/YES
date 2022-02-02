@@ -18,7 +18,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NestedBuilder extends Builder<NestedStatement> {
     @Override
     protected void build() throws InvalidYesSyntaxException {
-        inst = new NestedStatement(Type.NULL, parent.getLine(), parent);
+        var type = Type.NULL;
+        if(this.type != Type.NULL)type = this.type;
+        inst = new NestedStatement(type, parent.getLine(), parent);
         while (scope.getTokens().size()!=0){
             inst.addToParent(getStatement());
         }
@@ -49,6 +51,7 @@ public class NestedBuilder extends Builder<NestedStatement> {
     protected void createScope(Scope rawScope, int shift) throws InvalidYesSyntaxException {
         scope = new Scope(0, parent);
         AtomicInteger count = new AtomicInteger(0);
+        rawScope.updateTokens();
         rawScope.iterate((t, prev, next, index) -> {
             if(t.obj().equals(SyntaxTokens.NESTED_OPEN))count.accumulateAndGet(1, Integer::sum);
             else if(t.obj().equals(SyntaxTokens.NESTED_END))count.accumulateAndGet(1, (left, right) -> left-right);
@@ -56,7 +59,7 @@ public class NestedBuilder extends Builder<NestedStatement> {
             return count.get() != 0;
         });
         scope.getTokens().remove(0);
-        scope.getTokens().remove(scope.getTokens().size()-1);
+        if(scope.getTokens().size()!=0)scope.getTokens().remove(scope.getTokens().size()-1);
         rawScope.shift(scope.getTokens().size()+1);
         rawScope.updateTokens();
     }

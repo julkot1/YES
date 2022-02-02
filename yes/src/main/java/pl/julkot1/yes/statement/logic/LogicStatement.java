@@ -6,6 +6,7 @@ import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.DefaultTypes;
+import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class LogicStatement extends Statement {
     public LogicStatement(AstStatement astStatement, String operator) {
         super(astStatement);
         this.operator = operator;
+        astStatement.setType(Type.BOOL);
     }
 
     @Override

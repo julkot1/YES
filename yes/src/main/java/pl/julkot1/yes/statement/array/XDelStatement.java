@@ -15,7 +15,7 @@ public class XDelStatement extends GDelStatement{
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        out.write("if(*((unsigned long*)cr[0]) <= ptx){ptx-=*((unsigned long*)cr[0]); for (int i = 0; i < *((unsigned long *)cr[0]); i++)free(xr[ptx -i- 1]);}".getBytes());
+        out.write("if(*((unsigned long*)cr[0]) <= ptx){ptx-=*((unsigned long*)cr[0]); for (int i = 0; i < *((unsigned long *)cr[0]); i++)free(xr[ptx -i]);}".getBytes());
     }
 
 }

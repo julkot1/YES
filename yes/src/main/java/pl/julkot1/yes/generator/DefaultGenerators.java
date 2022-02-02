@@ -31,10 +31,11 @@ public class DefaultGenerators {
         if(NestedStatementParser.isSingleStatement(argument)){
             var st = (AstStatement) argument.getStack().get(0);
             StatementParser.writeStatement(st, out);
-            argument.setType(st.getType());
-            if(st.getType()==Type.NULL) throw new TypeException(st.getLine(), "nested statement {"+st.getToken()+"}", "nested statement must return value");
-            out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", st.getType().getCToken()).getBytes());
-            out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", st.getType().getCToken(), st.getType().getCToken()).getBytes());
+            if(argument.getType()==null||argument.getType()==Type.NULL)argument.setType(st.getType());
+            if(argument.getType()!=Type.NULL){
+                out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", st.getType().getCToken()).getBytes());
+                out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", st.getType().getCToken(), st.getType().getCToken()).getBytes());
+            }
         }else {
             out.write("{do{".getBytes());
             for (Argument astStatement : argument.getStack()) {
@@ -43,7 +44,7 @@ public class DefaultGenerators {
                 StatementParser.writeStatement((AstStatement) astStatement, out);
             }
             out.write("}while(0);}".getBytes());
-            if(argument.getType() == Type.NULL)
+            if(argument.getType() == Type.NULL || argument.getType() == null)
                 out.write("*(cr + ptc) = malloc(0);".getBytes());
             else {
                 out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", argument.getType().getCToken()).getBytes());

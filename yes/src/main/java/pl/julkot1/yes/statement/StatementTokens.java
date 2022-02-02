@@ -38,7 +38,7 @@ public enum StatementTokens {
     E_LT("eLT", ELtStatement.class),
     E_GT("eGT", EGtStatement.class),
     DO("DO", DoStatement.class),
-    X_DELL("xDELL", XDelStatement.class),
+    X_DELL("xDEL", XDelStatement.class),
     G_DELL("gDEL", GDelStatement.class),
     PUSH("PUSH", PushStatement.class),
     REPLACE("REPLACE", ReplaceStatement.class),

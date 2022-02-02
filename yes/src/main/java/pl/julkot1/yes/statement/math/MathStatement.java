@@ -16,6 +16,8 @@ public class MathStatement extends Statement {
 
     public MathStatement(AstStatement astStatement, String operator) {
         super(astStatement);
+        var argumentsTypes = DefaultTypes.argumentsToTypesList(this.astStatement.getArguments());
+        this.astStatement.setType(DefaultTypes.getMathType(argumentsTypes));
         this.operator = operator;
     }
 
@@ -29,9 +31,7 @@ public class MathStatement extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException {
         var argumentsTypes = DefaultTypes.argumentsToTypesList(this.astStatement.getArguments());
-        this.astStatement.setType(DefaultTypes.getMathType(argumentsTypes));
         var resultType = this.astStatement.getType();
-
         out.write(String.format("xr[ptx] = malloc(sizeof(%s));", resultType.getCToken()).getBytes());
         out.write(String.format("*((%s *)xr[ptx]) = ", resultType.getCToken()).getBytes());
         out.write(String.format("*((%s*)cr[0]) ", argumentsTypes.get(0).getCToken()).getBytes());

@@ -24,7 +24,6 @@ public class IfStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        astStatement.getArgument(0).setType(Type.BOOL);
         out.write("if(*((unsigned char*)cr[0])){".getBytes());
         DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1)), out);
         var type = astStatement.getArgument(1).getType().getCToken();
