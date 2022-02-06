@@ -1,2 +1,3 @@
-ECHO "%S-" "sdsd";
-YELL 0 "end";
+(Str) ALLOC 10;
+SYSCALL 0 0 (Str) gr 10;
+ECHO "%S\n" (Str) gr;

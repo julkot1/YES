@@ -130,17 +130,15 @@ out:
 14
 ```
 
-### SET 
-set `pr` with index to new value 
+### ALLOC
+allocates n cells in memory as element in `gr` array. If `ALLOC` is type of `Str` then `Str` with size n is allocated.
 ```
-$DO 5 {pSET 0 61}
-  {
-    ECHO "i%" pr
-  };
+ALLOC 10;
+ECHO "%v" (Void) gr;
 ```
 out:
 ```
-61
+0u
 ```
 ### SWAP
 pass 2 arguments (must be array with the same type) and swap it.
@@ -228,6 +226,17 @@ out:
 ```
 dir
 ```
+### SYSCALL
+requires min 1 argument of `Int` type. `SYSCALL` statement that calls a system call whose assembly language interface has a number as the first argument.
+<br>
+[Table of linux syscalls](https://filippo.io/linux-syscall-table/)
+```
+SYSCALL 1 0 "Hello" 5; 
+```
+out:
+```
+Hello
+```
 ### REPEAT
 passes 2 arguments. The first one is a value of integer type. The program will execute the second argument as many times as it was given in the first argument.
 ```
@@ -245,40 +254,6 @@ giggity
 ```
 ### YELL
 requires 2 (`Bool` and `Str`) arguments. If the first argument is false, the program prints the second argument to the console and exits.
-
-### WHILE & doWHILE
-The behavior of these statements is the same as in C:
-- WHILE will execute the second argument until the first argument is true.
-```
-PUSH (Int) 5;
-$WHILE {GT (Int) gr 0} {
-    ECHO "%i\n" (Int) gr;
-    REPLACE {SUB (Int) gr 1};
-    SET 0 {GT (Int) gr 0};
-};
-```
-out:
-```
-5
-4
-3
-2
-1
-```
-- doWHILE must do second argument at least one independently of the value of the condition.
-```
-PUSH (Int) 0;
-$doWHILE {GT (Int) gr 0} {
-    ECHO "%i\n" (Int) gr;
-    REPLACE {SUB (Int) gr 1};
-    SET 0 {GT (Int) gr 0};
-};
-```
-out:
-```
-0
-```
-
 
 ## Prefix
 

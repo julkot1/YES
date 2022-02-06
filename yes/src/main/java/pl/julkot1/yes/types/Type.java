@@ -18,6 +18,7 @@ public enum Type {
     BOOL("Bool", "unsigned char", "%b", "%hhu"),
     SIZE("Size", "unsigned long", "%p", "%lu"),
     INT("Int", "int", "%i", "%i"),
+    VOID("Void", "void *", "%v", "%p"),
     NULL("None", null, null, null);
     String yesToken, cToken, yesFormatSpecifier, cFormatSpecifier;
 
@@ -28,6 +29,7 @@ public enum Type {
     }
     public static String StrToCString(String value){
         return value
+                .replace(VOID.yesFormatSpecifier, VOID.cFormatSpecifier)
                 .replace(SHORT.yesFormatSpecifier, SHORT.cFormatSpecifier)
                 .replace(CHAR.yesFormatSpecifier, CHAR.cFormatSpecifier)
                 .replace(STR.yesFormatSpecifier, STR.cFormatSpecifier)

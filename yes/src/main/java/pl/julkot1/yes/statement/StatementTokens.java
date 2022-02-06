@@ -47,11 +47,12 @@ public enum StatementTokens {
     IN("IN", InStatement.class),
     IF("IF", IfStatement.class),
     REPEAT("REPEAT", RepeatStatement.class),
-    WHILE("WHILE", WhileStatement.class),
-    DO_WHILE("doWHILE", DoWhileStatement.class),
     YELL("YELL", YellStatement.class),
     RT("RT", RtStatement.class),
+    SYSCALL("SYSCALL", Syscall.class),
+    ALLOC("ALLOC", Alloc.class),
     CALL ("CALL", InStatement.class);
+
 
     public static Optional<StatementTokens> getByToken(String token){
         List<StatementTokens> list = new ArrayList<>(EnumSet.allOf(StatementTokens.class));
