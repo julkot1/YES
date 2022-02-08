@@ -1,3 +1,6 @@
-(Str) ALLOC 10;
-SYSCALL 0 0 (Str) gr 10;
-ECHO "%S\n" (Str) gr;
+$DO 5 (Int){
+    ECHO "%i\n" (Char) pr;
+    RT (Int) 6;
+    ECHO "%S\n" "df";
+} {ECHO "%S\n" "r"};
+ECHO "%i\n" (Int) xr;

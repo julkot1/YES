@@ -83,7 +83,7 @@ public class AstBuilderTests {
         assertEquals(2, add.getArguments().size());
         assertEquals(SpecialTypeTokens.XR.getToken(), add.getArguments().get(0).getToken());
         assertEquals(Type.INT, ((Array)add.getArguments().get(0)).getType());
-        assertEquals("1", ((Array)add.getArguments().get(0)).getIndex().getToken());
+        assertEquals("0", ((Array)add.getArguments().get(0)).getIndex().getToken());
         assertEquals("6", add.getArguments().get(1).getToken());
 
     }

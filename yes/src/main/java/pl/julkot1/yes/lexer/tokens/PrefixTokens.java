@@ -13,7 +13,7 @@ import java.util.*;
 @Getter
 @AllArgsConstructor
 public enum PrefixTokens {
-    CALL_PARENT_CR('$', Arrays.asList(NestedStatement.class, AstStatement.class)),
+    CALL_PARENT_CR('$', List.of(NestedStatement.class, AstStatement.class)),
     REFERENCE('&', List.of(Array.class));
     char token;
     List<Class<? extends Argument>> forArgs;

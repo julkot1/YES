@@ -25,7 +25,6 @@ public class MathStatement extends Statement {
     protected void validArguments(){
         boolean quantity = this.astStatement.getArguments().size() == 2;
         if(!quantity)throw new InvalidArgumentsQuantity(this.astStatement.getLine(), this.astStatement.getToken());
-        //TODO _INTERFACE type check
     }
 
     @Override

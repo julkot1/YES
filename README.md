@@ -49,6 +49,7 @@ python3 tests.py
     - [SYSCALL](#syscall)
     - [REPEAT](#repeat)
     - [YELL](#yell)
+    - [RT](#rt)
   - [Prefix](#prefix)
     - [call parent cr - `$`](#call-parent-cr---)
     - [reference to array - `&`](#reference-to-array---)
@@ -76,8 +77,8 @@ python3 tests.py
 | Type    | Values                   | Size   | Description   | Format specifier |
 | ------- | ------------------------ | ------ | ------------- | ---------------- |
 | Boolean | `true` or `false`        | 1 byte | logic value   | `%b`             |
-| Type    | `Int`, `Str`, `Char` ... | 1 byte | type of value | `%t`             |
 | Str     | `"Text"`                 | -      | text          | `%S`             |
+| Void    | `2u`                 | -      | empty type          | `%v`             |
 
 ## Arithmetic and logic operators
 
@@ -320,6 +321,18 @@ giggity
 
 requires 2 (`Bool` and `Str`) arguments. If the first argument is false, the program prints the second argument to the console and exits.
 
+###RT
+can be use in nested statement. Requires 1 argument with type same as  nested statement type. It puts first argument in to `xr` and ends nested statement. It can't be used in `Null` type nested statements.
+```
+DO (Int){
+    RT (Int) 6;
+    ECHO "%S\n" "df";
+} {ECHO "%i\n" (Int) xr};
+```
+out:
+```
+6
+```
 ## Prefix
 
 ### call parent cr - `$`

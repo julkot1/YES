@@ -21,6 +21,7 @@ public class NestedBuilder extends Builder<NestedStatement> {
         var type = Type.NULL;
         if(this.type != Type.NULL)type = this.type;
         inst = new NestedStatement(type, parent.getLine(), parent);
+        scope.setParent(inst);
         while (scope.getTokens().size()!=0){
             inst.addToParent(getStatement());
         }
@@ -35,7 +36,7 @@ public class NestedBuilder extends Builder<NestedStatement> {
         };
         scope.iterateConditional((t, prev, next, index) -> {
             switch (t.type()){
-                case STATEMENT -> statement.set((StatementBuilder) new StatementBuilder().parse(type, prefixes, scope, index, null));
+                case STATEMENT -> statement.set((StatementBuilder) new StatementBuilder().parse(type, prefixes, scope, index, this.inst));
                 case TYPE -> {
                     if(type!=null)throw new TypeException(t.line(), t.toString(), "unfortunately multi type declaration is not allowed.");
                     type = Type.getTypeByYToken((String) t.obj()).get();
