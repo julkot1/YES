@@ -1,6 +1,10 @@
-$DO 5 (Int){
-    ECHO "%i\n" (Char) pr;
-    RT (Int) 6;
-    ECHO "%S\n" "df";
-} {ECHO "%S\n" "r"};
-ECHO "%i\n" (Int) xr;
+_STATEMENT SUM {
+    ADD 5 6;
+    ECHO "%i\n" (Char) xr;
+};
+_STATEMENT SUM2 {
+    ECHO "%i\n" 888;
+};
+SUM;
+SUM2;
+SUM;

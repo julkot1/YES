@@ -1,6 +1,7 @@
 package pl.julkot1.yes.statement;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
@@ -14,7 +15,7 @@ public abstract class Statement {
     protected abstract void validArguments() throws InvalidYesSyntaxException;
     protected abstract void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException;
     protected abstract void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException;
-    protected AstStatement astStatement;
+    public AstStatement astStatement;
     public void generate(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         validArguments();
         out.write(BEGIN.getBytes());

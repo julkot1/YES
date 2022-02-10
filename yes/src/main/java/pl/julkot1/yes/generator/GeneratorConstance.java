@@ -9,5 +9,6 @@ public class GeneratorConstance {
     public static final String FREE_XR = "for (int i = 0; i < PTX_SIZE; i++){xr[i] = malloc(0);free(*(xr+i));}free(xr);";
     public static final String FREE_GR = "for (int i = 0; i < PTG_SIZE; i++){gr[i] = malloc(0);free(*(gr+i));}free(gr);";
     public static final String FILE_END = "return 0;}\n";
+    public static final String STATEMENT_NAME_PATTERN = "[?a-zA-Z?_?0-9]+";
 
 }

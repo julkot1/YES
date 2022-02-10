@@ -50,6 +50,7 @@ python3 tests.py
     - [REPEAT](#repeat)
     - [YELL](#yell)
     - [RT](#rt)
+  - [Statement declaration](#statement-declaration)
   - [Prefix](#prefix)
     - [call parent cr - `$`](#call-parent-cr---)
     - [reference to array - `&`](#reference-to-array---)
@@ -332,6 +333,14 @@ DO (Int){
 out:
 ```
 6
+```
+## Statement declaration
+To define new statement use `_STATEMENT`. It can be used only in `GLOBAL` scope.
+Name contains only letters, numbers and `_`. 
+<br/>
+### syntax schema:
+```
+_STATEMENT NAME {};
 ```
 ## Prefix
 

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import pl.julkot1.yes.statement.array.*;
 import pl.julkot1.yes.statement.conditional.*;
+import pl.julkot1.yes.statement.custom.StatementDeclaration;
 import pl.julkot1.yes.statement.io.*;
 import pl.julkot1.yes.statement.logic.*;
 import pl.julkot1.yes.statement.math.*;
@@ -51,6 +52,7 @@ public enum StatementTokens {
     RT("RT", RtStatement.class),
     SYSCALL("SYSCALL", Syscall.class),
     ALLOC("ALLOC", Alloc.class),
+    STATEMENT_DEF("_STATEMENT", StatementDeclaration.class),
     CALL ("CALL", InStatement.class);
 
 
