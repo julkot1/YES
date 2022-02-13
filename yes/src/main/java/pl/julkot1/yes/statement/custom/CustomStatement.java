@@ -1,9 +1,11 @@
 package pl.julkot1.yes.statement.custom;
 
 import lombok.Getter;
+import lombok.Setter;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.statement.Statement;
+import pl.julkot1.yes.statement.custom.interfaces.Interface;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,6 +15,8 @@ public class CustomStatement extends Statement {
     private final String token;
     @Getter
     private final String nameSpace;
+    @Getter @Setter
+    private Interface anInterface = null;
     public CustomStatement(AstStatement astStatement, String token, String nameSpace) {
         super(astStatement);
         this.token = token;

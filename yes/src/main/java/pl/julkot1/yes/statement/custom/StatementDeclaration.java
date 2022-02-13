@@ -7,7 +7,6 @@ import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.statement.StatementRegister;
-import pl.julkot1.yes.statement.custom.CustomStatement;
 import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
