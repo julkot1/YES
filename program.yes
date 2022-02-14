@@ -1,8 +1,3 @@
 _STATEMENT SUM {ADD 5 6;};
-_STATEMENT SUM2 {
-    ECHO "%i\n" 888;
-};
 _INTERFACE SUM {(Char) ARG 2} {(Str) ARG};
-SUM 2 2  "ddf";
-SUM2;
-SUM 43 23 "ddf";
+SUM 2 2 "ddf";
