@@ -8,8 +8,10 @@ import pl.julkot1.yes.generator.parser.ArrayParser;
 import pl.julkot1.yes.generator.parser.NestedStatementParser;
 import pl.julkot1.yes.generator.parser.StatementParser;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
+import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.types.Type;
 import pl.julkot1.yes.generator.parser.ValueParser;
+import pl.julkot1.yes.util.ArgumentsArray;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,6 +37,9 @@ public class DefaultGenerators {
             if(argument.getType()!=Type.NULL){
                 out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", st.getType().getCToken()).getBytes());
                 out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", st.getType().getCToken(), st.getType().getCToken()).getBytes());
+                if(PrefixTokens.CLEAR_XR.hasPrefix(argument.getPrefixes())){
+                    out.write("free(xr[ptx-1]); ptx--;".getBytes());
+                }
             }
         }else {
             out.write("{do{".getBytes());
@@ -55,6 +60,10 @@ public class DefaultGenerators {
     }
 
     public static void putArrayToCr(Array array, FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        if(array.getToken().equals(SpecialTypeTokens.AR.getToken())){
+            if(!ArgumentsArray.isInStatementDeclaration(array))
+                throw new InvalidYesSyntaxException(array.getLine(), array.getToken()+" could be called only in _STATEMENT body");
+        }
         if(array.getIndex() instanceof Value){
             if(!ValueParser.castToSize((Value) array.getIndex())) throw  new TypeException(array.getLine(),array.getToken(),"array index must be Size type");
             if(array.getType() == Type.NULL) throw  new TypeException(array.getLine(),array.getToken(),"to take an element from the array it's type must be given");
@@ -77,6 +86,8 @@ public class DefaultGenerators {
         if(value.getToken().equals("true"))return "1";
         if(value.getToken().equals("false"))return "0";
         if(value.getType()==Type.STR)return Type.StrToCString(value.getToken());
+        if(value.getToken().equals(SpecialTypeTokens.PTA.getToken())) return "*pta";
+        if(value.getToken().equals(SpecialTypeTokens.PTP.getToken())) return "*ptp";
         return value.getToken();
     }
     public static void putValueToCr(Value value, FileOutputStream out) throws IOException {

@@ -29,12 +29,12 @@ public enum Type {
     }
     public static String StrToCString(String value){
         return value
+                .replace(LONG.yesFormatSpecifier, LONG.cFormatSpecifier)
                 .replace(VOID.yesFormatSpecifier, VOID.cFormatSpecifier)
+                .replace(SIZE.yesFormatSpecifier, SIZE.cFormatSpecifier)
                 .replace(SHORT.yesFormatSpecifier, SHORT.cFormatSpecifier)
                 .replace(CHAR.yesFormatSpecifier, CHAR.cFormatSpecifier)
                 .replace(STR.yesFormatSpecifier, STR.cFormatSpecifier)
-                .replace(SIZE.yesFormatSpecifier, SIZE.cFormatSpecifier)
-                .replace(BOOL.yesFormatSpecifier, BOOL.cFormatSpecifier)
-                .replace(LONG.yesFormatSpecifier, LONG.cFormatSpecifier);
+                .replace(BOOL.yesFormatSpecifier, BOOL.cFormatSpecifier);
     }
 }

@@ -22,7 +22,7 @@ public class GDelStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        out.write("if(*((unsigned long*)cr[0]) <= ptg){ptg-=*((unsigned long*)cr[0]); for (int i = 0; i < *((unsigned long *)cr[0]); i++)free(gr[ptg -i]);}".getBytes());
+        out.write("if(*((unsigned long*)cr[0]) <= ptg){for (int i = 0; i < *((unsigned long *)cr[0]); i++){free(gr[ptg -i]);}ptg-=*((unsigned long*)cr[0]);}".getBytes());
     }
 
     @Override

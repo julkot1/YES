@@ -14,13 +14,16 @@ public enum SpecialTypeTokens {
     PR(null, "pr"),
     CR(null, "cr"),
     XR(null, "xr"),
+    AR(null, "ar"),
     FALSE(Type.BOOL, "false"),
     TRUE(Type.BOOL, "true"),
     PTG(Type.SIZE, "ptg"),
     PTX(Type.SIZE, "ptx"),
-    PTC(Type.SIZE, "ptc");
-    Type forType;
-    String token;
+    PTC(Type.SIZE, "ptc"),
+    PTA(Type.SIZE, "pta"),
+    PTP(Type.SIZE, "ptp");
+    final Type forType;
+    final String token;
 
     public static List<SpecialTypeTokens> getPointers(){
         List<SpecialTypeTokens> list = new ArrayList<>(EnumSet.allOf(SpecialTypeTokens.class));

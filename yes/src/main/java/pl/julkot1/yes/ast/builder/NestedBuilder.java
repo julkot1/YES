@@ -20,8 +20,10 @@ public class NestedBuilder extends Builder<NestedStatement> {
     protected void build() throws InvalidYesSyntaxException {
         var type = Type.NULL;
         if(this.type != Type.NULL)type = this.type;
+
         inst = new NestedStatement(type, parent.getLine(), parent);
         scope.setParent(inst);
+        addPrefixes(inst);
         while (scope.getTokens().size()!=0){
             inst.addToParent(getStatement());
         }

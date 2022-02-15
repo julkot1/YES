@@ -59,6 +59,6 @@ public class CustomStatementImpl extends Statement {
     @Override
     protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         DefaultGenerators.writeArguments(astStatement.getArguments(), out);
-
+        out.write("void **ar = cr;unsigned long *pta = &ptc;".getBytes());
     }
 }

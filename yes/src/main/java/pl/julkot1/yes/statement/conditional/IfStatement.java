@@ -27,14 +27,12 @@ public class IfStatement extends Statement {
         out.write("if(*((unsigned char*)cr[0])){".getBytes());
         DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1)), out);
         var type = astStatement.getArgument(1).getType().getCToken();
-        out.write(String.format("xr[ptx] = malloc(sizeof(%s));", type).getBytes());
-        out.write(String.format("*((%s*)xr[ptx]) = *((%s*)cr[1]);ptx++;}", type, type).getBytes());
+        out.write(String.format("}").getBytes());
         if (astStatement.getArguments().size()==3){
             out.write("else{".getBytes());
             DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(2)), out);
             var type2 = astStatement.getArgument(2).getType().getCToken();
-            out.write(String.format("xr[ptx] = malloc(sizeof(%s));", type2).getBytes());
-            out.write(String.format("*((%s*)xr[ptx]) = *((%s*)cr[1]);ptx++;}", type2, type2).getBytes());
+            out.write(String.format("}").getBytes());
         }
     }
 

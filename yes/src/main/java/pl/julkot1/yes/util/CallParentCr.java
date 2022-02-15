@@ -1,4 +1,4 @@
-package pl.julkot1.yes.prefix;
+package pl.julkot1.yes.util;
 
 import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;

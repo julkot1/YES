@@ -14,6 +14,7 @@ import java.util.*;
 @AllArgsConstructor
 public enum PrefixTokens {
     CALL_PARENT_CR('$', List.of(NestedStatement.class, AstStatement.class)),
+    CLEAR_XR('*', List.of(NestedStatement.class, AstStatement.class)),
     REFERENCE('&', List.of(Array.class));
     char token;
     List<Class<? extends Argument>> forArgs;

@@ -7,7 +7,7 @@ import pl.julkot1.yes.exception.InvalidArrayIndexException;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
-import pl.julkot1.yes.prefix.CallParentCr;
+import pl.julkot1.yes.util.CallParentCr;
 
 public class ArrayParser {
     public static String parseIndex(Array array) throws InvalidYesSyntaxException {
@@ -17,6 +17,9 @@ public class ArrayParser {
                 throw new InvalidArrayIndexException(array.getLine(), array.getToken(),
                         "to use pr, prefix $ must be used in parent statement");
             pointer = "*ptp";
+        }
+        if (array.getToken().equals(SpecialTypeTokens.AR.getToken())) {
+            pointer = "*pta";
         }
         String sub = "1";
         if (array.getIndex() instanceof Value) {
