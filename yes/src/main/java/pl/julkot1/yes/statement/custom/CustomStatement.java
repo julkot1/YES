@@ -9,6 +9,7 @@ import pl.julkot1.yes.statement.custom.interfaces.Interface;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class CustomStatement extends Statement {
     @Getter
@@ -33,6 +34,7 @@ public class CustomStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return null;
     }
 }

@@ -7,6 +7,7 @@ import pl.julkot1.yes.statement.Statement;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class CallStatement extends Statement {
     public CallStatement(AstStatement astStatement) {
@@ -37,7 +38,7 @@ public class CallStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }

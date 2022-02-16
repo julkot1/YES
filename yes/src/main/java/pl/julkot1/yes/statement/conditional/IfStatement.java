@@ -24,7 +24,7 @@ public class IfStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        out.write("if(*((unsigned char*)cr[0])){".getBytes());
+        out.write("if(*((unsigned char*)xr[0])){".getBytes());
         DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1)), out);
         var type = astStatement.getArgument(1).getType().getCToken();
         out.write(String.format("}").getBytes());
@@ -37,7 +37,7 @@ public class IfStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
     }
 }

@@ -37,7 +37,7 @@ public class RtStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }

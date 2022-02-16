@@ -34,7 +34,7 @@ public abstract class AbstractArg extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {}
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {}
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {return null;}
 
     public abstract int applyArg(List<ArgumentCount> argumentCounts);
 }

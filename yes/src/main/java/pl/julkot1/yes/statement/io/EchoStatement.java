@@ -8,6 +8,7 @@ import pl.julkot1.yes.statement.Statement;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class EchoStatement extends Statement {
     public EchoStatement(AstStatement astStatement) {
@@ -32,13 +33,13 @@ public class EchoStatement extends Statement {
             if(i+1 < this.astStatement.getArguments().size())args.append(",");
         }
         args.replace(args.length()-1, args.length()-1, "");
-        out.write(("char buffer[strlen(*((char **)cr[0]))+"+size+"];").getBytes());
+        out.write(String.format("char buffer[strlen(%s))+"+size+"];",arguments.get(0)).getBytes());
         out.write(String.format("sprintf(buffer, %s);", args).getBytes());
         out.write("printf(\"%s\", buffer);".getBytes());
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }

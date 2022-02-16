@@ -24,9 +24,8 @@ public class CGenerator {
         out.write(MAIN_OPEN.getBytes());
         out.write(GR_DEFINE.getBytes());
         out.write(XR_DEFINE.getBytes());
-
         for (AstStatement astStatement : ast.getStatementList())
-            StatementParser.writeStatement(astStatement, out);
+            StatementParser.writeStatement(astStatement, out, true);
         out.write(FREE_GR.getBytes());
         out.write(FREE_XR.getBytes());
         out.write(FILE_END.getBytes());

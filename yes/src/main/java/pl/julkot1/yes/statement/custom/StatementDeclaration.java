@@ -11,6 +11,7 @@ import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import static pl.julkot1.yes.generator.GeneratorConstance.STATEMENT_NAME_PATTERN;
 
@@ -41,12 +42,12 @@ public class StatementDeclaration extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return null;
     }
 
     @Override
-    public void generate(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+    public void generate(FileOutputStream out, boolean writeOut) throws IOException, InvalidYesSyntaxException {
         validArguments();
         applyPrefixes(out);
         writeArguments(out);

@@ -69,12 +69,12 @@ public class Interface extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return null;
     }
 
     @Override
-    public void generate(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+    public void generate(FileOutputStream out, boolean writeOut) throws IOException, InvalidYesSyntaxException {
         validArguments();
         applyPrefixes(out);
         writeArguments(out);

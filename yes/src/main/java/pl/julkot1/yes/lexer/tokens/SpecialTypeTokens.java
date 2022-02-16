@@ -11,17 +11,12 @@ import java.util.stream.Collectors;
 @Getter
 public enum SpecialTypeTokens {
     GR(null, "gr"),
-    PR(null, "pr"),
-    CR(null, "cr"),
-    XR(null, "xr"),
     AR(null, "ar"),
+    XR(null, "xr"),
     FALSE(Type.BOOL, "false"),
     TRUE(Type.BOOL, "true"),
     PTG(Type.SIZE, "ptg"),
-    PTX(Type.SIZE, "ptx"),
-    PTC(Type.SIZE, "ptc"),
-    PTA(Type.SIZE, "pta"),
-    PTP(Type.SIZE, "ptp");
+    PTA(Type.SIZE, "pta");
     final Type forType;
     final String token;
 

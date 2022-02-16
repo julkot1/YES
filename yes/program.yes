@@ -1,8 +1,2 @@
-PUSH (Int) 500000000;
-PUSH (Int) 0;
-REPEAT (Int) gr[1] {
-    ADD (Int) gr 1;
-    REPLACE (Int) xr;
-    xDEL 1;
-    IF *{EQ 0 *{MOD (Int) gr[1] (Int) gr}} {ECHO "%i\n" (Int) gr};
-};
+(Int) IN;
+ADD 2 (Int) xr[2];

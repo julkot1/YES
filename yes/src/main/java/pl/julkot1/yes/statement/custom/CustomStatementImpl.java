@@ -16,6 +16,7 @@ import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomStatementImpl extends Statement {
@@ -51,14 +52,14 @@ public class CustomStatementImpl extends Statement {
 
         var s = (NestedStatement) StatementRegister.get(astStatement.getToken()).astStatement.getArgument(1);
         for (Argument argument : s.getStack()) {
-            StatementParser.writeStatement((AstStatement) argument, out);
+            StatementParser.writeStatement((AstStatement) argument, out, true);
         }
         DefaultGenerators.writeArguments(s.getStack(), out);
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        DefaultGenerators.writeArguments(astStatement.getArguments(), out);
-        out.write("void **ar = cr;unsigned long *pta = &ptc;".getBytes());
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return DefaultGenerators.writeArguments(astStatement.getArguments(), out);
+        //TO-DO read arguments
     }
 }

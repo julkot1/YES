@@ -9,6 +9,7 @@ import pl.julkot1.yes.types.DefaultTypes;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 
 public class BnotStatement extends Statement {
@@ -22,22 +23,24 @@ public class BnotStatement extends Statement {
     protected void validArguments(){
         boolean quantity = this.astStatement.getArguments().size() == 1;
         if(!quantity)throw new InvalidArgumentsQuantity(this.astStatement.getLine(), this.astStatement.getToken());
-        //TODO _INTERFACE type check
+    }
+
+    @Override
+    protected void setReturning() {
+        setReturning("~"+arguments.get(0));
     }
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
         var argumentsTypes = DefaultTypes.argumentsToTypesList(this.astStatement.getArguments());
         var resultType = DefaultTypes.getMathType(argumentsTypes);
-
-        out.write(String.format("xr[ptx] = malloc(sizeof(%s));", resultType.getCToken()).getBytes());
-        out.write(String.format("*((%s *)xr[ptx]) = ", resultType.getCToken()).getBytes());
-        out.write(String.format("~*((%s*)cr[0]);", argumentsTypes.get(0).getCToken()).getBytes());
-        out.write("ptx++;".getBytes());
+        out.write(String.format("*((%s *)xr[0]) = ", resultType.getCToken()).getBytes());
+        out.write(getReturning().getBytes());
+        out.write(";".getBytes());
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException, InvalidYesSyntaxException {
-        DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
+    protected List<String> writeArguments(FileOutputStream out) throws IOException,InvalidYesSyntaxException {
+        return DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }

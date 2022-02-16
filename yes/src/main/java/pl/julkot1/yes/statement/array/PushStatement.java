@@ -10,6 +10,7 @@ import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class PushStatement extends Statement {
     public PushStatement(AstStatement astStatement) {
@@ -27,12 +28,12 @@ public class PushStatement extends Statement {
     protected void write(FileOutputStream out) throws IOException {
         var type = astStatement.getArgument(0).getType().getCToken();
         out.write(String.format("gr[ptg] = malloc(sizeof(%s));", type).getBytes());
-        out.write(String.format("*((%s*)gr[ptg]) = *((%s*)cr[0]);", type, type).getBytes());
+        out.write(String.format("*((%s*)gr[ptg]) = %s;", type, arguments.get(0)).getBytes());
         out.write("ptg++;".getBytes());
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return arguments = DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }

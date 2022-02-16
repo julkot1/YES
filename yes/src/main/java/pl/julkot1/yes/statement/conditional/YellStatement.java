@@ -33,7 +33,7 @@ public class YellStatement extends Statement {
     }
 
     @Override
-    protected void writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
+    protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        return DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
     }
 }

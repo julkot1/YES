@@ -16,6 +16,6 @@ public class ReplaceStatement extends PushStatement {
     protected void write(FileOutputStream out) throws IOException {
         var type = astStatement.getArgument(0).getType().getCToken();
         out.write(String.format("gr[ptg-1] = malloc(sizeof(%s));", type).getBytes());
-        out.write(String.format("*((%s*)gr[ptg-1]) = *((%s*)cr[0]);", type, type).getBytes());
+        out.write(String.format("*((%s*)gr[ptg-1]) = %s;", type, arguments.get(0)).getBytes());
     }
 }

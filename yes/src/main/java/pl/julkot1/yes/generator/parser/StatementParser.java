@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 public class StatementParser {
-    public static void writeStatement(AstStatement astStatement, FileOutputStream out) throws IOException{
+    public static String writeStatement(AstStatement astStatement, FileOutputStream out, boolean writeOut) throws IOException{
         var st = StatementTokens.getByToken(astStatement.getToken());
         if(st.isEmpty() && !StatementRegister.contains(astStatement.getToken()))throw new UndefinedStatement(astStatement.getLine(), astStatement.getToken());
         try{
@@ -24,8 +24,9 @@ public class StatementParser {
             }else {
                 a = (Statement) st.get().getClazz().getConstructors()[0].newInstance(astStatement);
             }
-            a.generate(out);
+            a.generate(out, writeOut);
+            return a.getReturning();
         }catch (InvalidYesSyntaxException | InstantiationException | IllegalAccessException | InvocationTargetException exception){exception.printStackTrace();}
-
+        return null;
     }
 }
