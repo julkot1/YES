@@ -1,23 +1,19 @@
 package pl.julkot1.yes.statement.custom;
 
-import lombok.Getter;
 import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
-import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.generator.DefaultGenerators;
-import pl.julkot1.yes.generator.parser.StatementParser;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.statement.StatementRegister;
 import pl.julkot1.yes.statement.custom.interfaces.ArgumentCount;
-import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.statement.custom.interfaces.InterfaceRegister;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CustomStatementImpl extends Statement {
 
@@ -29,10 +25,10 @@ public class CustomStatementImpl extends Statement {
     protected void validArguments() throws InvalidYesSyntaxException {
 
         var statement = StatementRegister.get(astStatement.getToken());
-        var anInterface = statement.getAnInterface();
-        if(anInterface!=null){
+        var anInterfaceO = InterfaceRegister.get(statement.getToken());
+        if(anInterfaceO.isPresent()){
             var args = astStatement.getArguments();
-
+            var anInterface = anInterfaceO.get();
             if(args.size()!=anInterface.getArgs())throw new InvalidArgumentsQuantity(astStatement.getLine(),  astStatement.getToken());
             var index = 0;
             for (ArgumentCount argumentCount : anInterface.getArgumentCounts()) {
@@ -48,18 +44,24 @@ public class CustomStatementImpl extends Statement {
     }
 
     @Override
-    protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-
-        var s = (NestedStatement) StatementRegister.get(astStatement.getToken()).astStatement.getArgument(1);
-        for (Argument argument : s.getStack()) {
-            StatementParser.writeStatement((AstStatement) argument, out, true);
+    protected void setReturning() throws InvalidYesSyntaxException {
+        var s = StatementRegister.get(astStatement.getToken());
+        StringBuilder a= new StringBuilder();
+        for (String argument : arguments) {
+            a.append(argument).append(",");
         }
-        DefaultGenerators.writeArguments(s.getStack(), out);
+        setReturning(s.getToken()+"("+a.substring(0,a.length()-1)+")");
+    }
+
+    @Override
+    protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        out.write("*((int *)xr[0])=".getBytes());
+        out.write(getReturning().getBytes());
+        out.write(";".getBytes());
     }
 
     @Override
     protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         return DefaultGenerators.writeArguments(astStatement.getArguments(), out);
-        //TO-DO read arguments
     }
 }

@@ -2,10 +2,16 @@ package pl.julkot1.yes.statement.custom;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
+import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
+import pl.julkot1.yes.generator.DefaultGenerators;
+import pl.julkot1.yes.generator.parser.StatementParser;
 import pl.julkot1.yes.statement.Statement;
+import pl.julkot1.yes.statement.StatementRegister;
 import pl.julkot1.yes.statement.custom.interfaces.Interface;
+import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,8 +22,6 @@ public class CustomStatement extends Statement {
     private final String token;
     @Getter
     private final String nameSpace;
-    @Getter @Setter
-    private Interface anInterface = null;
     public CustomStatement(AstStatement astStatement, String token, String nameSpace) {
         super(astStatement);
         this.token = token;
@@ -26,11 +30,11 @@ public class CustomStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        //TODO _INTERFACE
     }
 
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+
     }
 
     @Override

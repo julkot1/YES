@@ -1,2 +1,5 @@
-(Int) IN;
-ADD 2 (Int) xr[2];
+PUSH (Int) 5000000;
+REPEAT (Int) gr {
+    EQ 0 {MOD (Int) gr (Int) {ADD (Int) xr[1] 1}};
+    IF {ADD 34 4; ADD 225 5;};
+}

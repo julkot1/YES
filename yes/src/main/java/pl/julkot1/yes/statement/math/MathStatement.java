@@ -31,9 +31,9 @@ public class MathStatement extends Statement {
 
     @Override
     protected void setReturning() {
-        String ret = arguments.get(0) +
+        String ret = "("+arguments.get(0) +
                 this.operator +
-                arguments.get(1);
+                arguments.get(1)+")";
         setReturning(ret);
 
     }

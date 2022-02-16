@@ -28,7 +28,8 @@ public class Interface extends Statement {
     private final List<ArgumentCount> argumentCounts;
     @Getter
     private int args;
-
+    @Getter
+    private String token;
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
         var args =  astStatement.getArguments();
@@ -38,9 +39,7 @@ public class Interface extends Statement {
             throw new InvalidYesSyntaxException(astStatement.getLine(), args.get(0).getToken()+" statement invalid name!");
         if(astStatement.getParent()!=null)
             throw new InvalidYesSyntaxException(astStatement.getLine(), args.get(0).getToken()+": must be defined in global scope!");
-        if(!StatementRegister.contains(args.get(0).getToken()))
-            throw new InvalidYesSyntaxException(astStatement.getLine(), "statement "+args.get(0).getToken()+" is not defined!");
-        if(StatementRegister.get(args.get(0).getToken()).getAnInterface() != null)
+        if(InterfaceRegister.get(args.get(0).getToken()).isPresent())
             throw new InvalidYesSyntaxException(astStatement.getLine(), "statement "+args.get(0).getToken()+" has already had an interface!");
 
         for (Argument argument : args.subList(1, args.size())) {
@@ -65,7 +64,8 @@ public class Interface extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        StatementRegister.get(astStatement.getArgument(0).getToken()).setAnInterface(this);
+        this.token = astStatement.getArgument(0).getToken();
+        InterfaceRegister.add(this);
     }
 
     @Override

@@ -40,19 +40,14 @@ public class DefaultGenerators {
             if(argument.getType()==null||argument.getType()==Type.NULL)argument.setType(st.getType());
             return ret;
         }else {
-            out.write("{do{".getBytes());
+
             for (Argument astStatement : argument.getStack()) {
                 if (!(astStatement instanceof AstStatement))
                     throw new NestedStatementException(astStatement.getLine(), "(incorrect usage of statement)");
                 StatementParser.writeStatement((AstStatement) astStatement, out, true);
             }
-            out.write("}while(0);}".getBytes());
-            if(argument.getType() == Type.NULL || argument.getType() == null)
-                out.write("*(cr + ptc) = malloc(0);".getBytes());
-            else {
-                out.write(String.format("*(cr + ptc) = malloc(sizeof(%s));", argument.getType().getCToken()).getBytes());
-                out.write(String.format("*((%s *)cr[ptc]) = *((%s *)xr[ptx-1]); ptc++;", argument.getType().getCToken(), argument.getType().getCToken()).getBytes());
-            }
+
+
         }
         return null;
 

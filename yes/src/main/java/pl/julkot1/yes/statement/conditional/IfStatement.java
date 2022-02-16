@@ -18,26 +18,24 @@ public class IfStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if (!(astStatement.getArguments().size() == 2 || astStatement.getArguments().size() == 3))throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
+        if (!(astStatement.getArguments().size() == 1 || astStatement.getArguments().size() == 2))throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
         astStatement.getArgument(0).setType(Type.BOOL);
     }
 
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         out.write("if(*((unsigned char*)xr[0])){".getBytes());
-        DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1)), out);
-        var type = astStatement.getArgument(1).getType().getCToken();
+        DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
         out.write(String.format("}").getBytes());
         if (astStatement.getArguments().size()==3){
             out.write("else{".getBytes());
-            DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(2)), out);
-            var type2 = astStatement.getArgument(2).getType().getCToken();
+            DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1 )), out);
             out.write(String.format("}").getBytes());
         }
     }
 
     @Override
     protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        return DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
+        return null;
     }
 }

@@ -32,8 +32,7 @@ public class RtStatement extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException {
         var type = astStatement.getArgument(0).getType().getCToken();
-        out.write(String.format("*(xr + ptx) = malloc(sizeof(%s));", type).getBytes());
-        out.write(String.format("*((%s*)xr[ptx]) = *((%s*)cr[0]);ptx++;break;", type, type).getBytes());
+        out.write(String.format("return %s;", arguments.get(0)).getBytes());
     }
 
     @Override

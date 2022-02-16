@@ -26,7 +26,6 @@ public abstract class Statement {
     protected abstract List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException;
     public AstStatement astStatement;
     public void generate(FileOutputStream out, boolean writeOut) throws IOException, InvalidYesSyntaxException {
-
         validArguments();
         applyPrefixes(out);
         arguments=writeArguments(out);
@@ -35,7 +34,7 @@ public abstract class Statement {
             write(out);
         }
     }
-    protected void setReturning(){}
+    protected void setReturning() throws InvalidYesSyntaxException {}
     protected  void applyPrefixes(FileOutputStream out)throws IOException{
 
     }

@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 public class StatementParser {
     public static String writeStatement(AstStatement astStatement, FileOutputStream out, boolean writeOut) throws IOException{
         var st = StatementTokens.getByToken(astStatement.getToken());
-        if(st.isEmpty() && !StatementRegister.contains(astStatement.getToken()))throw new UndefinedStatement(astStatement.getLine(), astStatement.getToken());
+        //if(st.isEmpty() && !StatementRegister.contains(astStatement.getToken()))throw new UndefinedStatement(astStatement.getLine(), astStatement.getToken());
         try{
             Statement a;
             if(st.isEmpty()){
