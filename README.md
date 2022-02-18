@@ -377,11 +377,11 @@ Name contains only letters, numbers and `_`.
 _STATEMENT NAME {};
 ```
 ****
- 
+
 ### _INTERFACE
- 
+
 Each Statement might have an interface. An interface defines types and quantity of arguments. Definition of interface must be placed before the matching statement declaration. `_INTERFACE` requires at least 2 arguments. First one is name (like in `_STATEMENT`). The next arguments are single nested statements `{ARG}`.
- 
+
 #### ARG
 
 requires 0 or 1 digit argument. Type of statement must be specified. This statement defines how much arguments of type is in `_STATEMENT`. No argument in `ARG` means 1 argument of given type.

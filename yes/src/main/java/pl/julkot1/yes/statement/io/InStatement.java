@@ -29,12 +29,18 @@ public class InStatement extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException {
         var type = this.astStatement.getType();
-        out.write((type.getCToken()+" buffer;").getBytes());
-        if (type == Type.STR)
+        out.write("{".getBytes());
+        if(type.equals(Type.STR)) {
+            out.write("char *buffer;".getBytes());
             out.write("scanf(\"%ms\", &buffer);".getBytes());
-        else
-            out.write(("scanf(\""+type.getCFormatSpecifier()+"\", &buffer);").getBytes());
-        out.write(String.format("*((%s *)xr[2]) = buffer;",type.getCToken()).getBytes());
+            out.write("xr[2] = strdup(buffer);".getBytes());
+        }
+        else {
+            out.write((type.getCToken() + " buffer;").getBytes());
+            out.write(("scanf(\"" + type.getCFormatSpecifier() + "\", &buffer);").getBytes());
+            out.write(String.format("*((%s *)xr[2]) = buffer;", type.getCToken()).getBytes());
+        }
+        out.write("}".getBytes());
     }
 
     @Override

@@ -1,1 +1,5 @@
-MV (Str) xr[0] "sd";
+(Str) IN;
+PUSH (Str) xr[2];
+(Short) IN;
+FORMAT "%S: %s" (Str) gr (Short) xr[2];
+SYSCALL 1 1 (Str) xr[0] {LEN (Str) xr[0]};
