@@ -1,10 +1,11 @@
-package pl.julkot1.yes.statement.array;
+package pl.julkot1.yes.statement.str;
 
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.generator.DefaultGenerators;
+import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.Type;
 
@@ -12,8 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class PushStatement extends Statement {
-    public PushStatement(AstStatement astStatement) {
+public class LenStatement extends Statement {
+    public LenStatement(AstStatement astStatement) {
         super(astStatement);
     }
 
@@ -21,19 +22,23 @@ public class PushStatement extends Statement {
     protected void validArguments() throws InvalidYesSyntaxException {
         if (astStatement.getArguments().size() != 1)
             throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
-        if (astStatement.getArgument(0).getType().equals(Type.NULL))
-            throw new TypeException(astStatement.getLine(), astStatement.getToken(), "type must be specified");
+
+        if (!astStatement.getArgument(0).getType().equals(Type.STR))
+            throw new TypeException(astStatement.getLine(), astStatement.getToken(), "argument must be"+Type.STR.getYesToken());
+
     }
+
+    @Override
+    protected void setReturning() throws InvalidYesSyntaxException {
+        setReturning("strlen("+arguments.get(0)+")");
+    }
+
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        var type = astStatement.getArgument(0).getType().getCToken();
-        if(astStatement.getArgument(0).getType().equals(Type.STR)){
-            out.write(String.format("gr[ptg] = strdup(%s);", arguments.get(0)).getBytes());
-        }else{
-            out.write(String.format("gr[ptg] = malloc(sizeof(%s));", type).getBytes());
-            out.write(String.format("*((%s*)gr[ptg]) = %s;", type, arguments.get(0)).getBytes());
-        }
-        out.write("ptg++;".getBytes());
+
+        out.write("*((unsigned long*)xr[0]) =".getBytes());
+        out.write(getReturning().getBytes());
+        out.write(";".getBytes());
     }
 
     @Override

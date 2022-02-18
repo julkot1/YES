@@ -1,10 +1,8 @@
 package pl.julkot1.yes.statement;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import pl.julkot1.yes.statement.array.Alloc;
-import pl.julkot1.yes.statement.array.DelStatement;
-import pl.julkot1.yes.statement.array.PushStatement;
-import pl.julkot1.yes.statement.array.ReplaceStatement;
+import pl.julkot1.yes.statement.array.*;
 import pl.julkot1.yes.statement.conditional.IfStatement;
 import pl.julkot1.yes.statement.conditional.RepeatStatement;
 import pl.julkot1.yes.statement.conditional.YellStatement;
@@ -17,6 +15,9 @@ import pl.julkot1.yes.statement.logic.*;
 import pl.julkot1.yes.statement.math.*;
 import pl.julkot1.yes.statement.other.RtStatement;
 import pl.julkot1.yes.statement.other.Syscall;
+import pl.julkot1.yes.statement.str.CharAtStatement;
+import pl.julkot1.yes.statement.str.FormatStatement;
+import pl.julkot1.yes.statement.str.LenStatement;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Getter
+@AllArgsConstructor
 public enum StatementTokens {
     ADD("ADD", AddStatement.class),
     SUB("SUB", SubStatement.class),
@@ -58,6 +60,10 @@ public enum StatementTokens {
     STATEMENT_DEF("_STATEMENT", StatementDeclaration.class),
     INTERFACE_DEF("_INTERFACE", Interface.class),
     ARG("ARG", Arg.class),
+    STR_LEN("LEN", LenStatement.class),
+    STR_FORMAT("FORMAT", FormatStatement.class),
+    CHAR_AT("atCHAR", CharAtStatement.class),
+    MV("MV", MvStatement.class),
     CALL ("CALL", CallStatement.class);
 
 
@@ -68,24 +74,7 @@ public enum StatementTokens {
 
     String token;
     Class<? extends Statement> clazz;
-    StatementTokens(String token,  Class<? extends Statement> clazz){
-        this.token = token;
-        this.clazz = clazz;
-    }
 
-    public String getToken() {
-        return token;
-    }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
 
-    public Class<? extends Statement> getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(Class<? extends Statement> clazz) {
-        this.clazz = clazz;
-    }
 }

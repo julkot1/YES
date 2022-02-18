@@ -1,7 +1,1 @@
-PUSH (Int) 5000000000;
-REPEAT (Int) gr {
-    EQ 0 {MOD (Int) gr {ADD 1 (Int) xr[1]}};
-    IF {
-        SYSCALL 1 1 "is\n" 3;
-    };
-};
+MV (Str) xr[0] "sd";

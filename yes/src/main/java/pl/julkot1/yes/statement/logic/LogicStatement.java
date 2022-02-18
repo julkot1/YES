@@ -35,9 +35,8 @@ public class LogicStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        var argumentsTypes = DefaultTypes.argumentsToTypesList(this.astStatement.getArguments());
-        var resultType = DefaultTypes.getMathType(argumentsTypes);
-        out.write(String.format("*((%s *)xr[0]) = ", resultType.getCToken()).getBytes());
+        var resultType = astStatement.getType().getCToken();
+        out.write(String.format("*((%s *)xr[0]) = ", resultType).getBytes());
         out.write(getReturning().getBytes());
         out.write(";".getBytes());
 

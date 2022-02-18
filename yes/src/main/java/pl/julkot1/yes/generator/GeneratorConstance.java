@@ -1,7 +1,7 @@
 package pl.julkot1.yes.generator;
 
 public class GeneratorConstance {
-    public static final String IMPORTS = "#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <string.h>\n#include <sys/syscall.h>\n";
+    public static final String IMPORTS = "#define _GNU_SOURCE\n#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <string.h>\n#include <sys/syscall.h>\n";
     public static final String DEFINES = "#define PTG_SIZE 300000\nvoid **gr;void **xr;";
     public static final String MAIN_OPEN = "int main(){";
     public static final String GR_DEFINE = "gr = malloc(PTG_SIZE * sizeof(void *));unsigned long ptg = 0;";

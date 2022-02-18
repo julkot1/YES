@@ -1,3 +1,0 @@
-_STATEMENT SUM {ADD 5 6;};
-_INTERFACE SUM {(Char) ARG 2} {(Str) ARG};
-SUM 2 2 "ddf";

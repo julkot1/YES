@@ -10,7 +10,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 public enum Type {
-    STR("Str", "char *", "%S", "%s"),
+    STR("Str", "char", "%S", "%s"),
     FLOAT("Float", "float", "%f", "%f"),
     LONG("Long", "long  long", "%l", "%lld"),
     SHORT("Short", "short", "%s", "%hi"),

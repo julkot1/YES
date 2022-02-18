@@ -8,6 +8,7 @@ import pl.julkot1.yes.exception.InvalidArrayIndexException;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
+import pl.julkot1.yes.types.Type;
 
 public class ArrayParser {
     public static String parseIndex(Array array) throws InvalidYesSyntaxException {
@@ -37,6 +38,8 @@ public class ArrayParser {
         String type = array.getType().getCToken();
         if (PrefixTokens.REFERENCE.hasPrefix(array.getPrefixes()))
             return arr + index;
+        if(array.getType().equals(Type.STR))
+            return "((" + type + "*)" + arr + index + ")";
         return "*((" + type + "*)" + arr + index + ")";
     }
 }

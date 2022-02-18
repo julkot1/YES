@@ -41,6 +41,9 @@ public abstract class Statement {
         }
         applyPrefixes(out);
         arguments=writeArguments(out);
+        for (String argument : arguments) {
+            if(argument == null) throw new InvalidYesSyntaxException(astStatement.getLine(), "Null returning single nested statement!");
+        }
         setReturning();
         if(writeOut || mustBeWritten){
             write(out);
