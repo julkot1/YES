@@ -22,24 +22,19 @@ public class Syscall extends Statement {
     }
 
     @Override
-    protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+    protected void setReturning() throws InvalidYesSyntaxException {
         StringBuilder args = new StringBuilder();
-        var size = 0;
-        for (int i = 0; i < this.astStatement.getArguments().size(); i++) {
-            var argument = this.astStatement.getArgument(i);
-            size += argument.getToken().length()+1;
-            if(argument.getPrefixes().contains(PrefixTokens.REFERENCE)){
-                args.append("cr[").append(i).append("]");
-            }else {
-                args.append("*((")
-                        .append(argument.getType().getCToken())
-                        .append("*)cr[").append(i).append("])");
-            }
-            if(i+1 < this.astStatement.getArguments().size())args.append(",");
+        for (String argument : arguments) {
+            args.append(argument).append(",");
         }
-        args.replace(args.length()-1, args.length()-1, "");
-        out.write("*(xr+ptx)= malloc(sizeof(int));".getBytes());
-        out.write(String.format("*((int *)xr[ptx]) = syscall(%s);ptx++;", args).getBytes());
+        setReturning("syscall("+args.substring(0, args.length()-1)+")");
+    }
+
+    @Override
+    protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        out.write("*((int *)xr[0])=".getBytes());
+        out.write(getReturning().getBytes());
+        out.write(";".getBytes());
     }
 
     @Override

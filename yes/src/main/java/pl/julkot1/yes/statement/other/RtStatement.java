@@ -29,10 +29,14 @@ public class RtStatement extends Statement {
             throw new InvalidYesSyntaxException(astStatement.getLine(), astStatement.getToken()+": returning argument must be the same type as nested statement");
     }
 
+
+
     @Override
     protected void write(FileOutputStream out) throws IOException {
         var type = astStatement.getArgument(0).getType().getCToken();
-        out.write(String.format("return %s;", arguments.get(0)).getBytes());
+        var nIndex = ((NestedStatement)astStatement.getParent()).getNIndex();
+        if(nIndex==-1)out.write(String.format("return %s;", arguments.get(0)).getBytes());
+        else out.write(String.format("%s n%d = %s;", type, nIndex, arguments.get(0)).getBytes());
     }
 
     @Override

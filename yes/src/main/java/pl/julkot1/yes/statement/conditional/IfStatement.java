@@ -1,6 +1,7 @@
 package pl.julkot1.yes.statement.conditional;
 
 import pl.julkot1.yes.ast.models.AstStatement;
+import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
@@ -18,24 +19,55 @@ public class IfStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if (!(astStatement.getArguments().size() == 1 || astStatement.getArguments().size() == 2))throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
-        astStatement.getArgument(0).setType(Type.BOOL);
-    }
 
+
+        if(astStatement.getType().equals(Type.NULL) ) {
+            if (!(astStatement.getArguments().size() == 1 || astStatement.getArguments().size() == 2))
+                throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
+        }
+        else {
+            if (astStatement.getArguments().size() != 3 && isSingleStatement())
+                throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
+        }
+        astStatement.getArgument(0).setType(Type.BOOL);
+
+    }
+    private boolean isSingleStatement(){
+        if(astStatement.getParent() instanceof NestedStatement){
+            return ((NestedStatement) astStatement.getParent()).isSingleStatement();
+        }
+        return false;
+    }
     @Override
-    protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        out.write("if(*((unsigned char*)xr[0])){".getBytes());
-        DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
-        out.write(String.format("}").getBytes());
-        if (astStatement.getArguments().size()==3){
-            out.write("else{".getBytes());
-            DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1 )), out);
-            out.write(String.format("}").getBytes());
+    protected void setReturning() throws InvalidYesSyntaxException {
+        if(!astStatement.getType().equals(Type.NULL)){
+            if(isSingleStatement())
+                setReturning("("+arguments.get(0)+"?"+arguments.get(1)+":"+arguments.get(2)+")");
+            else
+                setReturning("(*((char *)xr[0])?"+arguments.get(0)+":"+arguments.get(1)+")");
         }
     }
 
     @Override
+    protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        if(!astStatement.getType().equals(Type.NULL)){
+           out.write(String.format("*((%s*)xr[0])=%s;", astStatement.getType().getCToken(), getReturning()).getBytes());
+        }else{
+            out.write("if(*((unsigned char*)xr[0])){".getBytes());
+            DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
+            out.write(String.format("}").getBytes());
+            if (astStatement.getArguments().size()==2){
+                out.write("else{".getBytes());
+                DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1 )), out);
+                out.write(String.format("}").getBytes());
+            }
+        }
+
+    }
+
+    @Override
     protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        if(!astStatement.getType().equals(Type.NULL))return DefaultGenerators.writeArguments(astStatement.getArguments(), out);
         return null;
     }
 }

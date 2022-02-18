@@ -5,12 +5,11 @@ import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.exception.NestedStatementException;
 import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.generator.parser.ArrayParser;
-import pl.julkot1.yes.generator.parser.NestedStatementParser;
 import pl.julkot1.yes.generator.parser.StatementParser;
+import pl.julkot1.yes.generator.parser.ValueParser;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
 import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.types.Type;
-import pl.julkot1.yes.generator.parser.ValueParser;
 import pl.julkot1.yes.util.ArgumentsArray;
 
 import java.io.FileOutputStream;
@@ -34,13 +33,12 @@ public class DefaultGenerators {
     }
 
     private static String writeNestedStatement(NestedStatement argument, FileOutputStream out) throws IOException {
-        if(NestedStatementParser.isSingleStatement(argument)){
+        if(argument.isSingleStatement()){
             var st = (AstStatement) argument.getStack().get(0);
             var ret = StatementParser.writeStatement(st, out, false);
             if(argument.getType()==null||argument.getType()==Type.NULL)argument.setType(st.getType());
             return ret;
         }else {
-
             for (Argument astStatement : argument.getStack()) {
                 if (!(astStatement instanceof AstStatement))
                     throw new NestedStatementException(astStatement.getLine(), "(incorrect usage of statement)");
@@ -49,7 +47,7 @@ public class DefaultGenerators {
 
 
         }
-        return null;
+        return "n"+argument.getNIndex();
 
     }
 

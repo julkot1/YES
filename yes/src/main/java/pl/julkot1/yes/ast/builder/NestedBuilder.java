@@ -36,6 +36,7 @@ public class NestedBuilder extends Builder<NestedStatement> {
             if(prev == null)return true;
             return !prev.type().equals(TokenType.STATEMENT);
         };
+        if(scope.getTokens().get(scope.getTokens().size()-1).obj().equals(SyntaxTokens.END_LINE)) inst.setSingleStatement(false);
         scope.iterateConditional((t, prev, next, index) -> {
             switch (t.type()){
                 case STATEMENT -> statement.set((StatementBuilder) new StatementBuilder().parse(type, prefixes, scope, index, this.inst));
@@ -48,6 +49,7 @@ public class NestedBuilder extends Builder<NestedStatement> {
             }
             return true;
         }, condition);
+
         return statement.get().inst;
     }
     @Override

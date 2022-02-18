@@ -12,12 +12,18 @@ import java.util.List;
 public class InStatement extends Statement {
     public InStatement(AstStatement astStatement) {
         super(astStatement);
+        setMustBeWritten(true);
     }
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
         if(this.astStatement.getType().equals(Type.NULL)) throw  new InvalidYesSyntaxException(astStatement.getLine(), "Type must be specified!");
 
+    }
+
+    @Override
+    protected void setReturning() throws InvalidYesSyntaxException {
+        setReturning(String.format("*((%s*)xr[2])", astStatement.getType().getCToken()));
     }
 
     @Override

@@ -4,4 +4,4 @@ REPEAT (Int) gr {
     IF {
         SYSCALL 1 1 "is\n" 3;
     };
-};
+}

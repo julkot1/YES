@@ -10,8 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class GDelStatement extends Statement {
-    public GDelStatement(AstStatement astStatement) {
+public class DelStatement extends Statement {
+    public DelStatement(AstStatement astStatement) {
         super(astStatement);
     }
 
@@ -23,7 +23,7 @@ public class GDelStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        out.write("if(*((unsigned long*)cr[0]) <= ptg){for (int i = 0; i < *((unsigned long *)cr[0]); i++){free(gr[ptg -i]);}ptg-=*((unsigned long*)cr[0]);}".getBytes());
+        out.write("for (int i = 0; i < *((unsigned long *)cr[0]); i++){free(gr[ptg -i]);}ptg-=*((unsigned long*)cr[0]);".getBytes());
     }
 
     @Override
