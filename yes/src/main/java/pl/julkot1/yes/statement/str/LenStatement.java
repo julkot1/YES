@@ -1,5 +1,6 @@
 package pl.julkot1.yes.statement.str;
 
+import pl.julkot1.yes.ast.models.Array;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
@@ -22,8 +23,11 @@ public class LenStatement extends Statement {
     protected void validArguments() throws InvalidYesSyntaxException {
         if (astStatement.getArguments().size() != 1)
             throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
-
-        if (!astStatement.getArgument(0).getType().equals(Type.STR))
+        var arg0 = astStatement.getArgument(0);
+        if(arg0 instanceof Array && arg0.getType().equals(Type.NULL)){
+            arg0.setType(Type.STR);
+        }
+        if (!arg0.getType().equals(Type.STR))
             throw new TypeException(astStatement.getLine(), astStatement.getToken(), "argument must be"+Type.STR.getYesToken());
 
     }

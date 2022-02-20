@@ -23,7 +23,7 @@ public class DelStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        out.write("for (int i = 0; i < *((unsigned long *)cr[0]); i++){free(gr[ptg -i]);}ptg-=*((unsigned long*)cr[0]);".getBytes());
+        out.write(String.format("for (int i = 0; i <%s; i++){free(gr[ptg -i]);}ptg-=%s;", arguments.get(0), arguments.get(0)).getBytes());
     }
 
     @Override

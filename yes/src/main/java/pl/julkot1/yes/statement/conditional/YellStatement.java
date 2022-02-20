@@ -1,5 +1,6 @@
 package pl.julkot1.yes.statement.conditional;
 
+import pl.julkot1.yes.ast.models.Array;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
@@ -20,6 +21,10 @@ public class YellStatement extends Statement {
     protected void validArguments() throws InvalidYesSyntaxException {
         if (!(astStatement.getArguments().size() == 2))throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
         astStatement.getArgument(0).setType(Type.BOOL);
+        var arg1 = astStatement.getArgument(1);
+        if(arg1 instanceof Array && arg1.getType().equals(Type.NULL)){
+            arg1.setType(Type.STR);
+        }
     }
 
     @Override

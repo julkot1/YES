@@ -13,21 +13,21 @@ import pl.julkot1.yes.types.Type;
 public class ArrayParser {
     public static String parseIndex(Array array) throws InvalidYesSyntaxException {
         if(array.getToken().equals(SpecialTypeTokens.XR.getToken())){
-            if(!NumberUtils.isDigits(array.getIndex().getToken()))throw new InvalidYesSyntaxException(array.getLine(), "index must be a constance value");
-            return "["+array.getIndex().getToken()+"]";
+            if(!NumberUtils.isDigits(array.getIndex().getArgument().getToken()))throw new InvalidYesSyntaxException(array.getLine(), "index must be a constance value");
+            return "["+array.getIndex().getArgument().getToken()+"]";
         }
         else{
             String pointer = "pt" + array.getToken().charAt(0);
             String sub = "1";
-            if (array.getIndex() instanceof Value) {
-                if (SpecialTypeTokens.isPointer(array.getIndex().getToken())) sub = array.getIndex().getToken();
-                else sub = "1-" + array.getIndex().getToken();
+            if (array.getIndex().getArgument() instanceof Value) {
+                if (SpecialTypeTokens.isPointer(array.getIndex().getArgument().getToken())) sub = array.getIndex().getArgument().getToken();
+                else sub = "1-" + array.getIndex().getArgument().getToken();
 
             }
-            if (array.getIndex() instanceof AstStatement)
+            if (array.getIndex().getArgument() instanceof AstStatement)
                 sub = "1-*((unsigned long*) xr[0])";
-            if (array.getIndex() instanceof Array)
-                sub = getElement((Array) array.getIndex());
+            if (array.getIndex().getArgument() instanceof Array)
+                sub = getElement((Array) array.getIndex().getArgument());
             return "[" + pointer + "-" + sub + "]";
         }
     }

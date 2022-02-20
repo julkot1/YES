@@ -62,7 +62,7 @@ public enum StatementTokens {
     ARG("ARG", Arg.class),
     STR_LEN("LEN", LenStatement.class),
     STR_FORMAT("FORMAT", FormatStatement.class),
-    CHAR_AT("atCHAR", CharAtStatement.class),
+    CHAR_AT("CHAR", CharAtStatement.class),
     MV("MV", MvStatement.class),
     CALL ("CALL", CallStatement.class);
 
@@ -72,8 +72,8 @@ public enum StatementTokens {
         return list.stream().filter((s)->s.token.equals(token)).findAny();
     }
 
-    String token;
-    Class<? extends Statement> clazz;
+    final String token;
+    final Class<? extends Statement> clazz;
 
 
 

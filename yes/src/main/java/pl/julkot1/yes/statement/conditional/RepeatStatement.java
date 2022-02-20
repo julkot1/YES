@@ -1,5 +1,6 @@
 package pl.julkot1.yes.statement.conditional;
 
+import pl.julkot1.yes.ast.models.Array;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
@@ -19,6 +20,10 @@ public class RepeatStatement extends Statement {
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
         if (!(astStatement.getArguments().size() == 2))throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
+        var arg0 = astStatement.getArgument(0);
+        if(arg0 instanceof Array && arg0.getType().equals(Type.NULL)){
+            arg0.setType(Type.INT);
+        }
     }
 
     @Override

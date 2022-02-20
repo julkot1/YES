@@ -1,2 +1,0 @@
-PUSH (Int) 5000000000;
-MV (Str) xr[0] "Ad";

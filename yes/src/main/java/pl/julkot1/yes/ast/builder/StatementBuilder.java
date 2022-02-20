@@ -43,16 +43,21 @@ public class StatementBuilder extends Builder<AstStatement> {
                     isNext = false;
                 }
                 case SYNTAX -> {
-                    if(t.obj().equals(SyntaxTokens.END_LINE)) {
-                        scope.shift(-1);
-                        isNext = false;
-                    }
-                    else if(t.obj().equals(SyntaxTokens.NESTED_OPEN)){
-                        var nestedBuilder = new NestedBuilder().parse(type, prefixes, scope, index, inst);
-                        argument.set(nestedBuilder.inst);
-                        isNext = false;
-                        type = null;
-                        prefixes = new ArrayList<>();
+                    switch ((SyntaxTokens)t.obj()){
+                        case END_LINE -> {
+                            scope.shift(-1);
+                            isNext = false;
+                        }
+                        case NESTED_OPEN -> {
+                            var nestedBuilder = new NestedBuilder().parse(type, prefixes, scope, index, inst);
+                            argument.set(nestedBuilder.inst);
+                            isNext = false;
+                            type = null;
+                            prefixes = new ArrayList<>();
+                        }
+                        case REGISTER_OPEN ->
+                            throw new InvalidYesSyntaxException(t.line(), "invalid usage of index");
+
                     }
                 }
                 case ARRAY -> {

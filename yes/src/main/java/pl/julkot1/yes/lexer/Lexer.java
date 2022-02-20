@@ -161,6 +161,7 @@ public class Lexer {
 
 
     private static Token getTokensFromBuffer(String buffer, long line, boolean newLine, char next, boolean type) {
+
         var s = SpecialTypeTokens.getToken(buffer);
         var nextS = SyntaxTokens.getToken(next);
         if(s.isEmpty() && (buffer.endsWith(" ") || nextS.isPresent()) && !buffer.equals(" ")){
@@ -169,9 +170,18 @@ public class Lexer {
                 return new Token(token, line,TokenType.STATEMENT);
             if(Type.getTypeByYToken(token).isPresent())
                 return new Token(token, line,TokenType.TYPE);
-            else if(SpecialTypeTokens.isArray(token))return new Token(token, line,TokenType.ARRAY);
+            if(SpecialTypeTokens.isArray(token))
+                return new Token(token, line, TokenType.ARRAY);
             else return new Token(token, line,TokenType.VALUE);
-        }else if(s.isPresent()) return new Token(s.get().getToken(), line, TokenType.VALUE);
+        }else {
+            if (s.isPresent()) {
+                var token = s.get().getToken();
+                if(SpecialTypeTokens.isArray(token))
+                    return new Token(token, line, TokenType.ARRAY);
+                return new Token(token, line, TokenType.VALUE);
+            }
+
+        }
         return null;
     }
 }

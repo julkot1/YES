@@ -7,7 +7,6 @@ import pl.julkot1.yes.ast.scope.Scope;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.lexer.tokens.PrefixTokens;
-import pl.julkot1.yes.lexer.tokens.SyntaxTokens;
 import pl.julkot1.yes.lexer.tokens.Token;
 import pl.julkot1.yes.lexer.tokens.TokenType;
 import pl.julkot1.yes.types.Type;

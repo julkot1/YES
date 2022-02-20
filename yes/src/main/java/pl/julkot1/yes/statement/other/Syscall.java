@@ -19,6 +19,7 @@ public class Syscall extends Statement {
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
         if(astStatement.getArguments().size()==0)throw  new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
+
     }
 
     @Override

@@ -36,10 +36,11 @@ public enum SpecialTypeTokens {
         return false;
     }
     public static List<SpecialTypeTokens> getArrays(){
-        List<SpecialTypeTokens> list = new ArrayList<>(EnumSet.allOf(SpecialTypeTokens.class));
-        return list.stream()
-                .filter((r)-> r.forType == null)
-                .collect(Collectors.toList());
+        List<SpecialTypeTokens> list = new ArrayList<>();
+        list.add(AR);
+        list.add(GR);
+        list.add(XR);
+        return list;
     }
     public static boolean isArray(String token){
         var t = SpecialTypeTokens.getToken(token);

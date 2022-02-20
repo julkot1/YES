@@ -351,7 +351,7 @@ out:
  
 requires 2 (`Bool` and `Str`) arguments. If the first argument is false, the program prints the second argument to the console and exits.
 
-### atCHAR
+### CHAR
 
 requires 2 (`Str` and `Size`) arguments and returns `Char` at index (2nd argument) of string (1st argument).
 

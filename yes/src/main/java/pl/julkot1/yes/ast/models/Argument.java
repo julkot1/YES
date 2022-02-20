@@ -24,8 +24,12 @@ public class Argument implements IParental<Argument>{
         prefixes = new ArrayList<>();
 
     }
-    @Setter
+
     protected Type type;
+    public void setType(Type type){
+        if(type == null)this.type = Type.NULL;
+        else this.type = type;
+    }
     @Setter
     private Argument parent;
     protected final String token;

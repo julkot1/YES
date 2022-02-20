@@ -56,13 +56,15 @@ public class DefaultGenerators {
             if(!ArgumentsArray.isInStatementDeclaration(array))
                 throw new InvalidYesSyntaxException(array.getLine(), array.getToken()+" could be called only in _STATEMENT body");
         }
-        if(array.getIndex() instanceof Value){
-            if(!ValueParser.castToSize((Value) array.getIndex())) throw  new TypeException(array.getLine(),array.getToken(),"array index must be Size type");
+        if(array.getIndex().getArgument() instanceof Value){
+            if(!ValueParser.castToSize((Value) array.getIndex().getArgument())) throw  new TypeException(array.getLine(),array.getToken(),"array index must be Size type");
             if(array.getType() == Type.NULL) throw  new TypeException(array.getLine(),array.getToken(),"to take an element from the array it's type must be given");
         }
-        if(array.getIndex() instanceof AstStatement){
-            StatementParser.writeStatement((AstStatement) array.getIndex(), out, true);
+        if(array.getIndex().getArgument() instanceof AstStatement){
+            StatementParser.writeStatement((AstStatement) array.getIndex().getArgument(), out, true);
         }
+        if(array.getType()==null)
+            throw new TypeException(array.getLine(), array.getToken()+"["+array.getIndex().getArgument().getToken()+"]", "missing type");
         var type = array.getType().getCToken();
         var element =  ArrayParser.getElement(array);
         //TODO reference

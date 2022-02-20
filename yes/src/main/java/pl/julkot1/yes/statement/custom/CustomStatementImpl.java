@@ -1,6 +1,7 @@
 package pl.julkot1.yes.statement.custom;
 
 import pl.julkot1.yes.ast.models.Argument;
+import pl.julkot1.yes.ast.models.Array;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
@@ -10,6 +11,7 @@ import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.statement.StatementRegister;
 import pl.julkot1.yes.statement.custom.interfaces.ArgumentCount;
 import pl.julkot1.yes.statement.custom.interfaces.InterfaceRegister;
+import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,6 +37,11 @@ public class CustomStatementImpl extends Statement {
                 var count = argumentCount.getValue();
                 var type = argumentCount.getType();
                 for (Argument argument : args.subList(index, count+index)) {
+                    if(argument instanceof Array){
+                        if(argument.getType().equals(Type.NULL)){
+                            argument.setType(type);
+                        }
+                    }
                     if(type!=argument.getType())
                         throw new TypeException(astStatement.getLine(),argument.getToken(), "expected "+type.getYesToken()+" type!");
                 }
