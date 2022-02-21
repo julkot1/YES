@@ -62,8 +62,17 @@ public class CustomStatementImpl extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        out.write("*((int *)xr[0])=".getBytes());
+
+        var statement = StatementRegister.get(astStatement.getToken());
+        if(!statement.astStatement.getType().equals(Type.NULL)){
+            if(statement.astStatement.getType().equals(Type.STR))
+                out.write("xr[0]=strdup(".getBytes());
+            else
+                out.write(String.format("*((%s *)xr[0])=", statement.astStatement.getType().getCToken()).getBytes());
+        }
         out.write(getReturning().getBytes());
+        if(statement.astStatement.getType().equals(Type.STR))
+            out.write(")".getBytes());
         out.write(";".getBytes());
     }
 

@@ -25,8 +25,7 @@ public class RtStatement extends Statement {
             throw new InvalidArgumentsQuantity(astStatement.getLine(),  astStatement.getToken());
         if(astStatement.getParent().getType()== Type.NULL||astStatement.getParent().getType()==null)
             throw new InvalidYesSyntaxException(astStatement.getLine(), astStatement.getToken()+" can't be called inside Null type nested statement");
-        if(astStatement.getParent().getType() !=  astStatement.getArguments().get(0).getType())
-            throw new InvalidYesSyntaxException(astStatement.getLine(), astStatement.getToken()+": returning argument must be the same type as nested statement");
+        
     }
 
 

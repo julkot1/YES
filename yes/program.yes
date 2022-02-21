@@ -1,16 +1,7 @@
-PUSH "sfd";
-REPEAT 10 {
-    EQ 0 {MOD (Int) xr[1] 2};
-    NEXT;
-    FORMAT "%i\n" (Int) xr[1];
-    SYSCALL 1 1 (Str) xr[0] {LEN xr[0]};
+_INTERFACE FOO {(Char) ARG 2} {(Str) ARG};
+_STATEMENT FOO (Str) {
+    FORMAT "%c %c %S\n" ar[0] ar[1] ar[2];
+    RT (Str) xr[0];
 };
-MV xr[0] 4;
-MATCH (Char) xr[0] (Str) {
-    AS 0 "a";
-    DO 4 {
-        SYSCALL 1 1 "hello\n" 6;
-    };
-    AS 3 "c";
-};
-SYSCALL 1 1 (Str) xr[0] 1;
+FOO 2 2 "ef";
+SYSCALL 1 1 (Str) xr[0] {LEN xr[0]};

@@ -14,6 +14,7 @@ import pl.julkot1.yes.statement.custom.interfaces.ArgumentCount;
 import pl.julkot1.yes.statement.custom.interfaces.Interface;
 import pl.julkot1.yes.statement.custom.interfaces.InterfaceRegister;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.StatementUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,13 +49,23 @@ public class StatementDeclaration extends Statement {
         var cs = new CustomStatement(this.astStatement, astStatement.getArgument(0).getToken(), "");
         StatementRegister.add(cs);
         var type = this.astStatement.getType();
-        out.write(String.format("%s %s(%s){", type.equals(Type.NULL)?"void":type.getCToken(), astStatement.getArgument(0).getToken(), setArgs(cs)).getBytes());
+        var cType = type.equals(Type.STR)?"char*":type.getCToken();
+        out.write(String.format("%s %s(%s){", type.equals(Type.NULL)?"void":cType, astStatement.getArgument(0).getToken(), setArgs(cs)).getBytes());
+        out.write(String.format("size_t pta = %d;", getPTA(cs)).getBytes());
         var s = (NestedStatement) cs.astStatement.getArgument(1);
         for (Argument argument : s.getStack()) {
             StatementParser.writeStatement((AstStatement) argument, out, true);
         }
         DefaultGenerators.writeArguments(s.getStack(), out);
         out.write("}".getBytes());
+    }
+
+    private int getPTA(CustomStatement cs) throws InvalidYesSyntaxException {
+        if(InterfaceRegister.contains(cs.getToken())) {
+            var anInterface = InterfaceRegister.get(cs.getToken()).get();
+            return StatementUtils.argumentsSize(anInterface.getArgumentCounts());
+        }
+        return 0;
     }
 
     @Override
@@ -67,7 +78,8 @@ public class StatementDeclaration extends Statement {
             StringBuilder argv = new StringBuilder();int count = 0;
             for (ArgumentCount argumentCount : anInterface.getArgumentCounts()) {
                 for (int i = 0; i < argumentCount.getValue(); i++) {
-                    argv.append(argumentCount.getType().getCToken()).append(" ar").append(count).append(",");
+                    var type = argumentCount.getType();
+                    argv.append(type.equals(Type.STR)?"char *":type.getCToken()).append(" ar").append(count).append(",");
                     count++;
                 }
             }

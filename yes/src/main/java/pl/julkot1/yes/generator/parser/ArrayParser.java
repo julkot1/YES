@@ -16,6 +16,10 @@ public class ArrayParser {
             if(!NumberUtils.isDigits(array.getIndex().getArgument().getToken()))throw new InvalidYesSyntaxException(array.getLine(), "index must be a constance value");
             return "["+array.getIndex().getArgument().getToken()+"]";
         }
+        else if(array.getToken().equals(SpecialTypeTokens.AR.getToken())){
+            if(!NumberUtils.isDigits(array.getIndex().getArgument().getToken()))throw new InvalidYesSyntaxException(array.getLine(), "index must be a constance value");
+            return array.getIndex().getArgument().getToken();
+        }
         else{
             String pointer = "pt" + array.getToken().charAt(0);
             String sub = "1";
@@ -40,6 +44,8 @@ public class ArrayParser {
             return arr + index;
         if(array.getType().equals(Type.STR))
             return "((" + type + "*)" + arr + index + ")";
+        if(array.getToken().equals(SpecialTypeTokens.AR.getToken()))
+            return "ar"+index;
         return "*((" + type + "*)" + arr + index + ")";
     }
 }
