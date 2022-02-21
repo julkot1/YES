@@ -33,9 +33,9 @@ public abstract class Statement {
     protected abstract void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException;
     protected abstract List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException;
     public AstStatement astStatement;
-    public void generate(FileOutputStream out, boolean writeOut) throws IOException, InvalidYesSyntaxException {
+    public void generate(FileOutputStream out, boolean writeOut, boolean newScope) throws IOException, InvalidYesSyntaxException {
         validArguments();
-        if(hasNs()) {
+        if(hasNs()&&newScope) {
             out.write("{".getBytes());
             setNestedIndexes();
         }
@@ -51,7 +51,7 @@ public abstract class Statement {
         if(writeOut || mustBeWritten){
             write(out);
         }
-        if(hasNs())out.write("}".getBytes());
+        if(hasNs()&&newScope)out.write("}".getBytes());
     }
 
     private void setNestedIndexes() {

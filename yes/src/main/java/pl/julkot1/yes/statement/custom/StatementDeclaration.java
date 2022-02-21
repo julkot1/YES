@@ -75,7 +75,7 @@ public class StatementDeclaration extends Statement {
         }else return "";
     }
     @Override
-    public void generate(FileOutputStream out, boolean writeOut) throws IOException, InvalidYesSyntaxException {
+    public void generate(FileOutputStream out, boolean writeOut, boolean __) throws IOException, InvalidYesSyntaxException {
         validArguments();
         applyPrefixes(out);
         writeArguments(out);

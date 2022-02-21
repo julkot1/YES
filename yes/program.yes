@@ -1,12 +1,16 @@
-(Int) IN;
-PUSH (Int) 1;
-PUSH (Int) 1;
-REPEAT (Int) xr[2] {
-    ADD (Int) gr[0] (Int) gr[1];
-    MV (Int) xr[3] (Int) gr[0];
-    DEL 2;
-    PUSH (Int) xr[3];
-    PUSH (Int) xr[0];
+PUSH "sfd";
+REPEAT 10 {
+    EQ 0 {MOD (Int) xr[1] 2};
+    NEXT;
+    FORMAT "%i\n" (Int) xr[1];
+    SYSCALL 1 1 (Str) xr[0] {LEN xr[0]};
 };
-FORMAT "%i\n" (Int) gr[0];
-SYSCALL 1 1 (Str) xr[0] {LEN xr[0]};
+MV xr[0] 4;
+MATCH (Char) xr[0] (Str) {
+    AS 0 "a";
+    DO 4 {
+        SYSCALL 1 1 "hello\n" 6;
+    };
+    AS 3 "c";
+};
+SYSCALL 1 1 (Str) xr[0] 1;

@@ -13,8 +13,7 @@ import pl.julkot1.yes.statement.io.CallStatement;
 import pl.julkot1.yes.statement.io.InStatement;
 import pl.julkot1.yes.statement.logic.*;
 import pl.julkot1.yes.statement.math.*;
-import pl.julkot1.yes.statement.other.RtStatement;
-import pl.julkot1.yes.statement.other.Syscall;
+import pl.julkot1.yes.statement.other.*;
 import pl.julkot1.yes.statement.str.CharAtStatement;
 import pl.julkot1.yes.statement.str.FormatStatement;
 import pl.julkot1.yes.statement.str.LenStatement;
@@ -64,6 +63,11 @@ public enum StatementTokens {
     STR_FORMAT("FORMAT", FormatStatement.class),
     CHAR_AT("CHAR", CharAtStatement.class),
     MV("MV", MvStatement.class),
+    BREAK("END", BreakStatement.class),
+    NEXT("NEXT", NextStatement.class),
+    AS("AS", AsStatement.class),
+    DO("DO", DoStatement.class),
+    MATCH("MATCH", MatchStatement.class),
     CALL ("CALL", CallStatement.class);
 
 

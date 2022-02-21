@@ -74,7 +74,7 @@ public class Interface extends Statement {
     }
 
     @Override
-    public void generate(FileOutputStream out, boolean writeOut) throws IOException, InvalidYesSyntaxException {
+    public void generate(FileOutputStream out, boolean writeOut, boolean __) throws IOException, InvalidYesSyntaxException {
         validArguments();
         applyPrefixes(out);
         writeArguments(out);

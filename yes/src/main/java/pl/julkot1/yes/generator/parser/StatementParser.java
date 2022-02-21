@@ -24,7 +24,7 @@ public class StatementParser {
             }else {
                 a = (Statement) st.get().getClazz().getConstructors()[0].newInstance(astStatement);
             }
-            a.generate(out, writeOut);
+            a.generate(out, writeOut, true);
             return a.getReturning();
         }catch (InvalidYesSyntaxException | InstantiationException | IllegalAccessException | InvocationTargetException exception){exception.printStackTrace();}
         return null;
