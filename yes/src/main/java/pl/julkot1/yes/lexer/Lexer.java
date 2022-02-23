@@ -1,9 +1,8 @@
 package pl.julkot1.yes.lexer;
 
-import org.javatuples.Pair;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.*;
-import pl.julkot1.yes.statement.StatementTokens;
+import pl.julkot1.yes.metadata.MetadataObject;
 import pl.julkot1.yes.types.Type;
 
 import java.io.BufferedReader;
@@ -23,15 +22,23 @@ public class Lexer {
     public static List<Token> resolve(String code) throws  InvalidYesSyntaxException{
         return getTokens(code, 1);
     }
-    public static List<Token> resolveFile(String fileName) throws IOException, InvalidYesSyntaxException {
+    public static List<Token> resolveFile(String fileName, List<String[]> metadataRawObjects) throws IOException, InvalidYesSyntaxException {
         BufferedReader in = new BufferedReader(new FileReader(fileName));
         var lines = getLines(in);
         var tokens = new ArrayList<Token>();
         in.close();
         long index = 0;
+        boolean header = true;
         for(String line : lines){
             index++;
-            tokens.addAll(getTokens(line, index));
+            if(line.startsWith(String.valueOf(SyntaxTokens.METADATA.getToken()))){
+                if(!header) throw new InvalidYesSyntaxException(index, line+"\nMetadata must be placed on top of file!");
+                metadataRawObjects.add(line.substring(1).split(" "));
+            }else{
+                tokens.addAll(getTokens(line, index));
+                header = false;
+            }
+
         }
         return tokens;
     }

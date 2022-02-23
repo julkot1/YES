@@ -1,7 +1,6 @@
-_INTERFACE FOO {(Char) ARG 2} {(Str) ARG};
-_STATEMENT FOO (Str) {
-    FORMAT "%c %c %S\n" ar[0] ar[1] ar[2];
-    RT (Str) xr[0];
-};
-FOO 2 2 "ef";
-SYSCALL 1 1 (Str) xr[0] {LEN xr[0]};
+@import stdLib.yes as GLOBAL
+@module
+@namespace main
+@sdsd ssdsdsdsd sdsd
+PUSH "SFDsf";
+CHAR gr[0] 3;
