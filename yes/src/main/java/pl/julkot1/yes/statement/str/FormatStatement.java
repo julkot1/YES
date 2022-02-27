@@ -31,7 +31,10 @@ public class FormatStatement extends Statement {
 
     }
 
-
+    @Override
+    protected void setReturning() throws InvalidYesSyntaxException {
+        setReturning("strdup(buffer)");
+    }
 
     @Override
     protected void write(FileOutputStream out) throws IOException {

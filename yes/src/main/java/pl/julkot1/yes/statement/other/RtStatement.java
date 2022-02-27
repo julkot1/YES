@@ -6,6 +6,7 @@ import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
+import pl.julkot1.yes.statement.StatementTokens;
 import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
@@ -23,8 +24,17 @@ public class RtStatement extends Statement {
             throw new InvalidYesSyntaxException(astStatement.getLine(), astStatement.getToken()+" must be called inside nested statement");
         if(astStatement.getArguments().size() != 1)
             throw new InvalidArgumentsQuantity(astStatement.getLine(),  astStatement.getToken());
-        if(astStatement.getParent().getType()== Type.NULL||astStatement.getParent().getType()==null)
+        if(astStatement.getParent()!=null){
+            if(astStatement.getParent().getParent()!=null){
+                if(!astStatement.getParent().getParent().getToken().equals(StatementTokens.STATEMENT_DEF.getToken())){
+                    if(astStatement.getParent().getType()== Type.NULL||astStatement.getParent().getType()==null)
+                        throw new InvalidYesSyntaxException(astStatement.getLine(), astStatement.getToken()+" can't be called inside Null type nested statement");
+                }
+            }else if(astStatement.getParent().getType()== Type.NULL||astStatement.getParent().getType()==null)
+                throw new InvalidYesSyntaxException(astStatement.getLine(), astStatement.getToken()+" can't be called inside Null type nested statement");
+        }else if(astStatement.getParent().getType()== Type.NULL||astStatement.getParent().getType()==null)
             throw new InvalidYesSyntaxException(astStatement.getLine(), astStatement.getToken()+" can't be called inside Null type nested statement");
+
         
     }
 

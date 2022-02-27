@@ -23,8 +23,11 @@ public class CGenerator {
 
     private static void writeAST(FileOutputStream out, AST ast) throws IOException{
         for (AstStatement astStatement : ast.getStatementList()) {
-            if(astStatement.getToken().equals(StatementTokens.STATEMENT_DEF.getToken())||
-                    astStatement.getToken().equals(StatementTokens.INTERFACE_DEF.getToken()))
+            if(astStatement.getToken().equals(StatementTokens.INTERFACE_DEF.getToken()))
+                StatementParser.writeStatement(astStatement, out, true);
+        }
+        for (AstStatement astStatement : ast.getStatementList()) {
+            if(astStatement.getToken().equals(StatementTokens.STATEMENT_DEF.getToken()))
                 StatementParser.writeStatement(astStatement, out, true);
         }
         out.write(MAIN_OPEN.getBytes());

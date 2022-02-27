@@ -9,6 +9,7 @@ import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.statement.StatementRegister;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.DeclarationUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -66,6 +67,7 @@ public class Interface extends Statement {
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         this.token = astStatement.getArgument(0).getToken();
         InterfaceRegister.add(this);
+        DeclarationUtils.createFunctionDefinition(this, out);
     }
 
     @Override
