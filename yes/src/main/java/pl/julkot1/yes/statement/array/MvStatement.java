@@ -1,6 +1,7 @@
 package pl.julkot1.yes.statement.array;
 
 import pl.julkot1.yes.ast.models.AstStatement;
+import pl.julkot1.yes.exception.ErrorCodes;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.exception.TypeException;
@@ -8,6 +9,7 @@ import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.ArgumentsValidation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,18 +23,14 @@ public class MvStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if (astStatement.getArguments().size() != 2)
-            throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
-        if(!astStatement.getArgument(0).getToken().equals(SpecialTypeTokens.XR.getToken()))
-            throw new InvalidYesSyntaxException(astStatement.getArgument(0).getLine(),
-                    "expected "+SpecialTypeTokens.XR.getToken()+ " instead of "+astStatement.getArgument(0).getToken());
-        if (astStatement.getArgument(1).getType().equals(Type.NULL))
-            throw new TypeException(astStatement.getLine(), astStatement.getToken(), "type must be specified");
-        if(!astStatement.getArgument(0).getType().equals(Type.NULL)){
-            if(!astStatement.getArgument(0).getType().equals(astStatement.getArgument(1).getType())){
-                throw new TypeException(astStatement.getLine(), astStatement.getToken(), "invalid types");
-            }
-        }
+        var validator = ArgumentsValidation.builder()
+                .quantity(2)
+                .enableCustomCheck().enableTypeCheck()
+                .argumentRequiredType(1)
+                .customPredicate(0, argument ->
+                        argument.getToken().equals(SpecialTypeTokens.XR.getToken())?ErrorCodes.SUCCESS:ErrorCodes.MV_INVALID_ARRAY)
+                .build();
+        validator.check(astStatement.getArguments(), astStatement);
         var type = astStatement.getArgument(1).getType();
         astStatement.getArgument(0).setType(type);
     }
@@ -40,7 +38,7 @@ public class MvStatement extends Statement {
     protected void write(FileOutputStream out) throws IOException {
         if(astStatement.getArguments().get(1).getType().equals(Type.STR)){
             var arg0 = arguments.get(0).substring(8, arguments.get(0).length()-1);
-            out.write(String.format("%s = strdup(%s);", arg0, arguments.get(1)).getBytes());
+            out.write(String.format("*((char**)%s) = strdup(%s);", arg0, arguments.get(1)).getBytes());
         }
         else out.write(String.format("%s = %s;", arguments.get(0), arguments.get(1)).getBytes());
     }

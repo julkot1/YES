@@ -7,6 +7,7 @@ import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.ArgumentsValidation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,17 +20,13 @@ public class IfStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-
-
-        if(astStatement.getType().equals(Type.NULL) ) {
-            if (!(astStatement.getArguments().size() == 1 || astStatement.getArguments().size() == 2))
-                throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
-        }
-        else {
-            if (astStatement.getArguments().size() != 3 && isSingleStatement())
-                throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
-        }
-        astStatement.getArgument(0).setType(Type.BOOL);
+        int quantity = isSingleStatement()?
+                3:
+                astStatement.getType().equals(Type.NULL)?1:2;
+        var validator = ArgumentsValidation.builder()
+                .quantity(quantity).minQuantity().maxQuantity(isSingleStatement()?3:2)
+                .build();
+        validator.check(astStatement.getArguments(), astStatement);
 
     }
     private boolean isSingleStatement(){

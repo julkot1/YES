@@ -1,10 +1,14 @@
 package pl.julkot1.yes.statement.array;
 
 import pl.julkot1.yes.ast.models.AstStatement;
+import pl.julkot1.yes.exception.ErrorCodes;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
+import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.statement.Statement;
+import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.ArgumentsValidation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,8 +21,13 @@ public class DelStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if (astStatement.getArguments().size() != 1)
-            throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
+        var validator = ArgumentsValidation.builder()
+                .quantity(1)
+                .enableTypeCheck()
+                .argumentType(0, Type.INT)
+                .build();
+        validator.check(astStatement.getArguments(), astStatement);
+
     }
 
     @Override

@@ -1,10 +1,2 @@
-
-_STATEMENT FOO {
-    FORMAT "%S\n" ar[0];
-    MV xr[4] (Str) xr[0];
-    LEN xr[0];
-    SYSCALL 1 1 (Str) xr[4] (Size) xr[0];
-    RT (Size) xr[0];
-};
-(Size) _INTERFACE FOO {(Str) ARG 1};
-FOO "dfdfd";
+PUSH "sdsd";
+ADD 2 {(Int) IF {EQ 2 2} {ADD 2 10} {ADD 20 2}};

@@ -6,6 +6,7 @@ import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.ArgumentsValidation;
 
 
 import java.io.FileOutputStream;
@@ -19,8 +20,12 @@ public class Alloc extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if (astStatement.getArguments().size() != 1)
-            throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
+        var validator = ArgumentsValidation.builder()
+                .quantity(1)
+                .enableTypeCheck()
+                .argumentType(0, Type.INT)
+                .build();
+        validator.check(astStatement.getArguments(), astStatement);
     }
     @Override
     protected void write(FileOutputStream out) throws IOException {

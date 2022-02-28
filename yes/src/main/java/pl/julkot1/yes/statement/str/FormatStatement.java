@@ -2,6 +2,7 @@ package pl.julkot1.yes.statement.str;
 
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.Value;
+import pl.julkot1.yes.exception.ErrorCodes;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.exception.TypeException;
@@ -9,6 +10,7 @@ import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.lexer.tokens.SyntaxTokens;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.ArgumentsValidation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,14 +23,17 @@ public class FormatStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if (astStatement.getArguments().size() < 2)
-            throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
-        var template = astStatement.getArgument(0);
-        if(!(template.getType().equals(Type.STR)&&template instanceof Value))
-            throw new InvalidYesSyntaxException(astStatement.getLine(), "template must be const Str");
-        if (!astStatement.getArgument(0).getType().equals(Type.STR))
-            throw new TypeException(astStatement.getLine(), astStatement.getToken(), "argument must be"+Type.STR.getYesToken());
-
+        var validator = ArgumentsValidation.builder()
+                .quantity(2)
+                .minQuantity()
+                .enableTypeCheck()
+                .enableCustomCheck()
+                .argumentType(0, Type.STR)
+                .customPredicate(0, argument ->
+                        argument instanceof Value ? ErrorCodes.SUCCESS : ErrorCodes.STR_TEMPLATE
+                )
+                .build();
+        validator.check(astStatement.getArguments(), astStatement);
     }
 
     @Override
