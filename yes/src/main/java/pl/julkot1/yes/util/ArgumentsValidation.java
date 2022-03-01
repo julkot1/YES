@@ -97,6 +97,7 @@ public class ArgumentsValidation {
     private void checkTypes(List<? extends Argument> arguments) throws InvalidYesSyntaxException {
         for (int i = 0; i < types.length; i++) {
             var type = types[i];
+            if(arguments.size()-1<i)break;
             var arg = arguments.get(i);
             ArrayUtils.autoTypeset(arg,type);
             if(specifiedTypes[i] && arg.getType().equals(Type.NULL))
@@ -125,6 +126,7 @@ public class ArgumentsValidation {
             if(code!= ErrorCodes.SUCCESS){
                 throw new InvalidYesSyntaxException(arg, code);
             }
+
         }
     }
 }

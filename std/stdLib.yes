@@ -1,0 +1,10 @@
+@module
+
+_INTERFACE ECHO {(Str) ARG};
+
+_STATEMENT ECHO {
+    LEN ar[0];
+    SYSCALL 1 1 ar[0] (Size) xr[0];
+};
+
+

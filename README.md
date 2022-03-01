@@ -105,13 +105,14 @@ Flags:
 ### Bitwise operators
  
 | Operator | Operator in C |
-| -------- | ------------- |
-| bAND     | `&`           |
-| bOR      | `\|`          |
-| bNOT     | `~`           |
-| XOR      | `^`           |
-| LSHIFT   | `<<`          |
-| RSHIFT   | `>>`          |
+|---------| ------------- |
+| bAND    | `&`           |
+| bOR     | `\|`          |
+| bNOT    | `~`           |
+| XOR     | `^`           |
+| LSHIFT  | `<<`          |
+| RSHIFT  | `>>`          |
+
  
 ### Logic operators
  

@@ -1,12 +1,11 @@
 package pl.julkot1.yes.statement.conditional;
 
-import pl.julkot1.yes.ast.models.Array;
 import pl.julkot1.yes.ast.models.AstStatement;
-import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.ArgumentsValidation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,12 +18,12 @@ public class YellStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if (!(astStatement.getArguments().size() == 2))throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
+        var validator = ArgumentsValidation.builder()
+                .quantity(2).enableTypeCheck()
+                .argumentType(1, Type.STR)
+                .build();
+        validator.check(astStatement.getArguments(), astStatement);
         astStatement.getArgument(0).setType(Type.BOOL);
-        var arg1 = astStatement.getArgument(1);
-        if(arg1 instanceof Array && arg1.getType().equals(Type.NULL)){
-            arg1.setType(Type.STR);
-        }
     }
 
     @Override

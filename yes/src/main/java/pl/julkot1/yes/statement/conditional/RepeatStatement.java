@@ -1,12 +1,12 @@
 package pl.julkot1.yes.statement.conditional;
 
-import pl.julkot1.yes.ast.models.Array;
 import pl.julkot1.yes.ast.models.AstStatement;
-import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
+import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.ArgumentsValidation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,11 +19,12 @@ public class RepeatStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if (!(astStatement.getArguments().size() == 2))throw new InvalidArgumentsQuantity(astStatement.getLine(), astStatement.getToken());
-        var arg0 = astStatement.getArgument(0);
-        if(arg0 instanceof Array && arg0.getType().equals(Type.NULL)){
-            arg0.setType(Type.INT);
-        }
+        var validator = ArgumentsValidation.builder()
+                .quantity(2).enableTypeCheck().enableInstanceCheck()
+                .argumentType(0, Type.INT)
+                .argumentInstance(1, NestedStatement.class)
+                .build();
+        validator.check(astStatement.getArguments(), astStatement);
     }
 
     @Override

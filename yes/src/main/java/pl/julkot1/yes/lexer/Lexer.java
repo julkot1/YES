@@ -1,5 +1,6 @@
 package pl.julkot1.yes.lexer;
 
+import pl.julkot1.Main;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.*;
 import pl.julkot1.yes.metadata.MetadataObject;
@@ -23,7 +24,17 @@ public class Lexer {
         return getTokens(code, 1);
     }
     public static List<Token> resolveFile(String fileName, List<String[]> metadataRawObjects) throws IOException, InvalidYesSyntaxException {
-        BufferedReader in = new BufferedReader(new FileReader(fileName));
+        BufferedReader in = null;
+        try{
+             in = new BufferedReader(new FileReader(fileName));
+        }catch (IOException ignored){
+            try{
+                in = new BufferedReader(new FileReader(Main.STD_PATH+"/"+fileName));
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        assert in != null;
         var lines = getLines(in);
         var tokens = new ArrayList<Token>();
         in.close();

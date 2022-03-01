@@ -2,7 +2,6 @@ package pl.julkot1.yes.statement.conditional;
 
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.NestedStatement;
-import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;

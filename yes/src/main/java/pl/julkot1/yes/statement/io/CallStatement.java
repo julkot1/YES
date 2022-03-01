@@ -7,6 +7,7 @@ import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.generator.DefaultGenerators;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.types.Type;
+import pl.julkot1.yes.util.ArgumentsValidation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,10 +20,11 @@ public class CallStatement extends Statement {
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
-        if(astStatement.getArguments().size()!=1)
-            throw new InvalidArgumentsQuantity(astStatement.getLine(),  astStatement.getToken());
-        if(!astStatement.getArgument(0).getType().equals(Type.STR))
-            throw new TypeException(astStatement.getLine(),  astStatement.getToken(), "expected Str type");
+        var validator = ArgumentsValidation.builder()
+                .quantity(1).enableTypeCheck()
+                .argumentType(0, Type.STR)
+                .build();
+        validator.check(astStatement.getArguments(), astStatement);
     }
 
     @Override

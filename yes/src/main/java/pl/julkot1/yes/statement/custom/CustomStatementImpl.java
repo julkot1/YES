@@ -55,7 +55,7 @@ public class CustomStatementImpl extends Statement {
         var s = StatementRegister.get(astStatement.getToken());
         StringBuilder a= new StringBuilder();
         for (String argument : arguments) {
-            a.append(argument).append(",");
+            a.append(argument.contains("(char*)")?"strdup"+argument:argument).append(",");
         }
         setReturning(s.getToken()+"("+a.substring(0,a.length()-1)+")");
     }

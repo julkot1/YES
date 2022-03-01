@@ -9,11 +9,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Main {
-    public static Set<String> dependencies = new HashSet<>();
+    public static Set<File> dependencies = new HashSet<>();
+    public static File file;
+    public static String STD_PATH = "compiler/std";
     public static void main(String[] args) {
         try{
-            var main = new File(args[0]);
-            CGenerator.generate(main.getAst(), "out.c");
+            file = new File(args[0], true);
+            if(args.length==2){
+                STD_PATH = args[1];
+            }
+            CGenerator.generate(file, "out.c");
         }catch (IOException | InvalidYesSyntaxException err){
             err.printStackTrace();
         }
