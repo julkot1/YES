@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class AstBuilder {
     private final Scope scope;
+    private String namespace;
     private List<PrefixTokens> prefixes;
     private Type type;
     public AstBuilder(List<Token> tokens) {
@@ -32,6 +33,7 @@ public class AstBuilder {
         return ast;
     }
     private AstStatement getStatement() throws InvalidYesSyntaxException {
+
         type = null;
         prefixes = new ArrayList<>();
         AtomicReference<StatementBuilder> statement = new AtomicReference<>();
@@ -41,7 +43,8 @@ public class AstBuilder {
         };
         scope.iterateConditional((t, prev, next, index) -> {
             switch (t.type()){
-                case STATEMENT -> statement.set((StatementBuilder) new StatementBuilder().parse(type, prefixes, scope, index, null));
+                case STATEMENT -> statement.set((StatementBuilder) new StatementBuilder().parse(type, prefixes, scope, index, null, namespace));
+                case NAMESPACE -> namespace = t.toString();
                 case TYPE -> {
                     if(type!=null)throw new TypeException(t.line(), t.toString(), "unfortunately multi type declaration is not allowed.");
                     type = Type.getTypeByYToken((String) t.obj()).get();

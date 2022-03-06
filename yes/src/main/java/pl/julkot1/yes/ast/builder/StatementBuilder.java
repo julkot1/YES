@@ -38,6 +38,7 @@ public class StatementBuilder extends Builder<AstStatement> {
             switch (t.type()){
                 case PREFIX -> this.getPrefix(t);
                 case TYPE -> this.setType(t);
+                case NAMESPACE -> namespace = t.toString();
                 case VALUE, SPECIAL-> {
                     argument.set(buildValue(t));
                     isNext = false;
@@ -49,7 +50,7 @@ public class StatementBuilder extends Builder<AstStatement> {
                             isNext = false;
                         }
                         case NESTED_OPEN -> {
-                            var nestedBuilder = new NestedBuilder().parse(type, prefixes, scope, index, inst);
+                            var nestedBuilder = new NestedBuilder().parse(type, prefixes, scope, index, inst, namespace);
                             argument.set(nestedBuilder.inst);
                             isNext = false;
                             type = null;
@@ -61,7 +62,7 @@ public class StatementBuilder extends Builder<AstStatement> {
                     }
                 }
                 case ARRAY -> {
-                    var arrayBuilder = new ArrayBuilder().parse(type, prefixes, scope, index, inst);
+                    var arrayBuilder = new ArrayBuilder().parse(type, prefixes, scope, index, inst, namespace);
                     argument.set(arrayBuilder.inst);
                     isNext = false;
                     type = null;
@@ -95,7 +96,8 @@ public class StatementBuilder extends Builder<AstStatement> {
         var first = this.scope.getTokens().get(0);
         if(!first.type().equals(TokenType.STATEMENT)) throw new InvalidYesSyntaxException(first.line(), "Nobody expect "+first+" token! (Statement should be better choice)");
 
-        inst = new AstStatement(first.toString(), first.line(), this.scope.getParent());
+        inst = new AstStatement(first.toString(), first.line(), this.scope.getParent(), namespace);
+        namespace = null;
 
         this.scope.shift(1);
         this.scope.updateTokens();

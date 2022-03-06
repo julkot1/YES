@@ -1,6 +1,7 @@
 package pl.julkot1.yes.lexer;
 
 import pl.julkot1.Main;
+import pl.julkot1.yes.exception.ErrorCodes;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.lexer.tokens.*;
 import pl.julkot1.yes.metadata.MetadataObject;
@@ -154,6 +155,18 @@ public class Lexer {
         var newTokens = new ArrayList<Token>();
         for (int i = 0; i < tokens.size(); i++) {
             var token = tokens.get(i);
+            if(token.obj().equals(SyntaxTokens.NAMESPACE)){
+                if(i==0||i+1>tokens.size()) throw new InvalidYesSyntaxException(token, ErrorCodes.INVALID_NAMESPACE_TOKEN_USAGE);
+                var next = tokens.get(i+1);
+                var prev = tokens.get(i-1);
+                if(!prev.type().equals(TokenType.STATEMENT))
+                    throw new InvalidYesSyntaxException(token, ErrorCodes.INVALID_NAMESPACE_TOKEN_USAGE);
+                newTokens.remove(newTokens.size()-1);
+                newTokens.add(new Token(prev.obj(), prev.line(), TokenType.NAMESPACE));
+                newTokens.add(new Token(next.obj(), next.line(), TokenType.STATEMENT));
+                i++;
+                continue;
+            }
             if(token.obj().equals(SyntaxTokens.STRING)){
                newTokens.add(simplifyString(tokens, i, token));
                i+=2;
@@ -172,6 +185,7 @@ public class Lexer {
                     }
                 }
             }
+
         }
         return newTokens;
     }

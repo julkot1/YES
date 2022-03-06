@@ -2,6 +2,8 @@ package pl.julkot1.yes.statement;
 
 
 
+import pl.julkot1.yes.ast.models.Argument;
+import pl.julkot1.yes.exception.ErrorCodes;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.statement.custom.CustomStatement;
 
@@ -22,7 +24,10 @@ public class StatementRegister {
         if(!statements.add(statement))
             throw new InvalidYesSyntaxException(statement.astStatement.getLine(), statement.getToken()+" has already been defined!");
     }
-    public static CustomStatement get(String token) throws InvalidYesSyntaxException {
-       return statements.stream().filter(s->s.getToken().equals(token)).findAny().get();
+    public static CustomStatement get(Argument arg) throws InvalidYesSyntaxException {
+        var element = statements.stream().filter(s->s.getToken().equals(arg.getToken())).findAny();
+        if(element.isEmpty())
+            throw new InvalidYesSyntaxException(arg, ErrorCodes.UNKNOWN_STATEMENT);
+       return element.get();
     }
 }

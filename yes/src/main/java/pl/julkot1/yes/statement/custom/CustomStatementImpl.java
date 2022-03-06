@@ -26,7 +26,7 @@ public class CustomStatementImpl extends Statement {
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
 
-        var statement = StatementRegister.get(astStatement.getToken());
+        var statement = StatementRegister.get(astStatement);
         var anInterfaceO = InterfaceRegister.get(statement.getToken());
         if(anInterfaceO.isPresent()){
             var args = astStatement.getArguments();
@@ -52,7 +52,7 @@ public class CustomStatementImpl extends Statement {
 
     @Override
     protected void setReturning() throws InvalidYesSyntaxException {
-        var s = StatementRegister.get(astStatement.getToken());
+        var s = StatementRegister.get(astStatement);
         StringBuilder a= new StringBuilder();
         for (String argument : arguments) {
             a.append(argument.contains("(char*)")?"strdup"+argument:argument).append(",");
@@ -63,7 +63,7 @@ public class CustomStatementImpl extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
 
-        var statement = StatementRegister.get(astStatement.getToken());
+        var statement = StatementRegister.get(astStatement);
         if(!statement.astStatement.getType().equals(Type.NULL)){
             if(statement.astStatement.getType().equals(Type.STR))
                 out.write("xr[0]=strdup(".getBytes());

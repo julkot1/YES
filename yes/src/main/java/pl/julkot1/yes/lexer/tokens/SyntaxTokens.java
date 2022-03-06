@@ -13,6 +13,7 @@ public enum SyntaxTokens {
     COMMENT('#'),
     METADATA('@'),
     END_LINE(';'),
+    NAMESPACE(':'),
     STRING('\"'),
     NESTED_OPEN('{'),
     NESTED_END('}'),

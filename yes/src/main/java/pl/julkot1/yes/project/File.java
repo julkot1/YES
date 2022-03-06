@@ -19,17 +19,28 @@ public class File {
     private final AST ast;
     private final List<MetadataObject[]> metadata;
     private final String path;
+    public String namespace;
     private boolean module=false;
     private final boolean main;
     public File(String path, boolean main) throws InvalidYesSyntaxException, IOException {
         this.path = path;
         this.main = main;
+        Main.file = this;
         var rawMetadata = new ArrayList<String[]>();
         var tokens = Lexer.simplify(Lexer.resolveFile(path,rawMetadata));
         ast = AST.build(tokens);
         metadata = MetadataBuilder.build(rawMetadata);
         setModule();
+        setNamespace();
     }
+
+    private void setNamespace() throws InvalidYesSyntaxException {
+        var list = metadata.stream().filter(e -> e[0].getKeyword().equals("namespace")).map(e->e[0].getArgs()[0]).toList();
+        if(list.size()>1)throw new InvalidYesSyntaxException(0, "multiple namespace declaration");
+        if(list.size()==1)namespace = list.get(0);
+        else namespace = null;
+    }
+
     private void setModule(){
         module = metadata.stream().anyMatch(e -> e[0].getKeyword().equals("module"));
     }

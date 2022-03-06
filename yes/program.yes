@@ -1,2 +1,6 @@
-PUSH "sdsd";
-ADD 2 {(Int) IF {EQ 2 2} {ADD 2 10} {ADD 20 2}};
+@import stdLib.yes
+ADD 2 2;
+
+FORMAT "%c\n" (Char) xr[0];
+st:ECHO (Str) xr[0];
+
