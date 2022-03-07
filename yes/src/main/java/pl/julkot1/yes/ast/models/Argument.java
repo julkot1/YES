@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Getter
 public class Argument implements IParental<Argument>{
-    public Argument(String token,  long line) {
+    public Argument(String token, long line) {
         this.token = token;
         this.line = line;
         type = Type.NULL;
@@ -24,7 +24,8 @@ public class Argument implements IParental<Argument>{
         prefixes = new ArrayList<>();
 
     }
-
+    @Setter
+    protected String namespace = "_GLOBAL";
     protected Type type;
     public void setType(Type type){
         if(type == null)this.type = Type.NULL;

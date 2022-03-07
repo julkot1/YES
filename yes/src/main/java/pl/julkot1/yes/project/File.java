@@ -19,7 +19,7 @@ public class File {
     private final AST ast;
     private final List<MetadataObject[]> metadata;
     private final String path;
-    public String namespace;
+    private String namespace = "_GLOBAL";
     private boolean module=false;
     private final boolean main;
     public File(String path, boolean main) throws InvalidYesSyntaxException, IOException {
@@ -33,12 +33,21 @@ public class File {
         setModule();
         setNamespace();
     }
-
+    public File(String text, ArrayList<String[]> rawMetadata) throws InvalidYesSyntaxException, IOException {
+        this.path = null;
+        this.main = true;
+        Main.file = this;
+        var tokens = Lexer.simplify(Lexer.resolve(text));
+        ast = AST.build(tokens);
+        metadata = MetadataBuilder.build(rawMetadata);
+        setModule();
+        setNamespace();
+    }
     private void setNamespace() throws InvalidYesSyntaxException {
         var list = metadata.stream().filter(e -> e[0].getKeyword().equals("namespace")).map(e->e[0].getArgs()[0]).toList();
         if(list.size()>1)throw new InvalidYesSyntaxException(0, "multiple namespace declaration");
         if(list.size()==1)namespace = list.get(0);
-        else namespace = null;
+        else namespace ="_GLOBAL";
     }
 
     private void setModule(){

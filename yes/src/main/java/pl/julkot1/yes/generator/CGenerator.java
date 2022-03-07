@@ -24,12 +24,14 @@ public class CGenerator {
         FileOutputStream out = new FileOutputStream(fileName);
         writeOpening(out);
         getModules(main);
+        Main.file = main;
         var ast = main.getAst();
         for (AstStatement astStatement : ast.getStatementList()) {
             if (astStatement.getToken().equals(StatementTokens.INTERFACE_DEF.getToken()))
                 StatementParser.writeStatement(astStatement, out, true);
         }
         writeDependencies(out);
+        Main.file = main;
         for (AstStatement astStatement : ast.getStatementList()) {
             if (astStatement.getToken().equals(StatementTokens.STATEMENT_DEF.getToken()))
                 StatementParser.writeStatement(astStatement, out, true);

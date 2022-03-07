@@ -95,7 +95,6 @@ public class StatementBuilder extends Builder<AstStatement> {
 
         var first = this.scope.getTokens().get(0);
         if(!first.type().equals(TokenType.STATEMENT)) throw new InvalidYesSyntaxException(first.line(), "Nobody expect "+first+" token! (Statement should be better choice)");
-
         inst = new AstStatement(first.toString(), first.line(), this.scope.getParent(), namespace);
         namespace = null;
 

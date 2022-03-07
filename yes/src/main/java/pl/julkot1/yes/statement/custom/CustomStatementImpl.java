@@ -27,7 +27,7 @@ public class CustomStatementImpl extends Statement {
     protected void validArguments() throws InvalidYesSyntaxException {
 
         var statement = StatementRegister.get(astStatement);
-        var anInterfaceO = InterfaceRegister.get(statement.getToken());
+        var anInterfaceO = InterfaceRegister.get(statement.getToken(), statement.getNamespace());
         if(anInterfaceO.isPresent()){
             var args = astStatement.getArguments();
             var anInterface = anInterfaceO.get();
@@ -57,7 +57,7 @@ public class CustomStatementImpl extends Statement {
         for (String argument : arguments) {
             a.append(argument.contains("(char*)")?"strdup"+argument:argument).append(",");
         }
-        setReturning(s.getToken()+"("+a.substring(0,a.length()-1)+")");
+        setReturning(s.getNamespace()+s.getToken()+"("+a.substring(0,a.length()-1)+")");
     }
 
     @Override

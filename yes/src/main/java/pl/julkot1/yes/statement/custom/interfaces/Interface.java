@@ -1,6 +1,7 @@
 package pl.julkot1.yes.statement.custom.interfaces;
 
 import lombok.Getter;
+import pl.julkot1.Main;
 import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.NestedStatement;
@@ -24,7 +25,10 @@ public class Interface extends Statement {
     public Interface(AstStatement astStatement) {
         super(astStatement);
         argumentCounts = new ArrayList<>();
+        namespace = Main.file.getNamespace();
     }
+    @Getter
+    private final String namespace;
     @Getter
     private final List<ArgumentCount> argumentCounts;
     @Getter
@@ -40,7 +44,7 @@ public class Interface extends Statement {
             throw new InvalidYesSyntaxException(astStatement.getLine(), args.get(0).getToken()+" statement invalid name!");
         if(astStatement.getParent()!=null)
             throw new InvalidYesSyntaxException(astStatement.getLine(), args.get(0).getToken()+": must be defined in global scope!");
-        if(InterfaceRegister.get(args.get(0).getToken()).isPresent())
+        if(InterfaceRegister.get(args.get(0).getToken(), namespace).isPresent())
             throw new InvalidYesSyntaxException(astStatement.getLine(), "statement "+args.get(0).getToken()+" has already had an interface!");
 
         for (Argument argument : args.subList(1, args.size())) {

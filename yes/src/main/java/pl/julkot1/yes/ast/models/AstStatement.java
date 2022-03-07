@@ -7,7 +7,6 @@ import java.util.List;
 
 @Getter
 public class AstStatement extends Argument{
-    private final String namespace;
     private final List<Argument> arguments;
     public AstStatement(String token, long line, Argument a, String namespace) {
         super(token, line, a);

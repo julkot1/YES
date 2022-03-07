@@ -1,6 +1,11 @@
 @import stdLib.yes
-ADD 2 2;
 
-FORMAT "%c\n" (Char) xr[0];
-st:ECHO (Str) xr[0];
+ADD 2 2;
+(Int) _INTERFACE ECHO {(Int) ARG 2};
+_STATEMENT ECHO {
+    RT (Int) {ADD ar[0] ar[1]};
+};
+FORMAT "%i\n" (Int) {ECHO (Int) 4 (Int) 3};
+std:ECHO xr[0];
+
 

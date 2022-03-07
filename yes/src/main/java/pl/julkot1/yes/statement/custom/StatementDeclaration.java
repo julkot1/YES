@@ -1,6 +1,7 @@
 package pl.julkot1.yes.statement.custom;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import pl.julkot1.Main;
 import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.NestedStatement;
@@ -47,7 +48,7 @@ public class StatementDeclaration extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         astStatement.setType(astStatement.getArgument(1).getType());
-        var cs = new CustomStatement(this.astStatement, astStatement.getArgument(0).getToken(), "");
+        var cs = new CustomStatement(this.astStatement, astStatement.getArgument(0).getToken(), Main.file.getNamespace());
         StatementRegister.add(cs);
         DeclarationUtils.createFunctionDefinition(cs, out);
         out.write(String.format("size_t pta = %d;", getPTA(cs)).getBytes());
@@ -61,7 +62,7 @@ public class StatementDeclaration extends Statement {
 
     private int getPTA(CustomStatement cs) throws InvalidYesSyntaxException {
         if(InterfaceRegister.contains(cs.getToken())) {
-            var anInterface = InterfaceRegister.get(cs.getToken()).get();
+            var anInterface = InterfaceRegister.get(cs.getToken(), cs.getNamespace()).get();
             return StatementUtils.argumentsSize(anInterface.getArgumentCounts());
         }
         return 0;

@@ -87,7 +87,7 @@ public class DefaultGenerators {
             var definition = StatementUtils.getParent(array, StatementTokens.STATEMENT_DEF.getToken());
             if(definition.isPresent()){
                 var statement = StatementRegister.get(definition.get().getArgument(0));
-                var anInterface = InterfaceRegister.get(statement.getToken());
+                var anInterface = InterfaceRegister.get(statement.getToken(), statement.getNamespace());
                 if(anInterface.isPresent()){
                     var index = array.getIndex().getArgument().getToken();
                     var type = StatementUtils.argumentType(anInterface.get().getArgumentCounts(), NumberUtils.toInt(index));

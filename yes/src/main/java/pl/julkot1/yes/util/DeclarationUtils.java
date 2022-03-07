@@ -15,11 +15,12 @@ public class DeclarationUtils {
 
     public static void createFunctionDefinition(CustomStatement customStatement, FileOutputStream out) throws InvalidYesSyntaxException, IOException {
         if(InterfaceRegister.contains(customStatement.getToken())){
-            var anInterface = InterfaceRegister.get(customStatement.getToken()).get();
+            var anInterface = InterfaceRegister.get(customStatement.getToken(), customStatement.getNamespace()).get();
             var type = anInterface.astStatement.getType();
             var cType = type.equals(Type.STR)?"char*":type.getCToken();
-            out.write(String.format("%s %s(%s){",
+            out.write(String.format("%s %s%s(%s){",
                             type.equals(Type.NULL)?"void":cType,
+                            anInterface.getNamespace(),
                             anInterface.astStatement.getArgument(0).getToken(),
                             setArgs(anInterface))
                     .getBytes());
@@ -29,8 +30,9 @@ public class DeclarationUtils {
     public static void createFunctionDefinition(Interface anInterface, FileOutputStream out)throws InvalidYesSyntaxException, IOException{
         var type = anInterface.astStatement.getType();
         var cType = type.equals(Type.STR)?"char*":type.getCToken();
-        out.write(String.format("%s %s(%s);",
+        out.write(String.format("%s %s%s(%s);",
                         type.equals(Type.NULL)?"void":cType,
+                        anInterface.getNamespace(),
                         anInterface.astStatement.getArgument(0).getToken(),
                         setArgs(anInterface))
                 .getBytes());

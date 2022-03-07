@@ -156,7 +156,7 @@ public class Lexer {
         for (int i = 0; i < tokens.size(); i++) {
             var token = tokens.get(i);
             if(token.obj().equals(SyntaxTokens.NAMESPACE)){
-                if(i==0||i+1>tokens.size()) throw new InvalidYesSyntaxException(token, ErrorCodes.INVALID_NAMESPACE_TOKEN_USAGE);
+                if(i==0||i+1>=tokens.size()) throw new InvalidYesSyntaxException(token, ErrorCodes.INVALID_NAMESPACE_TOKEN_USAGE);
                 var next = tokens.get(i+1);
                 var prev = tokens.get(i-1);
                 if(!prev.type().equals(TokenType.STATEMENT))

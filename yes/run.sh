@@ -26,4 +26,4 @@ gcc out.c -std=gnu99 -o $o_flag
 if [ $r_flag = 'true' ]
 then
     ./$o_flag
-fi
+f
