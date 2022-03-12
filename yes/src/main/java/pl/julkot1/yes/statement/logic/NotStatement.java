@@ -31,8 +31,7 @@ public class NotStatement extends Statement {
     protected void write(FileOutputStream out) throws IOException {
         var argumentsTypes = DefaultTypes.argumentsToTypesList(this.astStatement.getArguments());
         var resultType = DefaultTypes.getMathType(argumentsTypes);
-
-        out.write("*((unsigned char *)xr[0]) = ".getBytes());
+        out.write("*((unsigned char *)rx) = ".getBytes());
         out.write(getReturning().getBytes());
         out.write(";".getBytes());
     }

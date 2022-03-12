@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public enum SpecialTypeTokens {
     GR(null, "gr"),
     AR(null, "ar"),
-    XR(null, "xr"),
+    RESULT(null, "rx"),
     FALSE(Type.BOOL, "false"),
     TRUE(Type.BOOL, "true"),
     PTG(Type.SIZE, "ptg"),
@@ -39,7 +39,6 @@ public enum SpecialTypeTokens {
         List<SpecialTypeTokens> list = new ArrayList<>();
         list.add(AR);
         list.add(GR);
-        list.add(XR);
         return list;
     }
     public static boolean isArray(String token){

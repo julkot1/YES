@@ -12,6 +12,7 @@ public class Main {
     public static Set<File> dependencies = new HashSet<>();
     public static File file;
     public static String STD_PATH = "compiler/std";
+    public static int POP_INDEX= 0;
     public static void main(String[] args) {
         try{
             file = new File(args[0], true);

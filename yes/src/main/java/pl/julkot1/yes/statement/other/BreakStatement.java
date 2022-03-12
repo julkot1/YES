@@ -30,7 +30,7 @@ public class BreakStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        out.write("if(*((char *)xr[0]))break;".getBytes());
+        out.write("if(*((char *)rx))break;".getBytes());
     }
 
     @Override

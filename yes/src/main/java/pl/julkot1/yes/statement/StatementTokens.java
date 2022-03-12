@@ -46,7 +46,6 @@ public enum StatementTokens {
     N_EQ("nEQ", NEqStatement.class),
     E_LT("eLT", ELtStatement.class),
     E_GT("eGT", EGtStatement.class),
-    DEL("DEL", DelStatement.class),
     PUSH("PUSH", PushStatement.class),
     REPLACE("REPLACE", ReplaceStatement.class),
     IN("IN", InStatement.class),
@@ -55,19 +54,18 @@ public enum StatementTokens {
     YELL("YELL", YellStatement.class),
     RT("RT", RtStatement.class),
     SYSCALL("SYSCALL", Syscall.class),
-    ALLOC("ALLOC", Alloc.class),
     STATEMENT_DEF("_STATEMENT", StatementDeclaration.class),
     INTERFACE_DEF("_INTERFACE", Interface.class),
     ARG("ARG", Arg.class),
     STR_LEN("LEN", LenStatement.class),
     STR_FORMAT("FORMAT", FormatStatement.class),
     CHAR_AT("CHAR", CharAtStatement.class),
-    MV("MV", MvStatement.class),
     BREAK("END", BreakStatement.class),
     NEXT("NEXT", NextStatement.class),
     AS("AS", AsStatement.class),
     DO("DO", DoStatement.class),
     MATCH("MATCH", MatchStatement.class),
+    POP("POP", PopStatement.class),
     CALL ("CALL", CallStatement.class);
 
 

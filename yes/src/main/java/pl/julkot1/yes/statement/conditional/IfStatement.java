@@ -40,22 +40,24 @@ public class IfStatement extends Statement {
             if(isSingleStatement())
                 setReturning("("+arguments.get(0)+"?"+arguments.get(1)+":"+arguments.get(2)+")");
             else
-                setReturning("(*((char *)xr[0])?"+arguments.get(0)+":"+arguments.get(1)+")");
+                setReturning("(*((unsigned char *)rx)?"+arguments.get(0)+":"+arguments.get(1)+")");
         }
     }
 
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         if(!astStatement.getType().equals(Type.NULL)){
-           out.write(String.format("*((%s*)xr[0])=%s;", astStatement.getType().getCToken(), getReturning()).getBytes());
+            var type = astStatement.getType().getCToken();
+            out.write(String.format("*((%s)rx)= %s;", type,  getReturning()).getBytes());
+            out.write(";".getBytes());
         }else{
-            out.write("if(*((unsigned char*)xr[0])){".getBytes());
+            out.write("if(*((unsigned char*)rx)){".getBytes());
             DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(0)), out);
-            out.write(String.format("}").getBytes());
+            out.write("}".getBytes());
             if (astStatement.getArguments().size()==2){
                 out.write("else{".getBytes());
                 DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1 )), out);
-                out.write(String.format("}").getBytes());
+                out.write("}".getBytes());
             }
         }
 

@@ -34,9 +34,10 @@ public class CallStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        out.write("*((int *)xr[0])=".getBytes());
+        out.write("gr[ptg]=malloc(sizeof(int));".getBytes());
+        out.write("*((int *)gr[ptg])=".getBytes());
         out.write(getReturning().getBytes());
-        out.write(";".getBytes());
+        out.write(";ptg++;".getBytes());
     }
 
     @Override

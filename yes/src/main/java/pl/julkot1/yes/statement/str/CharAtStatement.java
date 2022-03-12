@@ -34,8 +34,7 @@ public class CharAtStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-
-        out.write("*((char *)xr[0]) =".getBytes());
+        out.write("*((char *)rx) =".getBytes());
         out.write(getReturning().getBytes());
         out.write(";".getBytes());
     }

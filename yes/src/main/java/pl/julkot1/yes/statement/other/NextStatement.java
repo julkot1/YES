@@ -29,7 +29,7 @@ public class NextStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-        out.write("if(*((char *)xr[0]))continue;".getBytes());
+        out.write("if(*((char *)rx))continue;".getBytes());
     }
 
     @Override

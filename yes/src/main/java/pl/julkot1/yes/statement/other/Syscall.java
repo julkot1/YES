@@ -33,7 +33,7 @@ public class Syscall extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        out.write("*((int *)xr[0])=".getBytes());
+        out.write("*((int *)rx)=".getBytes());
         out.write(getReturning().getBytes());
         out.write(";".getBytes());
     }

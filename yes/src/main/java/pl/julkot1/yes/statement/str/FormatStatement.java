@@ -46,7 +46,7 @@ public class FormatStatement extends Statement {
         out.write("{".getBytes());
         out.write("char *buffer;".getBytes());
         out.write(String.format("asprintf(&buffer, %s);",String.join(", ", arguments)).getBytes());
-        out.write("xr[0] = strdup(buffer);".getBytes());
+        out.write("rx = strdup(buffer);".getBytes());
         out.write("}".getBytes());
     }
 

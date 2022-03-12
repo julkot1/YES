@@ -23,7 +23,7 @@ public class InStatement extends Statement {
 
     @Override
     protected void setReturning() throws InvalidYesSyntaxException {
-        setReturning(String.format("*((%s*)xr[2])", astStatement.getType().getCToken()));
+        setReturning(String.format("*((%s*)gr[ptg-1])", astStatement.getType().getCToken()));
     }
 
     @Override
@@ -33,12 +33,12 @@ public class InStatement extends Statement {
         if(type.equals(Type.STR)) {
             out.write("char *buffer;".getBytes());
             out.write("scanf(\"%ms\", &buffer);".getBytes());
-            out.write("xr[2] = strdup(buffer);".getBytes());
+            out.write("gr[ptg] = strdup(buffer);ptg++;".getBytes());
         }
         else {
             out.write((type.getCToken() + " buffer;").getBytes());
             out.write(("scanf(\"" + type.getCFormatSpecifier() + "\", &buffer);").getBytes());
-            out.write(String.format("*((%s *)xr[2]) = buffer;", type.getCToken()).getBytes());
+            out.write(String.format("gr[ptg]=malloc(sizeof(%s))*((%s *)gr[ptg]) = buffer;ptg++;", type.getCToken(), type.getCToken()).getBytes());
         }
         out.write("}".getBytes());
     }

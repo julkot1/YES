@@ -1,11 +1,12 @@
 @import stdLib.yes
-
-ADD 2 2;
-(Int) _INTERFACE ECHO {(Int) ARG 2};
-_STATEMENT ECHO {
-    RT (Int) {ADD ar[0] ar[1]};
-};
-FORMAT "%i\n" (Int) {ECHO (Int) 4 (Int) 3};
-std:ECHO xr[0];
-
-
+PUSH (Int) 500000000;
+PUSH (Int) 1;
+REPEAT (Int) gr[1] {
+    MOD (Int) gr[1] (Int) gr[0];
+    EQ (Int) rx 0;
+    IF {
+        FORMAT "%d\n" (Int) gr[0];
+        std:ECHO (Str) rx;
+    };
+    REPLACE (Int) {ADD (Int) gr[0] 1};
+}

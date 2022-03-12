@@ -2,7 +2,6 @@ package pl.julkot1.yes.statement;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.julkot1.yes.ast.models.Argument;
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.ast.models.NestedStatement;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
@@ -21,6 +20,7 @@ public abstract class Statement {
     }
     @Getter
     private int nIndex = 0;
+    protected boolean separate = false;
     protected void incrementNIndex(){
         nIndex++;
     }
@@ -35,7 +35,7 @@ public abstract class Statement {
     public AstStatement astStatement;
     public void generate(FileOutputStream out, boolean writeOut, boolean newScope) throws IOException, InvalidYesSyntaxException {
         validArguments();
-        if(hasNs()&&newScope) {
+        if((hasNs()&&newScope)||hasPop()) {
             out.write("{".getBytes());
             setNestedIndexes();
         }
@@ -51,7 +51,7 @@ public abstract class Statement {
         if(writeOut || mustBeWritten){
             write(out);
         }
-        if(hasNs()&&newScope)out.write("}".getBytes());
+        if((hasNs()&&newScope)||hasPop())out.write("}".getBytes());
     }
 
     private void setNestedIndexes() {
@@ -61,10 +61,14 @@ public abstract class Statement {
         });
     }
 
-
-
     private boolean hasNs(){
         return astStatement.getArguments().stream().filter(a-> a instanceof NestedStatement).anyMatch(a->!((NestedStatement) a).isSingleStatement());
+    }
+    private boolean hasPop(){
+        return astStatement.getArguments().stream()
+                .filter(a-> a instanceof NestedStatement)
+                .filter(a-> ((NestedStatement) a).isSingleStatement())
+                .anyMatch(a->((NestedStatement) a).getStack().get(0).getToken().equals(StatementTokens.POP.getToken()));
     }
     protected void setReturning() throws InvalidYesSyntaxException {}
     protected  void applyPrefixes(FileOutputStream out)throws IOException{

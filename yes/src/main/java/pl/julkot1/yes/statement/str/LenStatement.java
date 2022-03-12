@@ -33,8 +33,7 @@ public class LenStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {
-
-        out.write("*((unsigned long*)xr[0]) =".getBytes());
+        out.write("*((unsigned long*)rx) =".getBytes());
         out.write(getReturning().getBytes());
         out.write(";".getBytes());
     }

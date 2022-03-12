@@ -66,9 +66,9 @@ public class CustomStatementImpl extends Statement {
         var statement = StatementRegister.get(astStatement);
         if(!statement.astStatement.getType().equals(Type.NULL)){
             if(statement.astStatement.getType().equals(Type.STR))
-                out.write("xr[0]=strdup(".getBytes());
+                out.write("rx=strdup(".getBytes());
             else
-                out.write(String.format("*((%s *)xr[0])=", statement.astStatement.getType().getCToken()).getBytes());
+                out.write(String.format("*((%s *)rx)=", statement.astStatement.getType().getCToken()).getBytes());
         }
         out.write(getReturning().getBytes());
         if(statement.astStatement.getType().equals(Type.STR))

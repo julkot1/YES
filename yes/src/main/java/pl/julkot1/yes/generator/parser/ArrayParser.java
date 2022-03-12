@@ -12,11 +12,7 @@ import pl.julkot1.yes.types.Type;
 
 public class ArrayParser {
     public static String parseIndex(Array array) throws InvalidYesSyntaxException {
-        if(array.getToken().equals(SpecialTypeTokens.XR.getToken())){
-            if(!NumberUtils.isDigits(array.getIndex().getArgument().getToken()))throw new InvalidYesSyntaxException(array.getLine(), "index must be a constance value");
-            return "["+array.getIndex().getArgument().getToken()+"]";
-        }
-        else if(array.getToken().equals(SpecialTypeTokens.AR.getToken())){
+         if(array.getToken().equals(SpecialTypeTokens.AR.getToken())){
             if(!NumberUtils.isDigits(array.getIndex().getArgument().getToken()))throw new InvalidYesSyntaxException(array.getLine(), "index must be a constance value");
             return array.getIndex().getArgument().getToken();
         }
@@ -29,7 +25,7 @@ public class ArrayParser {
 
             }
             if (array.getIndex().getArgument() instanceof AstStatement)
-                sub = "1-*((unsigned long*) xr[0])";
+                sub = "1-*((unsigned long*) rx)";
             if (array.getIndex().getArgument() instanceof Array)
                 sub = getElement((Array) array.getIndex().getArgument());
             return "[" + pointer + "-" + sub + "]";

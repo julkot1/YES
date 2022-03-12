@@ -18,11 +18,13 @@ public class CGenerator {
     private static void writeOpening(FileOutputStream out) throws IOException {
         out.write(IMPORTS.getBytes());
         out.write(DEFINES.getBytes());
+        out.write(POP_DEFINE.getBytes());
     }
 
     public static void generate(File main, String fileName) throws IOException, InvalidYesSyntaxException {
         FileOutputStream out = new FileOutputStream(fileName);
         writeOpening(out);
+
         getModules(main);
         Main.file = main;
         var ast = main.getAst();
@@ -80,7 +82,6 @@ public class CGenerator {
 
         out.write(MAIN_OPEN.getBytes());
         out.write(GR_DEFINE.getBytes());
-        out.write(XR_DEFINE.getBytes());
 
         for (AstStatement astStatement : ast.getStatementList()) {
             if (!astStatement.getToken().equals(StatementTokens.STATEMENT_DEF.getToken()) &&
@@ -88,7 +89,6 @@ public class CGenerator {
                 StatementParser.writeStatement(astStatement, out, true);
         }
         out.write(FREE_GR.getBytes());
-        out.write(FREE_XR.getBytes());
         out.write(FILE_END.getBytes());
     }
 }

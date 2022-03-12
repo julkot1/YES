@@ -41,7 +41,7 @@ public class MathStatement extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException {
         var resultType = this.astStatement.getType();
-        out.write(String.format("*((%s *)xr[0]) = ", resultType.getCToken()).getBytes());
+        out.write(String.format("*((%s *)rx) = ", resultType.getCToken()).getBytes());
         out.write(getReturning().getBytes());
         out.write(";".getBytes());
     }

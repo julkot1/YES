@@ -30,7 +30,7 @@ public class RepeatStatement extends Statement {
     @Override
     protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
         var counterType = astStatement.getArgument(0).getType();
-        out.write(String.format("for(size_t i = 0; i <%s; i++){*((size_t*)xr[1])=i;",arguments.get(0)).getBytes());
+        out.write(String.format("for(size_t i = 0; i <%s; i++){",arguments.get(0)).getBytes());
         DefaultGenerators.writeArguments(List.of(this.astStatement.getArgument(1)), out);
         out.write("}".getBytes());
     }

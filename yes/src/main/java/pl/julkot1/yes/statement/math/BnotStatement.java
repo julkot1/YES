@@ -34,7 +34,8 @@ public class BnotStatement extends Statement {
     protected void write(FileOutputStream out) throws IOException {
         var argumentsTypes = DefaultTypes.argumentsToTypesList(this.astStatement.getArguments());
         var resultType = DefaultTypes.getMathType(argumentsTypes);
-        out.write(String.format("*((%s *)xr[0]) = ", resultType.getCToken()).getBytes());
+        out.write(String.format("gr[ptg]= malloc(sizeof(%s));", resultType.getCToken()).getBytes());
+        out.write(String.format("*((%s *)rx) = ", resultType.getCToken()).getBytes());
         out.write(getReturning().getBytes());
         out.write(";".getBytes());
     }

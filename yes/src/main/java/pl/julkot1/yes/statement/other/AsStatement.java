@@ -63,8 +63,8 @@ public class AsStatement extends Statement {
         if(!first)out.write("else ".getBytes());
         out.write(("if("+toCheck+"=="+arguments.get(0)+"){").getBytes());
         if(matchType.equals(Type.STR)){
-            out.write(String.format("xr[0]=strdup(%s);", arguments.get(1)).getBytes());
-        }else out.write(String.format("*((%s*)xr[0])=%s;", matchType.getCToken(), arguments.get(1)).getBytes());
+            out.write(String.format("rx=strdup(%s);", arguments.get(1)).getBytes());
+        }else out.write(String.format("*((%s*)rx)=%s;", matchType.getCToken(), arguments.get(1)).getBytes());
         out.write("}".getBytes());
     }
 
