@@ -36,12 +36,16 @@ public class ArrayParser {
         String index = parseIndex(array);
         String arr = array.getToken();
         String type = array.getType().getCToken();
+        String returning;
         if (PrefixTokens.REFERENCE.hasPrefix(array.getPrefixes()))
-            return arr + index;
-        if(array.getType().equals(Type.STR))
-            return "((" + type + "*)" + arr + index + ")";
-        if(array.getToken().equals(SpecialTypeTokens.AR.getToken()))
-            return "ar"+index;
-        return "*((" + type + "*)" + arr + index + ")";
+            returning =  arr + index;
+        else if(array.getType().equals(Type.STR))
+            returning = "((" + type + "*)" + arr + index + ")";
+        else if(array.getToken().equals(SpecialTypeTokens.AR.getToken()))
+            returning = "ar"+index;
+        else returning = "*((" + type + "*)" + arr + index + ")";
+        if( array.getType().equals(Type.CHAR))
+            return "("+returning+"-'0')";
+        return returning;
     }
 }

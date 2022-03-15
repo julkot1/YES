@@ -48,6 +48,7 @@ public class DeclarationUtils {
                 count++;
             }
         }
+        if(argv.length()==0)return "";
         return argv.substring(0, argv.toString().length()-1);
     }
 }

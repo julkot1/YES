@@ -27,8 +27,9 @@ public class InterfaceRegister {
     public static Optional<Interface> get(String token, String namespace) throws InvalidYesSyntaxException {
         if(namespace==null)namespace="_GLOBAL";
         String finalNamespace = namespace;
-        return interfaces.stream().filter(s->s.getToken().equals(token)
-        &&(Main.file.getNamespace().equals(s.getNamespace())&& finalNamespace.equals("_GLOBAL")) || s.getNamespace().equals(finalNamespace)
-        ).findAny();
+        return interfaces.stream()
+                .filter(s->s.getToken().equals(token))
+                .filter(s->(Main.file.getNamespace().equals(s.getNamespace())&& finalNamespace.equals("_GLOBAL")) || s.getNamespace().equals(finalNamespace))
+        .findAny();
     }
 }

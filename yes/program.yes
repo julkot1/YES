@@ -1,12 +1,5 @@
 @import stdLib.yes
-PUSH (Int) 500000000;
-PUSH (Int) 1;
-REPEAT (Int) gr[1] {
-    MOD (Int) gr[1] (Int) gr[0];
-    EQ (Int) rx 0;
-    IF {
-        FORMAT "%d\n" (Int) gr[0];
-        std:ECHO (Str) rx;
-    };
-    REPLACE (Int) {ADD (Int) gr[0] 1};
-}
+
+std:toINT "123";
+FORMAT "%d\n" (Int) rx;
+std:ECHO (Str) rx;

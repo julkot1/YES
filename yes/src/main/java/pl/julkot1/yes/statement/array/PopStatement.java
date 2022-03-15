@@ -36,6 +36,10 @@ public class PopStatement extends Statement {
 
     @Override
     protected void write(FileOutputStream out) throws IOException {;
+        if(astStatement.getType().equals(Type.STR))
+            out.write("rx=".getBytes());
+        else
+            out.write(String.format("*(%s *)rx=", astStatement.getType().getCToken()).getBytes());
         out.write(getReturning().getBytes());
         out.write(";".getBytes());
     }

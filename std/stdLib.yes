@@ -2,10 +2,40 @@
 @namespace std
 
 _INTERFACE ECHO {(Str) ARG};
-
 _STATEMENT ECHO {
     LEN ar[0];
     SYSCALL 1 1 ar[0] (Size) rx;
 };
 
+(Char) _INTERFACE GETC;
+_STATEMENT GETC (Char) {
+    strALLOC (Size) 1;
+    SYSCALL 0 1 (Str) gr[0] 1;
+    RT (Char) {CHAR (Str) gr[0] (Int) 0};
+};
 
+(Str) _INTERFACE GETS {(Size) ARG};
+_STATEMENT GETS (Str) {
+    strALLOC ar[0];
+    SYSCALL 0 1 (Str) gr[0] {ADD 1 ar[0]};
+    RT (Str) gr[0];
+};
+
+
+(Int) _INTERFACE toINT {(Str) ARG};
+_STATEMENT toINT (Int) {
+    PUSH (Int) {LEN ar[0]};
+    PUSH (Int) 0;
+    REPEAT (Int) gr[1] {
+        (Int) POP;
+        PUSH {ADD {MUL (Int) rx 10} {CHAR ar[0] (Int) i}};
+    };
+    RT {(Int) POP};
+};
+
+(Int) _INTERFACE ABS {(Int) ARG};
+_STATEMENT ABS (Int) {
+    RT {
+        (Int) IF {GT ar[0] 0} ar[0] {MUL -1 ar[0]}
+    };
+};

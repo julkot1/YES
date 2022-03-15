@@ -28,6 +28,7 @@ public class CustomStatementImpl extends Statement {
 
         var statement = StatementRegister.get(astStatement);
         var anInterfaceO = InterfaceRegister.get(statement.getToken(), statement.getNamespace());
+
         if(anInterfaceO.isPresent()){
             var args = astStatement.getArguments();
             var anInterface = anInterfaceO.get();
@@ -56,6 +57,10 @@ public class CustomStatementImpl extends Statement {
         StringBuilder a= new StringBuilder();
         for (String argument : arguments) {
             a.append(argument.contains("(char*)")?"strdup"+argument:argument).append(",");
+        }
+        if(a.length()==0) {
+            setReturning(s.getNamespace() + s.getToken() + "()");
+            return;
         }
         setReturning(s.getNamespace()+s.getToken()+"("+a.substring(0,a.length()-1)+")");
     }

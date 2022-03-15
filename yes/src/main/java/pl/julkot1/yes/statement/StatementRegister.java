@@ -20,10 +20,11 @@ public class StatementRegister {
     public static void add(CustomStatement statement) throws InvalidYesSyntaxException {
         if(StatementTokens.getByToken(statement.getToken()).isPresent())
             throw new InvalidYesSyntaxException(statement.astStatement.getLine(), statement.getToken()+" has already been defined!");
-        var element = statements.stream().filter(s->
-                s.getToken().equals(statement.getToken()) &&
-                        (Main.file.getNamespace().equals(s.getNamespace())&&statement.getNamespace().equals("_GLOBAL")) || s.getNamespace().equals(statement.getNamespace())
-        ).findAny();
+        var element = statements.stream()
+                .filter(s->s.getToken().equals(statement.getToken()))
+                .filter(s->(Main.file.getNamespace().equals(s.getNamespace())&&statement.getNamespace().equals("_GLOBAL")) || s.getNamespace().equals(statement.getNamespace())
+                )
+        .findAny();
         if(element.isPresent())
             throw new InvalidYesSyntaxException(statement.astStatement.getLine(), statement.getToken()+" has already been defined!");
         if(!statements.add(statement))
@@ -31,10 +32,10 @@ public class StatementRegister {
     }
     public static CustomStatement get(Argument arg) throws InvalidYesSyntaxException {
         if(arg.getNamespace()==null)arg.setNamespace("_GLOBAL");
-        var element = statements.stream().filter(s->
-                s.getToken().equals(arg.getToken()) &&
-                        (Main.file.getNamespace().equals(s.getNamespace())&&arg.getNamespace().equals("_GLOBAL")) || s.getNamespace().equals(arg.getNamespace())
-        ).findAny();
+        var element = statements.stream()
+                .filter(s->s.getToken().equals(arg.getToken()))
+                .filter(s->(Main.file.getNamespace().equals(s.getNamespace())&&arg.getNamespace().equals("_GLOBAL")) || s.getNamespace().equals(arg.getNamespace()))
+        .findAny();
         if(element.isEmpty())
             throw new InvalidYesSyntaxException(arg, ErrorCodes.UNKNOWN_STATEMENT);
        return element.get();

@@ -1,4 +1,4 @@
-package pl.julkot1.yes.statement.str;
+package pl.julkot1.yes.statement.array;
 
 import pl.julkot1.yes.ast.models.AstStatement;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
@@ -11,36 +11,28 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class CharAtStatement extends Statement {
-    public CharAtStatement(AstStatement astStatement) {
+public class StrAllocStatement extends Statement {
+    public StrAllocStatement(AstStatement astStatement) {
         super(astStatement);
     }
 
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
         var validator = ArgumentsValidation.builder()
-                .quantity(2)
+                .quantity(1)
                 .enableTypeCheck()
-                .argumentType(0, Type.STR)
-                .argumentType(1, Type.INT)
+                .argumentType(0, Type.SIZE)
                 .build();
         validator.check(astStatement.getArguments(), astStatement);
     }
 
     @Override
-    protected void setReturning() throws InvalidYesSyntaxException {
-        setReturning("("+arguments.get(0)+"["+arguments.get(1)+"] - '0')");
-    }
-
-    @Override
-    protected void write(FileOutputStream out) throws IOException {
-        out.write("*((char *)rx) =".getBytes());
-        out.write(getReturning().getBytes());
-        out.write(";".getBytes());
+    protected void write(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
+        out.write(String.format("gr[ptg] = malloc(sizeof(char)*%s);ptg++;", arguments.get(0)).getBytes());
     }
 
     @Override
     protected List<String> writeArguments(FileOutputStream out) throws IOException, InvalidYesSyntaxException {
-        return DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
+        return arguments = DefaultGenerators.writeArguments(this.astStatement.getArguments(), out);
     }
 }

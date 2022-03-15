@@ -113,8 +113,10 @@ public class DefaultGenerators {
 
     public static String putValueToCr(Value value) {
         if (value.getToken().equals(SpecialTypeTokens.RESULT.getToken())) {
+            if(value.getType().equals(Type.CHAR))
+                return "(*((char*)rx)-'0')";
             if (value.getType().equals(Type.STR))
-                return "((char *)rx)";
+                return "strdup((char *)rx)";
             return "(*((" + value.getType().getCToken() + "*)rx))";
 
         }

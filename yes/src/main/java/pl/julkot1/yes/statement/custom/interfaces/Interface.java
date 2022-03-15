@@ -38,14 +38,16 @@ public class Interface extends Statement {
     @Override
     protected void validArguments() throws InvalidYesSyntaxException {
         var args =  astStatement.getArguments();
-        if(!(args.size() >= 2))
+        if(args.size() == 0)
             throw new InvalidArgumentsQuantity(astStatement.getLine(),  astStatement.getToken());
         if(args.get(0).getType()!= Type.NULL || !args.get(0).getToken().matches(STATEMENT_NAME_PATTERN))
             throw new InvalidYesSyntaxException(astStatement.getLine(), args.get(0).getToken()+" statement invalid name!");
         if(astStatement.getParent()!=null)
             throw new InvalidYesSyntaxException(astStatement.getLine(), args.get(0).getToken()+": must be defined in global scope!");
-        if(InterfaceRegister.get(args.get(0).getToken(), namespace).isPresent())
+        if(InterfaceRegister.get(args.get(0).getToken(), namespace).isPresent()){
             throw new InvalidYesSyntaxException(astStatement.getLine(), "statement "+args.get(0).getToken()+" has already had an interface!");
+        }
+
 
         for (Argument argument : args.subList(1, args.size())) {
             if(!(argument instanceof NestedStatement))
