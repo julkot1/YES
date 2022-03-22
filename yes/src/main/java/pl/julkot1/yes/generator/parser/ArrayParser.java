@@ -39,10 +39,10 @@ public class ArrayParser {
         String returning;
         if (PrefixTokens.REFERENCE.hasPrefix(array.getPrefixes()))
             returning =  arr + index;
-        else if(array.getType().equals(Type.STR))
-            returning = "((" + type + "*)" + arr + index + ")";
         else if(array.getToken().equals(SpecialTypeTokens.AR.getToken()))
             returning = "ar"+index;
+        else if(array.getType().equals(Type.STR))
+            returning = "((" + type + "*)" + arr + index + ")";
         else returning = "*((" + type + "*)" + arr + index + ")";
         if( array.getType().equals(Type.CHAR))
             return "("+returning+"-'0')";

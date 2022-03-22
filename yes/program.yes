@@ -1,5 +1,3 @@
 @import stdLib.yes
 
-std:toINT "123";
-FORMAT "%d\n" (Int) rx;
-std:ECHO (Str) rx;
+std:ECHO "hello\n";

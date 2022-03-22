@@ -9,7 +9,6 @@ import pl.julkot1.yes.statement.conditional.YellStatement;
 import pl.julkot1.yes.statement.custom.StatementDeclaration;
 import pl.julkot1.yes.statement.custom.interfaces.Arg;
 import pl.julkot1.yes.statement.custom.interfaces.Interface;
-import pl.julkot1.yes.statement.io.CallStatement;
 import pl.julkot1.yes.statement.logic.*;
 import pl.julkot1.yes.statement.math.*;
 import pl.julkot1.yes.statement.other.*;
@@ -64,8 +63,7 @@ public enum StatementTokens {
     DO("DO", DoStatement.class),
     MATCH("MATCH", MatchStatement.class),
     POP("POP", PopStatement.class),
-    STR_ALLOC("strALLOC", StrAllocStatement.class),
-    CALL ("CALL", CallStatement.class);
+    STR_ALLOC("strALLOC", StrAllocStatement.class);
 
 
     public static Optional<StatementTokens> getByToken(String token){
