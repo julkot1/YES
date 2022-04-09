@@ -37,4 +37,10 @@ public enum Type {
                 .replace(STR.yesFormatSpecifier, STR.cFormatSpecifier)
                 .replace(BOOL.yesFormatSpecifier, BOOL.cFormatSpecifier);
     }
+    public boolean isIntegerType(){
+        return switch (this){
+            case INT, SIZE, SHORT, LONG, CHAR -> true;
+            default -> false;
+        };
+    }
 }

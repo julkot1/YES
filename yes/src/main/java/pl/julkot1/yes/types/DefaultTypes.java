@@ -1,5 +1,6 @@
 package pl.julkot1.yes.types;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import pl.julkot1.yes.ast.models.Argument;
 
 import java.util.List;
@@ -18,5 +19,16 @@ public class DefaultTypes {
         return arguments.stream()
                 .map(Argument::getType)
                 .collect(Collectors.toList());
+    }
+    public static boolean isInRange(String value, Type expectedType){
+        var number = NumberUtils.createNumber(value);
+        return switch (expectedType){
+            case LONG -> IntegerRange.isLong(number);
+            case SHORT -> IntegerRange.isShort(number);
+            case CHAR -> IntegerRange.isChar(number);
+            case SIZE -> IntegerRange.isSize(number);
+            case INT -> IntegerRange.isInt(number);
+            default -> false;
+        };
     }
 }

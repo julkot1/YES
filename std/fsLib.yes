@@ -1,0 +1,26 @@
+@module
+@namespace fs
+
+#ARG 1 -> (Str) pathname
+#ARG 2 -> (Int) flags
+#RT -> (Int) fd
+#desc: https://man7.org/linux/man-pages/man2/open.2.html
+
+(Int) _INTERFACE OPEN {(Str) ARG} {(Int) ARG};
+_STATEMENT OPEN (Int) {
+    SYSCALL 2 ar[0] ar[1];
+    RT (Int) rx;
+};
+
+(Int) _INTERFACE CLOSE {(Int) ARG};
+_STATEMENT CLOSE (Int) {
+    SYSCALL 3 ar[0];
+    RT (Int) rx;
+};
+
+(Int) _INTERFACE READ {(Int) ARG 2};
+_STATEMENT READ (Int) {
+    strALLOC ar[1];
+    SYSCALL 0 ar[0] (Str) gr[0] ar[1];
+    RT (Int) rx;
+};

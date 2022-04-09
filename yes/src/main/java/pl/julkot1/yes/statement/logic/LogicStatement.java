@@ -19,13 +19,14 @@ public class LogicStatement extends Statement {
     public LogicStatement(AstStatement astStatement, String operator) {
         super(astStatement);
         this.operator = operator;
-        astStatement.setType(Type.BOOL);
+        this.astStatement.setType(Type.INT);
     }
 
     @Override
     protected void validArguments(){
         boolean quantity = this.astStatement.getArguments().size() == 2;
         if(!quantity)throw new InvalidArgumentsQuantity(this.astStatement.getLine(), this.astStatement.getToken());
+
     }
 
     @Override

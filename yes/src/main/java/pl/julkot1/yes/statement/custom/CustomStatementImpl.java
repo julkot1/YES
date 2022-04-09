@@ -1,16 +1,16 @@
 package pl.julkot1.yes.statement.custom;
 
-import pl.julkot1.yes.ast.models.Argument;
-import pl.julkot1.yes.ast.models.Array;
-import pl.julkot1.yes.ast.models.AstStatement;
+import pl.julkot1.yes.ast.models.*;
 import pl.julkot1.yes.exception.InvalidArgumentsQuantity;
 import pl.julkot1.yes.exception.InvalidYesSyntaxException;
 import pl.julkot1.yes.exception.TypeException;
 import pl.julkot1.yes.generator.DefaultGenerators;
+import pl.julkot1.yes.lexer.tokens.SpecialTypeTokens;
 import pl.julkot1.yes.statement.Statement;
 import pl.julkot1.yes.statement.StatementRegister;
 import pl.julkot1.yes.statement.custom.interfaces.ArgumentCount;
 import pl.julkot1.yes.statement.custom.interfaces.InterfaceRegister;
+import pl.julkot1.yes.types.DefaultTypes;
 import pl.julkot1.yes.types.Type;
 
 import java.io.FileOutputStream;
@@ -38,9 +38,19 @@ public class CustomStatementImpl extends Statement {
                 var count = argumentCount.getValue();
                 var type = argumentCount.getType();
                 for (Argument argument : args.subList(index, count+index)) {
-                    if(argument instanceof Array){
+                    if(argument instanceof Array ||
+                            argument instanceof NestedStatement ||
+                            argument.getToken().equals(SpecialTypeTokens.RESULT.getToken())){
+                        if(argument.getType()== null)argument.setType(Type.NULL);
                         if(argument.getType().equals(Type.NULL)){
                             argument.setType(type);
+                        }
+                    }
+                    if(argument instanceof Value){
+                        if(argument.getType().isIntegerType() && type.isIntegerType() && !argument.getType().equals(type)){
+                            if(DefaultTypes.isInRange(argument.getToken(), type)){
+                                argument.setType(type);
+                            }
                         }
                     }
                     if(type!=argument.getType())
