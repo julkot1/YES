@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\lexer">
+      <UniqueIdentifier>{bb5083a3-7a96-431a-ba51-c75dfb97b029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lexer">
+      <UniqueIdentifier>{506346d1-2d2b-4790-9f8a-d31a3e4b7902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\parser">
+      <UniqueIdentifier>{116a86a5-df1f-4e19-8f4d-0d2940d37022}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\parser">
+      <UniqueIdentifier>{2c405d8f-7350-4235-8721-6b245a9279d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\parser\ast">
+      <UniqueIdentifier>{de4e084a-840f-4ffa-9641-ea1cbc98d9f2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="NYES.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lexer.cpp">
+      <Filter>Source Files\lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="Keywords.cpp">
+      <Filter>Source Files\lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="tokenizer.cpp">
+      <Filter>Source Files\lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="Token.cpp">
+      <Filter>Source Files\lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="AstElement.cpp">
+      <Filter>Source Files\parser\ast</Filter>
+    </ClCompile>
+    <ClCompile Include="AstExpression.cpp">
+      <Filter>Source Files\parser\ast</Filter>
+    </ClCompile>
+    <ClCompile Include="AstFunction.cpp">
+      <Filter>Source Files\parser\ast</Filter>
+    </ClCompile>
+    <ClCompile Include="AstGeneric.cpp">
+      <Filter>Source Files\parser\ast</Filter>
+    </ClCompile>
+    <ClCompile Include="AstInterface.cpp">
+      <Filter>Source Files\parser\ast</Filter>
+    </ClCompile>
+    <ClCompile Include="AstLiteral.cpp">
+      <Filter>Source Files\parser\ast</Filter>
+    </ClCompile>
+    <ClCompile Include="AstType.cpp">
+      <Filter>Source Files\parser\ast</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.cpp">
+      <Filter>Source Files\parser</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lexer.h">
+      <Filter>Header Files\lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="Keywords.h">
+      <Filter>Header Files\lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="Token.h">
+      <Filter>Header Files\lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="ast.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="AstElement.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="AstExpression.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="AstFunction.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="AstGeneric.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="AstInterface.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="AstLiteral.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="AstType.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>Header Files\parser</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NYES.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="program.yes">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
