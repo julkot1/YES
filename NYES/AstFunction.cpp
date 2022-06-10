@@ -30,7 +30,7 @@ AstInterface* AstFunction::getTypeInterface()
 {
 	return this->typeInterface;
 }
-AstFunction::AstFunction(int line, int column, std::string token) : AstElement(line, column, token)
+AstFunction::AstFunction(int line, int column, std::string token) : AstElement(line, column, token, ast::AstElementType::FUNCTION)
 {}
 void AstFunction::addExpr(AstExpression* expr)
 {

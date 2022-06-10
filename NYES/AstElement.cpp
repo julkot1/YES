@@ -1,7 +1,8 @@
 #include "AstElement.h"
-
-AstElement::AstElement(int line, int column, std::string token )
+#include "ast.h"
+AstElement::AstElement(int line, int column, std::string token, ast::AstElementType astType )
 {
+	this->astType = astType;
 	this->column = column;
 	this->line = line;
 	this->token = token;
@@ -24,4 +25,8 @@ int AstElement::getLine()
 int AstElement::getColumn()
 {
 	return this->column;
+}
+ast::AstElementType AstElement::getElementType()
+{
+	return this->astType;
 }

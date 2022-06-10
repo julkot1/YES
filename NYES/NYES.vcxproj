@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ast.cpp" />
     <ClCompile Include="AstElement.cpp" />
     <ClCompile Include="AstExpression.cpp" />
     <ClCompile Include="AstFunction.cpp" />

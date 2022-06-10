@@ -6,17 +6,6 @@
 
 namespace lexer
 {
-	/*
-	* 	if (getToken(c_str) == ENDL 
-					|| getToken(str) == FUNCTION_OPEN 
-					|| getToken(str) == FUNCTION_CLOSE
-					|| getToken(str) == GENERIC_CLOSE
-					|| getToken(str) == GENERIC_OPEN
-					|| getToken(str) == INTERFACE_CLOSE
-					|| getToken(str) == INTERFACE_OPEN
-					|| getToken(str) == TYPE_OPEN
-					|| getToken(str) == TYPE_CLOSE)
-	*/
 	bool isFunctionToken(std::string str)
 	{
 		return getToken(str) == ENDL
@@ -101,6 +90,7 @@ namespace lexer
         std::vector<Token*> tokens;
         lexer::GrammarScopes scope = lexer::GrammarScopes::FUNCTION_SCOPE;
 		lexer::GrammarScopes prevScope = lexer::GrammarScopes::FUNCTION_SCOPE;
+		bool isExpr = false;
         int line = 1;
         int column = 0;
         for (char c : str) {
@@ -109,7 +99,12 @@ namespace lexer
                 column = 0;
             }
             column++;
-
+			auto c_str = std::string(1, c);
+			if (getToken(c_str) == ENDL) isExpr = false;
+			
+			if(tokens.size()>0)
+				if (tokens.back()->getScope()==FUNCTION_SCOPE&& tokens.back()->getType() == lexer::IDENTIFIER) isExpr = true;
+			
 			if (scope !=lexer::GrammarScopes::GENERIC_SCOPE)
 				prevScope = scope;
 
@@ -127,14 +122,16 @@ namespace lexer
 			if (scope == GrammarScopes::INTERFACE_SCOPE)scope = tokenizeInterface(&tokens, &token, c, line, column);
 			isInterfaceScope(&scope, c, line, column, &tokens);
 
-
+			
             if (scope == GrammarScopes::STRING_SCOPE)scope = tokenizeString(&tokens, &token, c, line, column);
             
             if (scope == GrammarScopes::EXPRESSION_SCOPE)scope = tokenizeExpression(&tokens, &token, c, line, column);
 			
 
 			
-			auto c_str = std::string(1, c);
+			
+			
+
 			if (token != "" && (getToken(c_str) == ENDL )  && scope != GrammarScopes::STRING_SCOPE)
 			{
 				tokens.push_back(addToken(line, column, token, prevScope));
@@ -152,7 +149,8 @@ namespace lexer
 					tokens.push_back(addToken(line, column, getToken(c_str), scope));
 				}
 			}
-			
+			if (getToken(c_str) == TYPE_CLOSE && isExpr)scope = EXPRESSION_SCOPE;
+
         }
 		if (token != "")
 		{

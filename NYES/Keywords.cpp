@@ -12,6 +12,9 @@ const std::string Keywords::FLOAT="Float";
 const std::string Keywords::BOOLEAN="Bool";
 const std::string Keywords::DOUBLE="Double";
 const std::string Keywords::FUNCTION="Fun";
+const std::string Keywords::CONST = "Const";
+const std::string Keywords::PTR = "Ptr";
+const std::string Keywords::DEF = "Def";
 
 bool Keywords::isLiteral(std::string token)
 {
@@ -25,6 +28,9 @@ bool Keywords::isType(std::string token){
 		|| token.compare(DOUBLE) == 0
 		|| token.compare(FLOAT) == 0
 		|| token.compare(STR) == 0
+		|| token.compare(PTR) == 0
+		|| token.compare(CONST) == 0
+		|| token.compare(DEF) == 0
 		|| token.compare(BOOLEAN) == 0
 		|| token.compare(FUNCTION) == 0;
 }

@@ -8,9 +8,13 @@ class AstType : public AstElement
 {
 private:
 	ast::PrimitiveTypes type;
-	std::vector<ast::TypeModifiers> modifiers;
+	bool isComplex;
+	std::vector<ast::PrimitiveTypes> children;
 public:
-	std::vector<ast::TypeModifiers> getModifiers();
+	AstType();
 	AstType(int line, int column, std::string token);
+	void setType(ast::PrimitiveTypes type);
+	ast::PrimitiveTypes get();
+	ast::PrimitiveTypes nextChild();
 };
 

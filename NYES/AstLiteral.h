@@ -5,10 +5,10 @@
 
 class AstLiteral : public AstElement {
 private:
-	AstType type;
+	AstType* type;
 public:
-	ast::PrimitiveTypes getType();
+	AstType* getType();
+	void setType(AstType *type);
 	AstLiteral(int line, int column, std::string token);
-	~AstLiteral();
 };
 

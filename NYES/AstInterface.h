@@ -7,8 +7,9 @@
 
 class AstInterface : public AstElement {
 private:
-	std::vector<AstLiteral> identifiers;
+	std::vector<AstLiteral *> identifiers;
 
 public:
-	std::vector<ast::TypeModifiers> getIdentifiers();
+	std::vector<AstLiteral*> getIdentifiers();
+	AstInterface(int line, int column, std::string token);
 };

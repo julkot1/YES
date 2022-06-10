@@ -1,5 +1,5 @@
 #include "AstExpression.h"
-AstExpression::AstExpression(int line, int column, std::string token) : AstElement(line, column, token)
+AstExpression::AstExpression(int line, int column, std::string token) : AstElement(line, column, token, ast::AstElementType::EXPRESSION)
 {}
 
 AstExpression::~AstExpression() {

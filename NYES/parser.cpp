@@ -2,19 +2,24 @@
 #include "lexer.h"
 #include <stdexcept>
 #include <stack>
+
+
 AstExpression* newExpression(Token *token) 
 {
 	auto expr = new AstExpression(token->getLine(), token->getColumn(), token->getStr());
 	return expr;
 }
-AstLiteral* newLiteral(Token* token) 
+AstLiteral* newLiteral(Token* token, AstType* type) 
 {
 	auto lit = new AstLiteral(token->getLine(), token->getColumn(), token->getStr());
+	if (type != NULL)lit->setType(type);
+
 	return lit;
 }
 AstFunction* newFunction(Token* token) 
 {
 	auto fun = new AstFunction(token->getLine(), token->getColumn(), token->getStr());
+
 	return fun;
 }
 AstType* newType(Token* token)
@@ -42,12 +47,14 @@ AstFunction* parse(std::vector<Token *> tokens)
 				expr.push(newExpression(token));
 			else if (token->getScope() == lexer::GrammarScopes::EXPRESSION_SCOPE)
 			{
-				expr.top()->addArg(newLiteral(token));
+				expr.top()->addArg(newLiteral(token, type));
+				type = NULL;
 			}
 			//else throw std::exception("scope exception");
 			break;
 		case lexer::Tokens::LITERAL:
-			expr.top()->addArg(newLiteral(token));
+			expr.top()->addArg(newLiteral(token, type));
+			type = NULL;
 			break;
 		case lexer::ENDL:
 			functions.top()->addExpr(expr.top());
@@ -66,8 +73,8 @@ AstFunction* parse(std::vector<Token *> tokens)
 			type = newType(token);
 			break;
 		case lexer::Tokens::TYPE:
-			if (type != NULL)throw std::exception("invalid type declaration");
-			//type->
+			if (type == NULL)throw std::exception("invalid type declaration");
+			type->setType(ast::getType(token->getStr()));
 			break;
 		case lexer::Tokens::TYPE_CLOSE:
 			if (type == NULL)throw std::exception("invalid type declaration");

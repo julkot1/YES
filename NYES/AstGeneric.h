@@ -9,7 +9,6 @@ private:
 	ast::GenericType genericType;
 	std::vector<std::string> literals;
 public:
-	std::vector<ast::TypeModifiers> getModifiers();
 	ast::GenericType getGenericType();
 	std::vector<std::string> getLiterals();
 	AstGeneric();

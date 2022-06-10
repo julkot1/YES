@@ -63,11 +63,14 @@
     <ClCompile Include="AstLiteral.cpp">
       <Filter>Source Files\parser\ast</Filter>
     </ClCompile>
-    <ClCompile Include="AstType.cpp">
-      <Filter>Source Files\parser\ast</Filter>
-    </ClCompile>
     <ClCompile Include="parser.cpp">
       <Filter>Source Files\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ast.cpp">
+      <Filter>Source Files\parser\ast</Filter>
+    </ClCompile>
+    <ClCompile Include="AstType.cpp">
+      <Filter>Source Files\parser\ast</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
