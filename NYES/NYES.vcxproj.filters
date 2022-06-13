@@ -28,6 +28,12 @@
     <Filter Include="Source Files\parser\ast">
       <UniqueIdentifier>{de4e084a-840f-4ffa-9641-ea1cbc98d9f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\transcompiler">
+      <UniqueIdentifier>{30a07742-094f-45e1-a5f5-04d18bf64e68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\transcompiler">
+      <UniqueIdentifier>{77ca4e1b-6367-4c36-af4f-86eda490a41a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NYES.cpp">
@@ -72,6 +78,18 @@
     <ClCompile Include="AstType.cpp">
       <Filter>Source Files\parser\ast</Filter>
     </ClCompile>
+    <ClCompile Include="transcompiler.cpp">
+      <Filter>Source Files\transcompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="defaultFunctions.cpp">
+      <Filter>Source Files\transcompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Types.cpp">
+      <Filter>Source Files\transcompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment.cpp">
+      <Filter>Source Files\transcompiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lexer.h">
@@ -112,6 +130,18 @@
     </ClInclude>
     <ClInclude Include="parser.h">
       <Filter>Header Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="transcompiler.h">
+      <Filter>Header Files\transcompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="defaultFunctions.h">
+      <Filter>Header Files\transcompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Header Files\transcompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment.h">
+      <Filter>Header Files\transcompiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

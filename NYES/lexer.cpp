@@ -93,65 +93,86 @@ namespace lexer
 		bool isExpr = false;
         int line = 1;
         int column = 0;
-        for (char c : str) {
+        for (char c : str) 
+		{
             if (c == '\n') {
                 line++;
                 column = 0;
             }
             column++;
-			auto c_str = std::string(1, c);
-			if (getToken(c_str) == ENDL) isExpr = false;
-			
-			if(tokens.size()>0)
-				if (tokens.back()->getScope()==FUNCTION_SCOPE&& tokens.back()->getType() == lexer::IDENTIFIER) isExpr = true;
-			
-			if (scope !=lexer::GrammarScopes::GENERIC_SCOPE)
-				prevScope = scope;
-
-            isStringScope(&scope, c, &token);
-
-			if (scope == GrammarScopes::FUNCTION_SCOPE)scope = tokenizeFunction(&tokens, &token, c, line, column);
-            isFunctionScope(&scope, c, line, column, &tokens);
-
-			if (scope == GrammarScopes::TYPE_SCOPE)scope = tokenizeType(&tokens, &token, c, line, column);
-			isTypeScope(&scope, c, line, column, &tokens);
-
-			if (scope == GrammarScopes::GENERIC_SCOPE)scope = tokenizeGeneric(&tokens, &token, c, line, column);
-			isGenericScope(&scope, prevScope, c, line, column, &tokens);
-
-			if (scope == GrammarScopes::INTERFACE_SCOPE)scope = tokenizeInterface(&tokens, &token, c, line, column);
-			isInterfaceScope(&scope, c, line, column, &tokens);
-
-			
-            if (scope == GrammarScopes::STRING_SCOPE)scope = tokenizeString(&tokens, &token, c, line, column);
-            
-            if (scope == GrammarScopes::EXPRESSION_SCOPE)scope = tokenizeExpression(&tokens, &token, c, line, column);
-			
-
-			
-			
-			
-
-			if (token != "" && (getToken(c_str) == ENDL )  && scope != GrammarScopes::STRING_SCOPE)
+			if (lexer::GrammarScopes::STRING_SCOPE == scope)
 			{
-				tokens.push_back(addToken(line, column, token, prevScope));
-				tokens.push_back(addToken(line, column, c_str, GrammarScopes::FUNCTION_SCOPE));
-				token = "";
-			}
-			else if (scope!=GrammarScopes::STRING_SCOPE)
-			{
-				if (isScopeToken(c_str))
+				if (lexer::getToken(std::string(1, c)) == lexer::STRING_OPEN && token.length() > 0)
 				{
-					if(isFunctionToken(c_str))scope = GrammarScopes::FUNCTION_SCOPE;
-					else if (isGenericToken(c_str))scope = GrammarScopes::GENERIC_SCOPE;
-					else if (isTypeToken(c_str))scope = GrammarScopes::TYPE_SCOPE;
-					else if (isInterfaceToken(c_str))scope = GrammarScopes::INTERFACE_SCOPE;
-					tokens.push_back(addToken(line, column, getToken(c_str), scope));
-				}
-			}
-			if (getToken(c_str) == TYPE_CLOSE && isExpr)scope = EXPRESSION_SCOPE;
+					if (token.back() == '\\')
+					{
+						token += c;
+					}
 
+					Token* t = new Token(line, column, '\"'+token + '\"', GrammarScopes::EXPRESSION_SCOPE);
+					tokens.push_back(t);
+					token = "";
+					scope = GrammarScopes::EXPRESSION_SCOPE;
+					continue;
+				}
+				else token += c;
+			}
+			else
+			{
+				auto c_str = std::string(1, c);
+				if (getToken(c_str) == ENDL) isExpr = false;
+
+				if (tokens.size() > 0)
+					if (tokens.back()->getScope() == FUNCTION_SCOPE && tokens.back()->getType() == lexer::IDENTIFIER) isExpr = true;
+
+				if (scope != lexer::GrammarScopes::GENERIC_SCOPE)
+					prevScope = scope;
+
+				isStringScope(&scope, c, &token);
+
+				if (scope == GrammarScopes::FUNCTION_SCOPE)scope = tokenizeFunction(&tokens, &token, c, line, column);
+				isFunctionScope(&scope, c, line, column, &tokens);
+
+				if (scope == GrammarScopes::TYPE_SCOPE)scope = tokenizeType(&tokens, &token, c, line, column);
+				isTypeScope(&scope, c, line, column, &tokens);
+
+				if (scope == GrammarScopes::GENERIC_SCOPE)scope = tokenizeGeneric(&tokens, &token, c, line, column);
+				isGenericScope(&scope, prevScope, c, line, column, &tokens);
+
+				if (scope == GrammarScopes::INTERFACE_SCOPE)scope = tokenizeInterface(&tokens, &token, c, line, column);
+				isInterfaceScope(&scope, c, line, column, &tokens);
+
+
+
+
+				if (scope == GrammarScopes::EXPRESSION_SCOPE)scope = tokenizeExpression(&tokens, &token, c, line, column);
+
+
+				if (token != "" && (getToken(c_str) == ENDL) && scope != GrammarScopes::STRING_SCOPE)
+				{
+					tokens.push_back(addToken(line, column, token, prevScope));
+					tokens.push_back(addToken(line, column, c_str, GrammarScopes::FUNCTION_SCOPE));
+					token = "";
+				}
+				else if (scope != GrammarScopes::STRING_SCOPE)
+				{
+					if (isScopeToken(c_str))
+					{
+						if (isFunctionToken(c_str))scope = GrammarScopes::FUNCTION_SCOPE;
+						else if (isGenericToken(c_str))scope = GrammarScopes::GENERIC_SCOPE;
+						else if (isTypeToken(c_str))scope = GrammarScopes::TYPE_SCOPE;
+						else if (isInterfaceToken(c_str))scope = GrammarScopes::INTERFACE_SCOPE;
+						tokens.push_back(addToken(line, column, getToken(c_str), scope));
+					}
+				}
+				if (getToken(c_str) == TYPE_CLOSE && isExpr)scope = EXPRESSION_SCOPE;
+
+			}
+			
         }
+		
+		
+		
 		if (token != "")
 		{
 			tokens.push_back(addToken(line, column, token, scope));

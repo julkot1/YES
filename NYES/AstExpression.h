@@ -7,12 +7,12 @@
 
 class AstExpression : public AstElement {
 private:
-	std::queue<AstElement * > args;
+	std::queue<AstElement *>* args;
 	AstGeneric* genericType;
 	
 	AstType* type;
 public:
-	std::queue<AstElement *> getArgs();
+	std::queue<AstElement *>* getArgs();
 	void addArg(AstElement* arg);
 	void setGenericType(AstGeneric* genericType);
 	AstGeneric* getGenericType();

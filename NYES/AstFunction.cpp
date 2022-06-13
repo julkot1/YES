@@ -1,7 +1,7 @@
 #include "AstFunction.h"
 #include "AstGeneric.h"
 
-std::queue<AstExpression*> AstFunction::getArgs()
+std::queue<AstExpression*>* AstFunction::getArgs()
 {
 	return this->expressions;
 }
@@ -31,10 +31,17 @@ AstInterface* AstFunction::getTypeInterface()
 	return this->typeInterface;
 }
 AstFunction::AstFunction(int line, int column, std::string token) : AstElement(line, column, token, ast::AstElementType::FUNCTION)
-{}
+{
+	this->expressions = new std::queue<AstExpression*>();
+}
+AstFunction::AstFunction() 
+{
+	this->expressions = new std::queue<AstExpression*>();
+
+}
 void AstFunction::addExpr(AstExpression* expr)
 {
-	this->expressions.push(expr);
+	this->expressions->push(expr);
 }
 /*AstFunction::~AstFunction() {
 	delete this->genericType;

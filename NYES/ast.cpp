@@ -7,6 +7,7 @@ namespace ast
 		return type == PrimitiveTypes::DEF
 			|| type == PrimitiveTypes::CONST
 			|| type == PrimitiveTypes::FUN
+			|| type == PrimitiveTypes::CFUN
 			|| type == PrimitiveTypes::PTR;
 	}
 	bool isPrimitiveType(PrimitiveTypes type)
@@ -25,8 +26,10 @@ namespace ast
 		else if (Keywords::DOUBLE.compare(str) == 0) return DOUBLE;
 		else if (Keywords::FUNCTION.compare(str) == 0) return FUN;
 		else if (Keywords::CONST.compare(str) == 0) return CONST;
+		else if (Keywords::NUM.compare(str) == 0) return NUM;
 		else if (Keywords::PTR.compare(str) == 0) return PTR;
 		else if (Keywords::DEF.compare(str) == 0) return DEF;
+		else if (Keywords::C_FUNCTION.compare(str) == 0) return CFUN;
 		else throw;
 		return SHORT;
 	}

@@ -1,3 +1,2 @@
-let (Fun Int) a {
-	add 5 6;
-};
+code "puts(50)";
+let (Str) a "dfdf";

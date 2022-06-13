@@ -15,7 +15,8 @@ const std::string Keywords::FUNCTION="Fun";
 const std::string Keywords::CONST = "Const";
 const std::string Keywords::PTR = "Ptr";
 const std::string Keywords::DEF = "Def";
-
+const std::string Keywords::C_FUNCTION = "CFun";
+const std::string Keywords::NUM = "Num";
 bool Keywords::isLiteral(std::string token)
 {
 	return token.compare(BOOLEAN_FALSE) == 0 || token.compare(BOOLEAN_TRUE) == 0;
@@ -32,5 +33,7 @@ bool Keywords::isType(std::string token){
 		|| token.compare(CONST) == 0
 		|| token.compare(DEF) == 0
 		|| token.compare(BOOLEAN) == 0
-		|| token.compare(FUNCTION) == 0;
+		|| token.compare(NUM) == 0
+		|| token.compare(FUNCTION) == 0
+		|| token.compare(C_FUNCTION) == 0;
 }

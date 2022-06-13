@@ -14,7 +14,9 @@ public:
 	static const std::string BOOLEAN;
 	static const std::string DOUBLE;
 	static const std::string FUNCTION;
+	static const std::string C_FUNCTION;
 	static const std::string CONST;
+	static const std::string NUM;
 	static const std::string PTR;
 	static const std::string DEF;
 	static bool isLiteral(std::string token);

@@ -14,6 +14,7 @@ public:
 	AstType();
 	AstType(int line, int column, std::string token);
 	void setType(ast::PrimitiveTypes type);
+	bool isComplexType();
 	ast::PrimitiveTypes get();
 	ast::PrimitiveTypes nextChild();
 };

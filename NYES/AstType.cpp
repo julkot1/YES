@@ -34,3 +34,7 @@ ast::PrimitiveTypes AstType::nextChild()
 	this->children.pop_back();
 	return temp;
 }
+bool AstType::isComplexType()
+{
+	return this->isComplex;
+}
