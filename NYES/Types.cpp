@@ -1,14 +1,8 @@
 #include "Types.h"
 namespace type
 {
-	std::string getComplex(AstType* type)
+	std::string getPrimitiveC(ast::PrimitiveTypes token)
 	{
-		//TODO
-		return "NULL";
-	}
-	std::string getPrimitive(AstType* type)
-	{
-		ast::PrimitiveTypes token = type->get();
 		switch (token)
 		{
 		case ast::SHORT:
@@ -42,7 +36,47 @@ namespace type
 			return "NULL";
 			break;
 		}
-		return "NULL";
+	}
+	std::string getComplex(AstType* type)
+	{
+
+		std::string CTypetoken = ""; 
+		ast::PrimitiveTypes t = type->get();
+		ast::PrimitiveTypes baseType = type->get();
+		bool isConst = false, isDef = false, isPrimitive = false;
+		
+		if (baseType == ast::CFUN || baseType == ast::FUNCTION)throw;
+		do{
+			switch (t)
+			{
+			case ast::PTR: 
+				if (isDef)throw;
+				CTypetoken += "*"; 
+				break;
+			case ast::CONST:
+				if (isConst||isDef)throw;
+				isConst = true;
+			break;
+			case ast::DEF:
+				if (isConst || isDef)throw;
+				isDef = true;
+				break;
+			default:
+				if (isPrimitive)throw;
+				isPrimitive = true;
+				if (baseType == ast::PTR) CTypetoken = getPrimitiveC(t) + CTypetoken;
+				else CTypetoken += getPrimitiveC(t);
+				break;
+			}
+		} while ((t = type->nextChild()) != ast::EMPTY);
+		if (isConst)CTypetoken = "const " + CTypetoken;
+		return CTypetoken;
+	}
+	
+	std::string getPrimitive(AstType* type)
+	{
+		ast::PrimitiveTypes token = type->get();
+		return getPrimitiveC(token);
 	}
 	std::string toCtoken(AstType* type)
 	{

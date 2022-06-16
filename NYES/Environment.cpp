@@ -13,8 +13,12 @@ std::string Environment::get(std::string identifier)
 }
 bool Environment::contains(std::string identifier)
 {
-	bool c = this->identifiers->size() > 0 && this->identifiers->contains(identifier);
-	if (c)return true;
+	if (this->identifiers->size() == 0)
+	{
+		if(this->parent == NULL)return false;
+		return this->parent->contains(identifier);
+	}
+	else if (this->identifiers->contains(identifier))return true;
 	else 
 	{
 		if (this->parent != NULL)return this->parent->contains(identifier);
@@ -29,6 +33,7 @@ Environment::Environment(Environment* parent)
 Environment::Environment()
 {
 	identifiers = new std::set<std::string>();
+	this->parent = NULL;
 }
 Environment::~Environment()
 {

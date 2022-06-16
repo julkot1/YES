@@ -8,6 +8,7 @@ AstExpression::~AstExpression() {
 	delete this->genericType;
 	delete this->type;
 	delete this->args;
+	delete this->typeInterface;
 }
 
 void AstExpression::setGenericType(AstGeneric* genericType)
@@ -26,6 +27,14 @@ void AstExpression::setType(AstType* type)
 AstType* AstExpression::getType()
 {
 	return this->type;
+}
+void AstExpression::setTypeInterface(AstInterface* typeInterface)
+{
+	this->typeInterface = typeInterface;
+}
+AstInterface* AstExpression::getTypeInterface()
+{
+	return this->typeInterface;
 }
 std::queue<AstElement *>* AstExpression::getArgs()
 {

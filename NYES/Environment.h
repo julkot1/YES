@@ -1,6 +1,10 @@
 #pragma once
 #include<set>
+#include<vector>
 #include<string>
+enum IdentifierType {
+	VAR, FUN, CFUN
+};
 class Environment
 {
 private:

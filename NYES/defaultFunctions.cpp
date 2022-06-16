@@ -1,5 +1,7 @@
 #include "defaultFunctions.h"
 #include "Types.h"
+#include "transcompiler.h"
+#include "globals.h"
 namespace fun
 {
 	void impl(std::ofstream* main, std::ofstream* functionsHeader, std::ofstream* functions, AstExpression* expr) 
@@ -21,7 +23,20 @@ namespace fun
 	{
 		std::string id = expr->getArgs()->front()->getToken();
 		auto type = static_cast<AstLiteral*>(expr->getArgs()->front())->getType(); expr->getArgs()->pop();
-		std::string val = expr->getArgs()->front()->getToken(); expr->getArgs()->pop();
-		*(main) <<type::toCtoken(type) << " " << id << "=" << val << ";";
+		if (type->get() == ast::CFUN) 
+		{
+
+		}
+		else if (type->get() == ast::PrimitiveTypes::FUN)
+		{
+
+		}
+		else
+		{
+			std::string val = expr->getArgs()->front()->getToken(); expr->getArgs()->pop();
+			globals::env->addIdentifier(id);
+			*(main) << type::toCtoken(type) << " " << id << "=" << val << ";";
+		}
+		
 	}
 }

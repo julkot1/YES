@@ -136,8 +136,13 @@
     <ClCompile Include="AstInterface.cpp" />
     <ClCompile Include="AstLiteral.cpp" />
     <ClCompile Include="AstType.cpp" />
+    <ClCompile Include="CFunction.cpp" />
     <ClCompile Include="defaultFunctions.cpp" />
     <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="Function.cpp" />
+    <ClCompile Include="globals.cpp" />
+    <ClCompile Include="Identifier.cpp" />
+    <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Keywords.cpp" />
     <ClCompile Include="NYES.cpp" />
     <ClCompile Include="lexer.cpp" />
@@ -146,6 +151,7 @@
     <ClCompile Include="tokenizer.cpp" />
     <ClCompile Include="transcompiler.cpp" />
     <ClCompile Include="Types.cpp" />
+    <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ast.h" />
@@ -156,8 +162,13 @@
     <ClInclude Include="AstInterface.h" />
     <ClInclude Include="AstLiteral.h" />
     <ClInclude Include="AstType.h" />
+    <ClInclude Include="CFunction.h" />
     <ClInclude Include="defaultFunctions.h" />
     <ClInclude Include="Environment.h" />
+    <ClInclude Include="Function.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="Identifier.h" />
+    <ClInclude Include="Interface.h" />
     <ClInclude Include="Keywords.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="resource.h" />
@@ -165,6 +176,7 @@
     <ClInclude Include="Token.h" />
     <ClInclude Include="transcompiler.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NYES.rc" />

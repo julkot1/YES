@@ -2,13 +2,10 @@
 #include <fstream>
 #include "parser.h"
 #include "defaultFunctions.h"
+#include "globals.h"
 namespace yesc
 {
-	struct Out {
-		std::ofstream *main;
-		std::ofstream *functionsHeader;
-		std::ofstream *functions;
-	};
+	
 	void openMain(std::ofstream* main, std::string name)
 	{
 		*main << "#include\"" << name << "_fun.h" << "\"\n";
@@ -51,5 +48,6 @@ namespace yesc
 		main.close();
 		functionsHeader.close();
 		functions.close();
+		delete globals::env;
 	}
 }

@@ -1,2 +1,1 @@
-code "puts(50)";
-let (Str) a "dfdf";
+let (Fun Char) fa [(Ptr Char) str (Int) size] {rt {at f {sub size 1;};};};

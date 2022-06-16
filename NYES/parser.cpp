@@ -4,9 +4,10 @@
 #include <stack>
 
 
-AstExpression* newExpression(Token *token) 
+AstExpression* newExpression(Token *token, AstInterface* typeInterface)
 {
 	auto expr = new AstExpression(token->getLine(), token->getColumn(), token->getStr());
+	if (typeInterface != NULL)expr->setTypeInterface(typeInterface);
 	return expr;
 }
 AstLiteral* newLiteral(Token* token, AstType* type) 
@@ -16,15 +17,20 @@ AstLiteral* newLiteral(Token* token, AstType* type)
 
 	return lit;
 }
-AstFunction* newFunction(Token* token) 
+AstFunction* newFunction(Token* token, AstInterface* typeInterface) 
 {
 	auto fun = new AstFunction(token->getLine(), token->getColumn(), token->getStr());
-
+	if (typeInterface != NULL)fun->setTypeInterface(typeInterface);
 	return fun;
 }
 AstType* newType(Token* token)
 {
 	auto type = new AstType(token->getLine(), token->getColumn(), token->getStr());
+	return type;
+}
+AstInterface* newTypeInterface(Token* token)
+{
+	auto type = new AstInterface(token->getLine(), token->getColumn(), token->getStr());
 	return type;
 }
 AstFunction* parse(std::vector<Token *> tokens)
@@ -44,24 +50,34 @@ AstFunction* parse(std::vector<Token *> tokens)
 		{
 		case lexer::Tokens::IDENTIFIER:
 			if (token->getScope() == lexer::GrammarScopes::FUNCTION_SCOPE)
-				expr.push(newExpression(token));
-			else if (token->getScope() == lexer::GrammarScopes::EXPRESSION_SCOPE)
+			{
+				expr.push(newExpression(token, typeInterface));
+				typeInterface = NULL;
+			}		
+			else if (token->getScope() == lexer::GrammarScopes::EXPRESSION_SCOPE && typeInterface == NULL)
 			{
 				expr.top()->addArg(newLiteral(token, type));
 				type = NULL;
 			}
-			//else throw std::exception("scope exception");
+			else if (typeInterface != NULL)
+			{
+				if (type == NULL) throw std::exception("Invalid interface identifier declaration");
+				typeInterface->addIdentifier(newLiteral(token, type));
+				type = NULL;
+			}
 			break;
 		case lexer::Tokens::LITERAL:
 			expr.top()->addArg(newLiteral(token, type));
 			type = NULL;
+
 			break;
 		case lexer::ENDL:
 			functions.top()->addExpr(expr.top());
 			expr.pop();
 			break;
 		case lexer::Tokens::FUNCTION_OPEN:
-			functions.push(newFunction(token));
+			functions.push(newFunction(token, typeInterface));
+			typeInterface = NULL;
 			break;
 		case lexer::Tokens::FUNCTION_CLOSE:
 			expr.top()->addArg(functions.top());
@@ -79,6 +95,15 @@ AstFunction* parse(std::vector<Token *> tokens)
 		case lexer::Tokens::TYPE_CLOSE:
 			if (type == NULL)throw std::exception("invalid type declaration");
 			typeEnd = true;
+			break;
+		case lexer::Tokens::INTERFACE_OPEN:
+			if (typeInterface != NULL)throw std::exception("invalid interface declaration");
+			typeInterfaceEnd = false;
+			typeInterface = newTypeInterface(token);
+			break;
+		case lexer::Tokens::INTERFACE_CLOSE:
+			if (typeInterface == NULL)throw std::exception("invalid interface declaration");
+			typeInterfaceEnd = true;
 			break;
 		}
 

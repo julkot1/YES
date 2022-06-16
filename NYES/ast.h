@@ -5,7 +5,7 @@
 namespace ast
 {
 	enum PrimitiveTypes {
-		SHORT, CHAR, INT, STR, LONG, FLOAT, BOOLEAN, DOUBLE, PTR, CONST, DEF, FUN, NONE, NUM, CFUN
+		SHORT, CHAR, INT, STR, LONG, FLOAT, BOOLEAN, DOUBLE, PTR, CONST, DEF, FUN, NONE, NUM, CFUN, EMPTY
 	};
 	bool isComplexType(PrimitiveTypes type);
 	bool isPrimitiveType(PrimitiveTypes type);

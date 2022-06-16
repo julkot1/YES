@@ -30,6 +30,7 @@ ast::PrimitiveTypes AstType::get()
 }
 ast::PrimitiveTypes AstType::nextChild()
 {
+	if (this->children.size() == 0)return ast::EMPTY;
 	auto temp = this->children.back();
 	this->children.pop_back();
 	return temp;

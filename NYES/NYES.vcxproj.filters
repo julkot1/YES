@@ -34,6 +34,12 @@
     <Filter Include="Header Files\transcompiler">
       <UniqueIdentifier>{77ca4e1b-6367-4c36-af4f-86eda490a41a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\transcompiler\env">
+      <UniqueIdentifier>{74868a7c-d891-480a-a6da-48cf10dbd194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\transcompiler\env">
+      <UniqueIdentifier>{248e27de-e61c-4f47-be66-57bc0514b4ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NYES.cpp">
@@ -90,6 +96,24 @@
     <ClCompile Include="Environment.cpp">
       <Filter>Source Files\transcompiler</Filter>
     </ClCompile>
+    <ClCompile Include="globals.cpp">
+      <Filter>Source Files\transcompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Identifier.cpp">
+      <Filter>Source Files\transcompiler\env</Filter>
+    </ClCompile>
+    <ClCompile Include="Variable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Function.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lexer.h">
@@ -140,8 +164,26 @@
     <ClInclude Include="Types.h">
       <Filter>Header Files\transcompiler</Filter>
     </ClInclude>
-    <ClInclude Include="Environment.h">
+    <ClInclude Include="globals.h">
       <Filter>Header Files\transcompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment.h">
+      <Filter>Header Files\transcompiler\env</Filter>
+    </ClInclude>
+    <ClInclude Include="Identifier.h">
+      <Filter>Header Files\transcompiler\env</Filter>
+    </ClInclude>
+    <ClInclude Include="Variable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
