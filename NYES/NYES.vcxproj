@@ -151,7 +151,6 @@
     <ClCompile Include="tokenizer.cpp" />
     <ClCompile Include="transcompiler.cpp" />
     <ClCompile Include="Types.cpp" />
-    <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ast.h" />
@@ -176,7 +175,6 @@
     <ClInclude Include="Token.h" />
     <ClInclude Include="transcompiler.h" />
     <ClInclude Include="Types.h" />
-    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NYES.rc" />

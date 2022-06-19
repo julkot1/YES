@@ -1,19 +1,18 @@
 #pragma once
-#include<set>
+
 #include<vector>
 #include<string>
-enum IdentifierType {
-	VAR, FUN, CFUN
-};
+#include "Identifier.h"
+
 class Environment
 {
 private:
 	Environment* parent;
-	std::set<std::string> *identifiers;
+	std::vector<Identifier*> *identifiers;
 public:
-	void addIdentifier(std::string identifier);
+	void addIdentifier(Identifier* identifier);
 	Environment* pop();
-	std::string get(std::string);
+	Identifier* get(std::string);
 	bool contains(std::string identifier);
 	Environment(Environment* parent);
 	Environment();

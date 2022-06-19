@@ -13,6 +13,7 @@ public:
 	std::vector<AstLiteral*>* getIdentifiers();
 	void addIdentifier(AstLiteral* identifier);
 	bool contains(AstLiteral* identifier);
+	bool contains(std::string identifier);
 	AstInterface();
 	AstInterface(int line, int column, std::string token);
 	~AstInterface();

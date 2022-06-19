@@ -1,53 +1,88 @@
 #include "transcompiler.h"
-#include <fstream>
 #include "parser.h"
 #include "defaultFunctions.h"
 #include "globals.h"
+#include <string>
+#include <regex>
+#include "Types.h"
 namespace yesc
 {
-	
-	void openMain(std::ofstream* main, std::string name)
+	std::string compileArg(AstElement* element)
 	{
-		*main << "#include\"" << name << "_fun.h" << "\"\n";
-		*main << "int main(){";
+		if (element->getElementType() == ast::AstElementType::LITERAL)
+		{
+			
+			auto lit = static_cast<AstLiteral*>(element);
+			if(lit->getType()==NULL)lit->setType(type::getAstType(lit->getToken()));
+
+			if (type::isLiteral(lit->getToken()))return lit->getToken();
+			else if (globals::env->contains(lit->getToken()))return globals::YES_PREFIX + lit->getToken();
+			
+		}
+		return "a";
 	}
-	void closeMain(std::ofstream* main)
+	std::string getVar(std::string str)
 	{
-		*main << "return 0;";
-		*main << "}";
+		return std::string(str.begin() + 2, str.end() - 1);
 	}
-	void openFunctions(std::ofstream* functions, std::string name)
+
+	std::string compileCString(std::string str, AstInterface* cInterface, std::queue<AstElement *>* args)
 	{
-		*functions << "#include\"" << name << "_fun.h" << "\"\n";
+		std::regex rex(R"(%\[\w+\])");
+		std::smatch m;
+		std::regex_search(str, m, rex);
+		std::string codeC = "";
+		while (std::regex_search(str, m, rex)) {
+			if (!cInterface->contains(getVar(m[0])))throw;
+			codeC += m.prefix();
+			codeC += compileArg(args->front()); args->pop();
+			str = m.suffix();
+		}
+		codeC += str;
+		return codeC;
+		
 	}
-	void writeExpr(std::ofstream* main, std::ofstream* functionsHeader, std::ofstream* functions,AstExpression* expr)
+	void openMain( std::string name)
 	{
-		fun::impl(main, functionsHeader, functions, expr);
+		globals::main << "#include\"" << name << "_fun.h" << "\"\n";
+		globals::main << "int main(){";
+	}
+	void closeMain()
+	{
+		globals::main << "return 0;";
+		globals::main << "}";
+	}
+	void openFunctions(std::string name)
+	{
+		globals::functions << "#include\"" << name << "_fun.h" << "\"\n";
+	}
+	void writeExpr(AstExpression* expr)
+	{
+		fun::impl(expr);
 	}
 	void compile(std::string name, AstFunction* ast)
 	{
-		std::ofstream main;
-		std::ofstream functionsHeader;
-		std::ofstream functions;
-		main.open("out/"+name + "_main.c", std::ofstream::out | std::ofstream::trunc);
-		functionsHeader.open("out/" + name + "_fun.h", std::ofstream::out | std::ofstream::trunc);
-		functions.open("out/" + name + "_fun.c", std::ofstream::out | std::ofstream::trunc);
 
-		openFunctions(&functions, name);
+		globals::main.open("out/"+name + "_main.c", std::ofstream::out | std::ofstream::trunc);
+		globals::functionsHeader.open("out/" + name + "_fun.h", std::ofstream::out | std::ofstream::trunc);
+		globals::functions.open("out/" + name + "_fun.c", std::ofstream::out | std::ofstream::trunc);
 
-		openMain(&main, name);
+		openFunctions(name);
+
+		openMain(name);
 
 		while (!ast->getArgs()->empty())
 		{
 			AstExpression* el = ast->getArgs()->front();
-			writeExpr(&main, &functionsHeader, &functions, el);
+			writeExpr(el);
 			ast->getArgs()->pop();
 		}
 
-		closeMain(&main);
-		main.close();
-		functionsHeader.close();
-		functions.close();
+		closeMain();
+		globals::main.close();
+		globals::functionsHeader.close();
+		globals::functions.close();
 		delete globals::env;
+
 	}
 }

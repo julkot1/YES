@@ -87,4 +87,47 @@ namespace type
 	{
 		return token[0] == '\"' && token[token.size() - 1] == '\"';
 	}
+
+	bool isNumber(std::string token)
+	{
+		return !token.empty() && std::find_if(token.begin(),
+			token.end(), [](unsigned char c) { return !std::isdigit(c); }) == token.end();
+	}
+	bool isBool(std::string token)
+	{
+		return token.compare("true") == 0 || token.compare("false") == 0;
+	}
+	bool isFloatNumber(const std::string& string) {
+		std::string::const_iterator it = string.begin();
+		bool decimalPoint = false;
+		int minSize = 0;
+		if (string.size() > 0 && (string[0] == '-' || string[0] == '+')) {
+			it++;
+			minSize++;
+		}
+		while (it != string.end()) {
+			if (*it == '.') {
+				if (!decimalPoint) decimalPoint = true;
+				else break;
+			}
+			else if (!std::isdigit(*it) && ((*it != 'f') || it + 1 != string.end() || !decimalPoint)) {
+				break;
+			}
+			++it;
+		}
+		return string.size() > minSize && it == string.end();
+	}
+	bool isLiteral(std::string token)
+	{
+		return isBool(token) || isStr(token) || isNumber(token);
+	}
+	AstType* getAstType(std::string token)
+	{
+		auto type = new AstType();
+		if (isBool(token)) type->setType(ast::PrimitiveTypes::BOOLEAN);
+		if (isNumber(token))type->setType(ast::PrimitiveTypes::INT);
+		if (isFloatNumber(token))type->setType(ast::PrimitiveTypes::FLOAT);
+		if (isStr(token))type->setType(ast::PrimitiveTypes::STR);
+		return type;
+	}
 }

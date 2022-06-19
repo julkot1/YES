@@ -102,17 +102,14 @@
     <ClCompile Include="Identifier.cpp">
       <Filter>Source Files\transcompiler\env</Filter>
     </ClCompile>
-    <ClCompile Include="Variable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Function.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Interface.cpp">
+      <Filter>Source Files\transcompiler\env</Filter>
     </ClCompile>
     <ClCompile Include="CFunction.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\transcompiler\env</Filter>
     </ClCompile>
-    <ClCompile Include="Interface.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Function.cpp">
+      <Filter>Source Files\transcompiler\env</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -173,17 +170,14 @@
     <ClInclude Include="Identifier.h">
       <Filter>Header Files\transcompiler\env</Filter>
     </ClInclude>
-    <ClInclude Include="Variable.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="CFunction.h">
+      <Filter>Header Files\transcompiler\env</Filter>
     </ClInclude>
     <ClInclude Include="Function.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CFunction.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\transcompiler\env</Filter>
     </ClInclude>
     <ClInclude Include="Interface.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\transcompiler\env</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

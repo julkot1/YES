@@ -1,1 +1,6 @@
-let (Fun Char) fa [(Ptr Char) str (Int) size] {rt {at f {sub size 1;};};};
+let (CFun Int) add [(Int) a (Int) b] {inlineC "(%[a]+%[b])";};
+let (CFun Int) do [(Int) a (Int) b (Int) c] {inlineC "(%[a]+%[b]-%[c])";};
+let (Int) x 10;
+let (Int) g 25;
+add x 25;
+do 3 x g;

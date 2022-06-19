@@ -20,7 +20,6 @@ void AstType::setType(ast::PrimitiveTypes type)
 	{
 		this->children.push_back(type);
 	}
-	else throw;
 };
 
 

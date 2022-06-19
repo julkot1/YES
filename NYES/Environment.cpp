@@ -1,14 +1,18 @@
 #include "Environment.h"
 
-void Environment::addIdentifier(std::string identifier)
+void Environment::addIdentifier(Identifier* identifier)
 {
-	if (this->contains(identifier))throw;
-	this->identifiers->insert(identifier);
+	if (this->contains(identifier->getToken()))throw;
+	this->identifiers->push_back(identifier);
 }
-std::string Environment::get(std::string identifier)
+Identifier* Environment::get(std::string identifier)
 {
-	if (this->contains(identifier))throw;
-	return "YES_VAR__" + identifier;
+	for (Identifier* i : *(this->identifiers))
+	{
+		if(i->getToken().compare(identifier)==0)return i;
+	}
+	if (this->parent != NULL) return this->parent->get(identifier);
+	else throw;
 
 }
 bool Environment::contains(std::string identifier)
@@ -18,21 +22,26 @@ bool Environment::contains(std::string identifier)
 		if(this->parent == NULL)return false;
 		return this->parent->contains(identifier);
 	}
-	else if (this->identifiers->contains(identifier))return true;
-	else 
+	else
 	{
+		for (Identifier* i : *(this->identifiers))
+		{
+			if (i->getToken().compare(identifier) == 0)return i;
+		}
 		if (this->parent != NULL)return this->parent->contains(identifier);
 		else return false;
 	}
+
+
 }
 Environment::Environment(Environment* parent)
 {
-	identifiers = new std::set<std::string>();
+	identifiers = new std::vector<Identifier*>();
 	this->parent = parent;
 }
 Environment::Environment()
 {
-	identifiers = new std::set<std::string>();
+	identifiers = new std::vector<Identifier*>();
 	this->parent = NULL;
 }
 Environment::~Environment()

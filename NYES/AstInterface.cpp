@@ -23,6 +23,13 @@ bool AstInterface::contains(AstLiteral* identifier)
 	}
 	return false;
 }
+bool AstInterface::contains(std::string identifier)
+{
+	for (std::size_t i = 0; i < this->identifiers->size(); ++i) {
+		if (this->identifiers->at(i)->getToken().compare(identifier) == 0)return true;
+	}
+	return false;
+}
 AstInterface::~AstInterface()
 {
 	delete this->identifiers;
